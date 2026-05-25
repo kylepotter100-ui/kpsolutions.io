@@ -1,0 +1,85 @@
+---
+import { organizationSchema, type JsonLdSchema } from "../lib/schema";
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogImage?: string;
+  ogType?: "website" | "article";
+  schemas?: JsonLdSchema[];
+}
+
+const {
+  title,
+  description,
+  canonical,
+  ogImage,
+  ogType = "website",
+  schemas = [],
+} = Astro.props;
+
+const canonicalURL = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
+const ogImageURL = ogImage ? new URL(ogImage, Astro.site).href : undefined;
+
+// Organization schema sitewide; pages compose page-specific schemas on top.
+const jsonLd: JsonLdSchema[] = [organizationSchema(), ...schemas];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    {/*
+      Font-loading placeholder — self-hosted fonts only (never a CDN).
+      Drop .woff2 files in public/fonts/ and preload the display + body faces here, e.g.:
+      <link rel="preload" href="/fonts/display.woff2" as="font" type="font/woff2" crossorigin />
+      Declare @font-face and expose tokens in src/styles/tokens.css (pending design output).
+    */}
+
+    {/* Open Graph */}
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:site_name" content="KP Solutions" />
+    {
+      ogImageURL && (
+        <>
+          <meta property="og:image" content={ogImageURL} />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+        </>
+      )
+    }
+
+    {/* Twitter */}
+    <meta
+      name="twitter:card"
+      content={ogImageURL ? "summary_large_image" : "summary"}
+    />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {ogImageURL && <meta name="twitter:image" content={ogImageURL} />}
+
+    {/* JSON-LD — Organization sitewide + page-specific schemas */}
+    {
+      jsonLd.map((schema) => (
+        <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+      ))
+    }
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
