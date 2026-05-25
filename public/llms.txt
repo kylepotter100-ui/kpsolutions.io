@@ -1,0 +1,13 @@
+# KP Solutions
+
+> Custom software for established operators. Websites are one deliverable shape among many; the product is software that solves operational problems. KP Solutions is a one-person bespoke software studio, working operator-to-operator rather than agency-to-procurement.
+
+## Canonical pages
+
+<!-- Placeholder — replace with real pages and one-line descriptions as they ship. -->
+
+- [Home](https://kpsolutions.io/): Overview of KP Solutions and how the studio works.
+- [Services](https://kpsolutions.io/services): The kinds of software problems KP Solutions takes on.
+- [Case studies](https://kpsolutions.io/case-studies): Examples of bespoke software built for established operators.
+- [Insights](https://kpsolutions.io/insights): Notes on building and operating custom software.
+- [Contact](https://kpsolutions.io/contact): How to start a conversation about a project.
