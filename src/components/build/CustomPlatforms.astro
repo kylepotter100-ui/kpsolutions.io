@@ -1,0 +1,26 @@
+---
+import CategoryText from "./CategoryText.astro";
+import PlaceholderSurface from "./PlaceholderSurface.astro";
+---
+
+<section id="custom-platforms" class="build-cat build-cat--split-right">
+  <div class="shell-wide build-cat__grid build-cat__grid--40-60">
+    <div class="reveal build-cat__text-col">
+      <CategoryText
+        body="Full applications for customer-facing workflows or revenue-generating operations — the system the business actually runs on. Built around how the work moves, not around what a vendor was willing to sell. Booking platforms, marketplaces, member portals, ops consoles, and the public-facing products you don't yet have."
+        example="A residency-booking platform with integrated payments, customer accounts, and the admin tooling the studio runs from — built and shipped in four weeks for Potter Sanctuary."
+      >
+        <Fragment slot="title">Custom <span class="build-cat__italic">platforms</span>.</Fragment>
+      </CategoryText>
+    </div>
+
+    <div class="build-cat__image-col build-cat__image-col--sticky">
+      <div class="build-cat__sticky">
+        <PlaceholderSurface
+          variant="platform"
+          label="Custom platform — public-facing application in operational context · pinned while text scrolls"
+        />
+      </div>
+    </div>
+  </div>
+</section>
