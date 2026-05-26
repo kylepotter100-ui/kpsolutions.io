@@ -50,7 +50,7 @@ const navItems = [
     border-bottom: 1px solid transparent;
     transition: background 220ms var(--ease-out), border-color 220ms var(--ease-out), color 220ms var(--ease-out);
     --nav-fg: var(--bone-0);
-    --nav-muted: oklch(96% 0.012 60 / 0.78);
+    --nav-muted: oklch(98.5% 0.006 60 / 0.92);
     --nav-divider: oklch(96% 0.012 60 / 0.3);
   }
   header.is-past-hero {
@@ -64,11 +64,18 @@ const navItems = [
     backdrop-filter: blur(12px) saturate(1.05);
     -webkit-backdrop-filter: blur(12px) saturate(1.05);
   }
+  /* Transparent-over-hero state: scrim shadow so light nav text stays legible
+     over a bright video frame, without losing the transparency aesthetic. */
+  header:not(.is-past-hero) .logo,
+  header:not(.is-past-hero) .nav-link,
+  header:not(.is-past-hero) .nav-cta {
+    text-shadow: 0 1px 14px oklch(8% 0.02 22 / 0.6), 0 0 2px oklch(8% 0.02 22 / 0.45);
+  }
 
   .bar {
     max-width: 1280px;
     margin: 0 auto;
-    padding: 20px 32px;
+    padding: 8px 32px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -80,6 +87,9 @@ const navItems = [
     letter-spacing: -0.025em;
     color: var(--nav-fg);
     text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
   }
 
   .nav-desktop {
@@ -94,6 +104,9 @@ const navItems = [
     color: var(--nav-muted);
     text-decoration: none;
     transition: color 160ms var(--ease-out);
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
   }
   .nav-link:hover { color: var(--nav-fg); }
   .divider {
@@ -110,6 +123,7 @@ const navItems = [
     text-decoration: none;
     display: inline-flex;
     align-items: center;
+    min-height: 44px;
     gap: 8px;
   }
 
@@ -117,8 +131,12 @@ const navItems = [
     display: none;
     background: none;
     border: 0;
-    padding: 4px;
+    padding: 0;
     margin: 0;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
     color: var(--nav-fg);
   }
@@ -147,6 +165,9 @@ const navItems = [
     letter-spacing: -0.018em;
     color: var(--ox-900);
     text-decoration: none;
+    display: flex;
+    align-items: center;
+    min-height: 44px;
   }
   .sheet-cta { margin-top: 12px; align-self: flex-start; }
 

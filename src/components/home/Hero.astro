@@ -1,16 +1,15 @@
 ---
-import GrainSurface from "../GrainSurface.astro";
 import Button from "../Button.astro";
 
 // Above-the-fold copy is static (no reveal gating) — crawler-safe.
-const heroGrain = "0 0 0 0 0.95  0 0 0 0 0.85  0 0 0 0 0.75  0 0 0 0.45 0";
+// Hero grain is a tiled CSS texture (see .hero-bg-grain in homepage.css).
 ---
 
 <section id="top" class="hero">
   <div class="hero-bg" aria-hidden="true">
     <div class="hero-bg-field"></div>
     <div class="hero-bg-glow"></div>
-    <GrainSurface id="hero-grain-f" baseFrequency={0.9} seed={7} matrix={heroGrain} class="hero-bg-grain" />
+    <div class="hero-bg-grain"></div>
     <div class="hero-bg-scrim"></div>
     <div class="placeholder-label placeholder-label--hero">
       <span class="placeholder-label__dot"></span>
