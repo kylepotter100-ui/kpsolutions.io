@@ -12,7 +12,8 @@ import AtmosphericBreak from "../components/build/AtmosphericBreak.astro";
 import Integrations from "../components/build/Integrations.astro";
 import LegacyReplacement from "../components/build/LegacyReplacement.astro";
 import BuildClosing from "../components/build/BuildClosing.astro";
-import { serviceSchema, breadcrumbSchema, type JsonLdSchema } from "../lib/schema";
+import FAQ, { type FaqItem } from "../components/FAQ.astro";
+import { serviceSchema, breadcrumbSchema, faqPageSchema, type JsonLdSchema } from "../lib/schema";
 import "../styles/build.css";
 
 const SITE = "https://kpsolutions.io";
@@ -20,14 +21,44 @@ const title = "Build — KP Solutions";
 const description =
   "Five shapes of bespoke software. Software is the product. The shape it takes depends on what your operation actually needs.";
 
+// Drawn from existing site copy (four-week process, ownership, the five shapes,
+// phased legacy replacement, AI-visible web presence) — no invented claims.
+const faqItems: FaqItem[] = [
+  {
+    q: "How long does a build take?",
+    a: "A fixed four-week cycle. The brief is written and signed off on the Monday of week one, the build runs through the weeks with a staging URL by day three, and you go live on the Friday of week four.",
+  },
+  {
+    q: "Who owns the code?",
+    a: "You do, from day one. The source repository is transferred to your organisation at launch, with a runbook and a walkthrough. No lock-in, no per-seat licence on your own software.",
+  },
+  {
+    q: "What does it cost?",
+    a: "A fixed fee agreed before the build starts, scoped to the four-week cycle. You know the number up front, with no hourly surprises.",
+  },
+  {
+    q: "What kinds of software do you build?",
+    a: "Five shapes: custom platforms, internal tools, AI-visible web presence, integrations and automation, and phased legacy replacement. If your problem doesn't match a shape, that's the conversation worth having.",
+  },
+  {
+    q: "Can you replace our existing SaaS without a long migration?",
+    a: "Yes, in pieces. We cut over one workflow at a time, starting with the worst fit, and the old system stays live until the new one is honestly better. No sixteen-month replatform.",
+  },
+  {
+    q: "What makes a site AI-visible?",
+    a: "It is engineered to be cited by AI search engines like ChatGPT, Claude, Perplexity, and Google AI Overviews, not just indexed by traditional search. Schema graphs, an llms.txt directive layer, direct-answer markup, and an editorial register these engines surface verbatim.",
+  },
+];
+
 const schemas: JsonLdSchema[] = [
   serviceSchema({
     name: "Bespoke software",
     description:
-      "Custom platforms, internal tools, AI-visible web presence, integrations and automation, and phased legacy replacement — built around how your operation actually works.",
+      "Custom platforms, internal tools, AI-visible web presence, integrations and automation, and phased legacy replacement, built around how your operation actually works.",
     url: `${SITE}/build`,
     serviceType: "Custom software development",
   }),
+  faqPageSchema(faqItems.map((it) => ({ question: it.q, answer: it.a }))),
   breadcrumbSchema([
     { name: "Home", url: `${SITE}/` },
     { name: "Build", url: `${SITE}/build` },
@@ -45,6 +76,7 @@ const schemas: JsonLdSchema[] = [
     <AtmosphericBreak />
     <Integrations />
     <LegacyReplacement />
+    <FAQ items={faqItems} />
     <BuildClosing />
   </main>
   <Footer />
