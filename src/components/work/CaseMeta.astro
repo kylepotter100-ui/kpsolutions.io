@@ -1,0 +1,29 @@
+---
+import Icon from "../Icon.astro";
+import { PS_URL, PS_DOMAIN } from "../../lib/work";
+
+const cols = [
+  { label: "Client", value: "Potter Sanctuary" },
+  { label: "Scope", value: "Brand · editorial site · booking · accounts · admin · AEO layer" },
+  { label: "Timeline", value: "4 weeks · shipped Feb 2026" },
+];
+---
+
+<section aria-label="Project meta" class="case-meta">
+  <div class="shell-wide case-meta__grid">
+    {
+      cols.map((c) => (
+        <div class="case-meta__col case-meta__col--value">
+          <div class="case-meta__label">{c.label}</div>
+          <div class="case-meta__value">{c.value}</div>
+        </div>
+      ))
+    }
+    <div class="case-meta__col case-meta__col--link">
+      <div class="case-meta__label">Live</div>
+      <a href={PS_URL} target="_blank" rel="noopener noreferrer" class="case-meta__link">
+        {PS_DOMAIN} <Icon name="link-external" size={14} />
+      </a>
+    </div>
+  </div>
+</section>

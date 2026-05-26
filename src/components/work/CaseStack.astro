@@ -1,0 +1,22 @@
+---
+const items = [
+  "Astro",
+  "Cloudflare Workers",
+  "Cloudflare D1",
+  "Cloudflare R2",
+  "Stripe",
+  "Schema.org JSON-LD",
+  "llms.txt",
+];
+---
+
+<section class="case-stack">
+  <div class="shell-tight">
+    <div class="reveal case-stack__inner">
+      <h3 class="case-stack__label">The stack.</h3>
+      <ul class="case-stack__list">
+        {items.map((tech) => <li class="case-stack__item">{tech}</li>)}
+      </ul>
+    </div>
+  </div>
+</section>

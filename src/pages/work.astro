@@ -1,0 +1,58 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import CaseHero from "../components/work/CaseHero.astro";
+import CaseMeta from "../components/work/CaseMeta.astro";
+import CaseChallenge from "../components/work/CaseChallenge.astro";
+import CaseApproach from "../components/work/CaseApproach.astro";
+import CaseGallery from "../components/work/CaseGallery.astro";
+import CaseBreak from "../components/work/CaseBreak.astro";
+import CaseOutcome from "../components/work/CaseOutcome.astro";
+import CaseStack from "../components/work/CaseStack.astro";
+import CaseClosing from "../components/work/CaseClosing.astro";
+import { articleSchema, breadcrumbSchema, type JsonLdSchema } from "../lib/schema";
+import "../styles/work.css";
+
+const SITE = "https://kpsolutions.io";
+const title = "Potter Sanctuary — KP Solutions";
+const description =
+  "Brand, editorial site, integrated bookings, accounts, admin. Built in four weeks. The complete case study for Potter Sanctuary — a UK pottery retreat made visible to AI search.";
+
+const schemas: JsonLdSchema[] = [
+  articleSchema({
+    headline: "Potter Sanctuary",
+    description:
+      "Brand, editorial site, integrated bookings, customer accounts, and admin tooling for a UK pottery retreat, built in four weeks and engineered to be cited by AI search.",
+    url: `${SITE}/work`,
+    datePublished: "2026-02-01",
+    author: "KP Solutions",
+  }),
+  breadcrumbSchema([
+    { name: "Home", url: `${SITE}/` },
+    { name: "Work", url: `${SITE}/work` },
+  ]),
+];
+---
+
+<BaseLayout title={title} description={description} schemas={schemas}>
+  <Header heroMode="dark" />
+  <main>
+    <CaseHero />
+    <CaseMeta />
+    <CaseChallenge />
+    <CaseApproach />
+    <CaseGallery />
+    <CaseBreak />
+    <CaseOutcome />
+    <CaseStack />
+    <CaseClosing />
+  </main>
+  <Footer />
+</BaseLayout>
+
+<script>
+  import "../scripts/reveal.ts";
+</script>

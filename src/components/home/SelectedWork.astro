@@ -1,9 +1,7 @@
 ---
-import GrainSurface from "../GrainSurface.astro";
-import PlaceholderLabel from "../PlaceholderLabel.astro";
 import Icon from "../Icon.astro";
-
-const ssGrain = "0 0 0 0 0.16  0 0 0 0 0.07  0 0 0 0 0.05  0 0 0 0.45 0";
+import ScrollingShot from "../ScrollingShot.astro";
+import { PS_SHOT, PS_DOMAIN } from "../../lib/work";
 ---
 
 <section id="work" class="bg-bone-0 pt-40 pb-35">
@@ -14,20 +12,20 @@ const ssGrain = "0 0 0 0 0.16  0 0 0 0 0.07  0 0 0 0 0.05  0 0 0 0.45 0";
     </div>
 
     <div class="reveal" style="padding: 0 32px;">
-      <div class="screenshot-placeholder" aria-label="Potter Sanctuary homepage">
-        <div class="screenshot-placeholder__surface">
-          <GrainSurface id="ss-grain-ps" baseFrequency={0.9} seed={33} matrix={ssGrain} class="screenshot-placeholder__grain" />
-        </div>
-        <PlaceholderLabel tone="light" position="bottom-left">
-          Potter Sanctuary live homepage screenshot&nbsp;&nbsp;·&nbsp;&nbsp;To be wired by Code from the live URL
-        </PlaceholderLabel>
-        <div class="screenshot-placeholder__url">pottersanctuary.co.uk</div>
+      <div class="screenshot-placeholder" aria-label="Potter Sanctuary — live site preview">
+        <ScrollingShot
+          src={PS_SHOT}
+          alt="Live preview of the Potter Sanctuary homepage, scrolling through the landing page"
+          urlLabel={PS_DOMAIN}
+          urlPosition="top-right"
+          duration={30}
+        />
       </div>
     </div>
 
     <div class="reveal grid grid-cols-2 max-[960px]:grid-cols-1 gap-16 items-start mt-12 max-w-[1100px]" style="padding: 0 32px;">
       <div>
-        <a href="/potter-sanctuary" class="work-title-link">Potter Sanctuary <Icon name="arrow-right" size={16} /></a>
+        <a href="/work" class="work-title-link">Potter Sanctuary <Icon name="arrow-right" size={16} /></a>
       </div>
       <p class="work-desc">
         A UK business needing brand, editorial site, integrated bookings,

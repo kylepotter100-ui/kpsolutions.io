@@ -1,0 +1,28 @@
+---
+import ScrollingShot from "../ScrollingShot.astro";
+import { PS_SHOT, PS_DOMAIN } from "../../lib/work";
+---
+
+<section class="case-hero" id="top">
+  <ScrollingShot
+    src={PS_SHOT}
+    alt="Live preview of the Potter Sanctuary homepage, scrolling through the landing page"
+    urlLabel={PS_DOMAIN}
+    urlPosition="top-right"
+    eager
+    duration={36}
+  />
+  <div class="case-hero__scrim"></div>
+
+  <div class="case-hero__content">
+    <div class="case-hero__inner">
+      <h1 class="case-hero__title">
+        Potter <span class="case-hero__italic">Sanctuary</span>.
+      </h1>
+      <p class="case-hero__sub">
+        Brand, editorial site, integrated bookings, accounts, admin. Built in
+        four weeks. Live.
+      </p>
+    </div>
+  </div>
+</section>

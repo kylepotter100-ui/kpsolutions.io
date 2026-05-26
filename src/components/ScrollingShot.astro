@@ -1,0 +1,108 @@
+---
+// Auto-scrolling screenshot: a tall full-page screenshot that scrolls
+// vertically on a loop inside a clipped frame (fills its positioned parent).
+// motion-driven so the scroll distance adapts to the image + frame size;
+// reduced-motion shows the top of the page, static. The image asset is
+// supplied separately (a full-page screenshot of the live site).
+interface Props {
+  src: string;
+  alt: string;
+  urlLabel?: string;
+  urlPosition?: "top-right" | "bottom-left";
+  eager?: boolean;
+  duration?: number;
+  class?: string;
+}
+const {
+  src,
+  alt,
+  urlLabel,
+  urlPosition = "top-right",
+  eager = false,
+  duration = 30,
+  class: className,
+} = Astro.props;
+---
+
+<div class:list={["pshot", className]} data-pshot>
+  <img
+    class="pshot__img"
+    src={src}
+    alt={alt}
+    data-pshot-img
+    data-duration={duration}
+    loading={eager ? "eager" : "lazy"}
+    decoding="async"
+    fetchpriority={eager ? "high" : "auto"}
+  />
+  {urlLabel && <span class:list={["pshot__url", `pshot__url--${urlPosition}`]}>{urlLabel}</span>}
+</div>
+
+<style>
+  .pshot { position: absolute; inset: 0; overflow: hidden; background: var(--bone-100); }
+  .pshot__img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    display: block;
+    will-change: transform;
+  }
+  .pshot__url {
+    position: absolute;
+    z-index: 3;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: oklch(96% 0.012 60 / 0.78);
+    background: oklch(13% 0.025 22 / 0.55);
+    padding: 5px 10px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  .pshot__url--top-right { top: 20px; right: 20px; }
+  .pshot__url--bottom-left { left: 20px; bottom: 20px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pshot__img { transform: none !important; }
+  }
+</style>
+
+<script>
+  import { animate } from "motion";
+
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  document.querySelectorAll<HTMLElement>("[data-pshot]").forEach((shot) => {
+    const img = shot.querySelector<HTMLImageElement>("[data-pshot-img]");
+    if (!img) return;
+    let controls: ReturnType<typeof animate> | null = null;
+
+    const run = () => {
+      controls?.stop();
+      if (reduce) return;
+      const dist = img.offsetHeight - shot.offsetHeight;
+      if (dist <= 4) return;
+      const dur = Number(img.dataset.duration) || 30;
+      controls = animate(
+        img,
+        { y: [0, -dist] },
+        { duration: dur, ease: "linear", repeat: Infinity, repeatType: "reverse" },
+      );
+    };
+
+    if (img.complete && img.naturalHeight) run();
+    else img.addEventListener("load", run, { once: true });
+
+    let t = 0;
+    window.addEventListener(
+      "resize",
+      () => {
+        clearTimeout(t);
+        t = window.setTimeout(run, 200);
+      },
+      { passive: true },
+    );
+  });
+</script>
