@@ -1,0 +1,23 @@
+---
+import GrainSurface from "../GrainSurface.astro";
+import PlaceholderLabel from "../PlaceholderLabel.astro";
+
+interface Props {
+  surface: string;
+  label: string;
+  variant: string;
+}
+const { surface, label, variant } = Astro.props;
+const grain = "0 0 0 0 0.95  0 0 0 0 0.85  0 0 0 0 0.75  0 0 0 0.4 0";
+const seed = variant.length * 13;
+---
+
+<div class="process-week__image">
+  <div class="process-week__sticky">
+    <div class:list={["placeholder-surface", `placeholder-surface--${surface}`]}>
+      <GrainSurface id={`pw-grain-${variant}`} baseFrequency={0.95} seed={seed} matrix={grain} class="placeholder-surface__grain" />
+      <div class="placeholder-surface__scrim"></div>
+      <PlaceholderLabel tone="light" position="bottom-left">{label} · pinned while text scrolls</PlaceholderLabel>
+    </div>
+  </div>
+</div>

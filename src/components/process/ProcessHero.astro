@@ -1,0 +1,30 @@
+---
+import GrainSurface from "../GrainSurface.astro";
+import PlaceholderLabel from "../PlaceholderLabel.astro";
+
+// 50/50 image-led hero. Static copy (no reveal gating).
+const grain = "0 0 0 0 0.95  0 0 0 0 0.85  0 0 0 0 0.75  0 0 0 0.42 0";
+---
+
+<section class="process-hero" id="top">
+  <div class="shell-wide process-hero__grid">
+    <div class="process-hero__text">
+      <h1 class="process-hero__title">
+        The Four Week <span class="process-hero__italic">Build</span>.
+      </h1>
+      <p class="process-hero__sub">
+        Brief on Monday. Live four Fridays later. Fixed fee. Code owned by you.
+      </p>
+    </div>
+
+    <div class="process-hero__image">
+      <div class="placeholder-surface placeholder-surface--process-hero">
+        <GrainSurface id="process-hero-grain" baseFrequency={0.95} seed={103} matrix={grain} class="placeholder-surface__grain" />
+        <div class="placeholder-surface__scrim"></div>
+        <PlaceholderLabel tone="light" position="bottom-left">
+          Process — architectural structure mid-build, scaffolding or structural beams, warm light
+        </PlaceholderLabel>
+      </div>
+    </div>
+  </div>
+</section>
