@@ -70,37 +70,57 @@ const {
 </style>
 
 <script>
-  import { animate } from "motion";
+  import { animate, inView } from "motion";
 
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   document.querySelectorAll<HTMLElement>("[data-pshot]").forEach((shot) => {
     const img = shot.querySelector<HTMLImageElement>("[data-pshot-img]");
     if (!img) return;
+    const dur = Number(img.dataset.duration) || 30;
     let controls: ReturnType<typeof animate> | null = null;
+    let visible = false;
 
-    const run = () => {
+    // (Re)build the loop sized to the current image + frame. Starts paused;
+    // play/pause is driven by whether the section is in view.
+    const build = () => {
       controls?.stop();
+      controls = null;
       if (reduce) return;
       const dist = img.offsetHeight - shot.offsetHeight;
       if (dist <= 4) return;
-      const dur = Number(img.dataset.duration) || 30;
       controls = animate(
         img,
         { y: [0, -dist] },
         { duration: dur, ease: "linear", repeat: Infinity, repeatType: "reverse" },
       );
+      if (visible) controls.play();
+      else controls.pause();
     };
 
-    if (img.complete && img.naturalHeight) run();
-    else img.addEventListener("load", run, { once: true });
+    if (img.complete && img.naturalHeight) build();
+    else img.addEventListener("load", build, { once: true });
+
+    // Only scroll the project while the section is on screen.
+    inView(
+      shot,
+      () => {
+        visible = true;
+        controls?.play();
+        return () => {
+          visible = false;
+          controls?.pause();
+        };
+      },
+      { amount: 0.2 },
+    );
 
     let t = 0;
     window.addEventListener(
       "resize",
       () => {
         clearTimeout(t);
-        t = window.setTimeout(run, 200);
+        t = window.setTimeout(build, 200);
       },
       { passive: true },
     );
