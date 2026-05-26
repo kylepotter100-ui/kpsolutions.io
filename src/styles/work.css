@@ -1,0 +1,330 @@
+/* ============================================================
+   /work — Potter Sanctuary case study. Shared primitives in ui.css.
+   Ported from designs/styles.css (case-study slice). The hero now
+   sits over a live auto-scrolling screenshot, so its scrim is
+   strengthened for title legibility over a bright site.
+   ============================================================ */
+
+.case-hero {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background: oklch(13% 0.035 22);
+  color: var(--bone-0);
+  isolation: isolate;
+}
+.case-hero__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, oklch(11% 0.030 22 / 0.38) 0%, transparent 26%, transparent 42%, oklch(11% 0.030 22 / 0.9) 100%),
+    radial-gradient(115% 80% at 50% 50%, transparent 42%, oklch(8% 0.020 22 / 0.5) 100%);
+}
+.case-hero__content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-end;
+}
+.case-hero__inner {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 96px 32px 88px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.case-hero__title {
+  font-size: clamp(3rem, 1.4rem + 6.5vw, 7.5rem);
+  line-height: 0.92;
+  font-weight: 500;
+  letter-spacing: -0.038em;
+  margin: 0;
+  max-width: 18ch;
+  color: var(--bone-0);
+}
+.case-hero__italic {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: -0.04em;
+}
+.case-hero__sub {
+  font-size: clamp(1.0625rem, 0.85rem + 0.55vw, 1.3125rem);
+  line-height: 1.5;
+  max-width: 56ch;
+  margin: 0;
+  color: oklch(96% 0.014 60 / 0.92);
+  font-weight: 400;
+  text-shadow: 0 1px 18px oklch(8% 0.02 22 / 0.5);
+}
+
+/* Case meta strip */
+.case-meta { background: var(--bone-0); border-bottom: 1px solid var(--bone-200); }
+.case-meta__grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr 1fr;
+  gap: 32px;
+  padding: 36px 32px;
+  align-items: start;
+}
+.case-meta__col { display: flex; flex-direction: column; gap: 8px; }
+.case-meta__label {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--bone-500);
+}
+.case-meta__value {
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ox-900);
+  letter-spacing: -0.005em;
+}
+.case-meta__link {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ox-900);
+  text-decoration: underline;
+  text-decoration-color: var(--ox-900);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.28em;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  transition: text-decoration-color 160ms var(--ease-out), color 160ms var(--ease-out);
+  letter-spacing: -0.005em;
+}
+.case-meta__link:hover { text-decoration-color: var(--ochre-700); color: var(--ochre-700); }
+
+/* Shared case section title */
+.case-section-title {
+  font-size: clamp(2rem, 1.3rem + 2.4vw, 3.25rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+  margin: 0 0 36px;
+  color: var(--ox-900);
+  max-width: 22ch;
+  text-wrap: balance;
+}
+.case-italic {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: -0.04em;
+}
+.case-prose {
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--ox-900);
+  margin: 0 0 22px;
+  max-width: 60ch;
+  text-wrap: pretty;
+}
+.case-prose:last-child { margin-bottom: 0; }
+.case-prose em { font-family: var(--font-display); font-style: italic; font-weight: 300; }
+.case-prose code {
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  background: var(--bone-50);
+  padding: 1px 6px;
+  border-radius: 2px;
+  color: var(--ox-900);
+}
+
+/* The challenge */
+.case-challenge { padding: 96px 0 64px; background: var(--bone-0); }
+.case-challenge__inner { margin: 0 auto; max-width: 720px; }
+.case-challenge .case-section-title { max-width: 14ch; }
+
+/* The approach — asymmetric 50/50 with sticky image */
+.case-approach { padding: 120px 0 160px; background: var(--bone-0); }
+.case-approach__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: start;
+  padding: 0 32px;
+}
+.case-approach__text { max-width: 56ch; }
+.case-approach__image { position: relative; }
+.case-approach__sticky {
+  position: sticky;
+  top: 110px;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+}
+.placeholder-surface--architecture {
+  background:
+    radial-gradient(60% 70% at 75% 25%, oklch(58% 0.105 50 / 0.45) 0%, transparent 60%),
+    radial-gradient(85% 95% at 15% 95%, oklch(30% 0.085 22 / 0.60) 0%, transparent 65%),
+    linear-gradient(160deg, oklch(28% 0.080 28) 0%, oklch(13% 0.035 22) 100%);
+}
+
+/* The build — visual gallery */
+.case-gallery { padding: 120px 0 80px; background: var(--bone-0); }
+.case-gallery__head {
+  padding: 0 32px;
+  margin: 0 auto 48px;
+  max-width: 1440px;
+}
+.case-gallery__item { margin-bottom: 96px; }
+.case-gallery__item:last-child { margin-bottom: 0; }
+.case-gallery__image-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+.case-gallery__image-wrap .placeholder-surface {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid var(--bone-200);
+}
+.case-gallery__url {
+  position: absolute;
+  top: 24px;
+  right: 56px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: oklch(96% 0.012 60 / 0.55);
+  z-index: 3;
+}
+.case-gallery__caption-row { padding: 0 32px; margin-top: 28px; }
+.case-gallery__caption {
+  font-size: clamp(1.0625rem, 0.95rem + 0.4vw, 1.1875rem);
+  line-height: 1.5;
+  color: var(--bone-500);
+  margin: 0;
+  max-width: 60ch;
+  font-style: italic;
+  font-family: var(--font-display);
+  font-weight: 300;
+  letter-spacing: -0.012em;
+}
+
+/* Per-screenshot placeholder palettes */
+.placeholder-surface--screen-home {
+  background:
+    radial-gradient(60% 70% at 75% 25%, oklch(60% 0.090 50 / 0.45) 0%, transparent 60%),
+    radial-gradient(80% 100% at 15% 95%, oklch(32% 0.090 22 / 0.55) 0%, transparent 65%),
+    linear-gradient(165deg, oklch(28% 0.075 28) 0%, oklch(14% 0.040 22) 100%);
+}
+.placeholder-surface--screen-booking {
+  background:
+    radial-gradient(55% 65% at 30% 30%, oklch(64% 0.085 55 / 0.45) 0%, transparent 60%),
+    radial-gradient(85% 95% at 85% 90%, oklch(32% 0.080 28 / 0.55) 0%, transparent 65%),
+    linear-gradient(150deg, oklch(26% 0.070 24) 0%, oklch(14% 0.035 22) 100%);
+}
+.placeholder-surface--screen-admin {
+  background:
+    radial-gradient(55% 70% at 50% 30%, oklch(50% 0.075 40 / 0.45) 0%, transparent 60%),
+    radial-gradient(80% 100% at 15% 95%, oklch(22% 0.055 22 / 0.55) 0%, transparent 65%),
+    linear-gradient(180deg, oklch(20% 0.055 26) 0%, oklch(12% 0.030 22) 100%);
+}
+.placeholder-surface--screen-brand {
+  background:
+    radial-gradient(70% 90% at 50% 50%, oklch(55% 0.115 60 / 0.45) 0%, transparent 60%),
+    radial-gradient(80% 100% at 50% 100%, oklch(24% 0.065 22 / 0.55) 0%, transparent 65%),
+    linear-gradient(160deg, oklch(26% 0.080 28) 0%, oklch(13% 0.035 22) 100%);
+}
+
+/* Atmospheric break */
+.case-break { position: relative; width: 100%; }
+.case-break__surface {
+  position: relative;
+  width: 100%;
+  min-height: 50vh;
+  overflow: hidden;
+  background:
+    radial-gradient(60% 75% at 70% 30%, oklch(54% 0.115 55 / 0.55) 0%, transparent 60%),
+    radial-gradient(80% 95% at 20% 92%, oklch(28% 0.085 22 / 0.65) 0%, transparent 65%),
+    linear-gradient(155deg, oklch(22% 0.060 28) 0%, oklch(12% 0.030 22) 100%);
+}
+.case-break__grain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.18;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+.case-break__scrim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 80% at 50% 50%, transparent 50%, oklch(8% 0.020 22 / 0.4) 100%);
+  pointer-events: none;
+}
+
+/* The outcome */
+.case-outcome { padding: 120px 0; background: var(--bone-0); }
+.case-outcome__inner { margin: 0 auto; max-width: 720px; }
+.case-outcome .case-section-title { max-width: 14ch; }
+
+/* The stack */
+.case-stack { padding: 48px 0 96px; background: var(--bone-0); }
+.case-stack__inner {
+  margin: 0 auto;
+  max-width: 720px;
+  padding-top: 32px;
+  border-top: 1px solid var(--bone-200);
+}
+.case-stack__label {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--bone-500);
+  margin: 0 0 20px;
+}
+.case-stack__list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; }
+.case-stack__item {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  color: var(--ox-900);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--bone-200);
+}
+.case-stack__item:last-child { border-bottom: none; }
+
+/* Case closing */
+.case-closing { padding: 180px 0 160px; background: var(--bone-0); }
+.case-closing__inner { max-width: 880px; }
+.case-closing__title {
+  font-size: clamp(2.5rem, 1.5rem + 3.4vw, 4.5rem);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+  margin: 0;
+  color: var(--ox-900);
+  max-width: 16ch;
+  text-wrap: balance;
+}
+
+/* ── Mobile / narrow ───────────────────────────────────────── */
+@media (max-width: 960px) {
+  .case-meta__grid { grid-template-columns: 1fr 1fr; gap: 24px; padding: 28px 32px; }
+  .case-approach__grid { grid-template-columns: 1fr; gap: 48px; }
+  .case-approach__sticky { position: relative; top: auto; aspect-ratio: 16 / 10; }
+  .case-challenge,
+  .case-outcome,
+  .case-closing { padding: 80px 0; }
+  .case-approach { padding: 80px 0; }
+  .case-gallery { padding: 80px 0 40px; }
+  .case-gallery__item { margin-bottom: 64px; }
+  .case-hero__inner { padding: 96px 32px 64px; }
+}
