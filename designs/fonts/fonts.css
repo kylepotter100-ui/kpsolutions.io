@@ -1,0 +1,39 @@
+/* ============================================================
+   KP Solutions — Web Fonts
+   ============================================================
+   Two families:
+   - Switzer (Indian Type Foundry, via Fontshare) — workhorse
+     neo-grotesque. Premium positioning without the Inter/DM
+     monoculture. Used for ALL UI: body, nav, headings, buttons.
+   - Boska (Indian Type Foundry, via Fontshare) — high-contrast
+     contemporary serif. Reserved for one oversized typographic
+     moment per page. Never used at small sizes, never used as
+     small italic eyebrows (that's the Klim editorial trap).
+
+   Source: Fontshare delivers self-hostable woff2 under SIL OFL.
+   For PRODUCTION on kpsolutions.io, download the woff2 files and
+   self-host them under /public/fonts/. The CDN @imports below
+   are for the design-system documentation only.
+   ============================================================ */
+
+@import url('https://api.fontshare.com/v2/css?f[]=switzer@300,400,500,600,700&f[]=boska@300,400&display=swap');
+
+/* Fallback metrics to keep CLS at 0 while Switzer loads.
+   Tuned against Arial. */
+@font-face {
+  font-family: 'Switzer-Fallback';
+  src: local('Arial');
+  size-adjust: 100%;
+  ascent-override: 95%;
+  descent-override: 21%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Boska-Fallback';
+  src: local('Georgia');
+  size-adjust: 98%;
+  ascent-override: 92%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+}
