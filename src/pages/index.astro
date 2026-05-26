@@ -1,17 +1,55 @@
 ---
-import '../styles/global.css';
+export const prerender = true;
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import Hero from "../components/home/Hero.astro";
+import DirectAnswer from "../components/home/DirectAnswer.astro";
+import WhoeverYouAre from "../components/home/WhoeverYouAre.astro";
+import AtmosphericInterlude from "../components/home/AtmosphericInterlude.astro";
+import CapabilityTiles from "../components/home/CapabilityTiles.astro";
+import SelectedWork from "../components/home/SelectedWork.astro";
+import PinnedBuildMoment from "../components/home/PinnedBuildMoment.astro";
+import ProcessCallout from "../components/home/ProcessCallout.astro";
+import ClosingCTA from "../components/home/ClosingCTA.astro";
+import { webSiteSchema, serviceSchema, type JsonLdSchema } from "../lib/schema";
+import { capabilities } from "../lib/capabilities";
+import "../styles/homepage.css";
+
+const SITE = "https://kpsolutions.io";
+const title = "KP Solutions — Bespoke software for established operators";
+const description =
+  "KP Solutions builds bespoke software for established businesses that have outgrown off-the-shelf SaaS. Custom platforms, internal tools, integrations, and AI-visible web presence in a fixed four-week cycle, with code owned by the client from day one.";
+
+const schemas: JsonLdSchema[] = [
+  webSiteSchema(),
+  ...capabilities.map((c) =>
+    serviceSchema({
+      name: c.label,
+      description: c.copy,
+      url: new URL(c.href, SITE).href,
+    }),
+  ),
+];
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title={title} description={description} schemas={schemas}>
+  <Header heroMode="dark" />
+  <main>
+    <Hero />
+    <DirectAnswer />
+    <WhoeverYouAre />
+    <AtmosphericInterlude />
+    <CapabilityTiles />
+    <SelectedWork />
+    <PinnedBuildMoment />
+    <ProcessCallout />
+    <ClosingCTA />
+  </main>
+  <Footer />
+</BaseLayout>
+
+<script>
+  import "../scripts/reveal.ts";
+</script>

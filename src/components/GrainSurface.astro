@@ -1,0 +1,29 @@
+---
+// Film-grain SVG (feTurbulence) standing in for atmospheric imagery.
+// Each instance MUST get a unique `id` — duplicate SVG filter ids in
+// one document silently break all but the first. Ported from the
+// repeated grain blocks in designs/core.jsx + sections.jsx.
+interface Props {
+  id: string;
+  baseFrequency: number | string;
+  seed: number;
+  matrix: string;
+  class?: string;
+  numOctaves?: number;
+}
+const { id, baseFrequency, seed, matrix, class: className, numOctaves = 2 } = Astro.props;
+---
+
+<svg class={className} preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <filter id={id}>
+    <feTurbulence
+      type="fractalNoise"
+      baseFrequency={baseFrequency}
+      numOctaves={numOctaves}
+      seed={seed}
+      stitchTiles="stitch"
+    />
+    <feColorMatrix values={matrix} />
+  </filter>
+  <rect width="100%" height="100%" filter={`url(#${id})`}></rect>
+</svg>

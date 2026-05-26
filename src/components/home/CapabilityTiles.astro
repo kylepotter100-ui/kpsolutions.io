@@ -1,0 +1,47 @@
+---
+import GrainSurface from "../GrainSurface.astro";
+import PlaceholderLabel from "../PlaceholderLabel.astro";
+import Icon from "../Icon.astro";
+import { capabilities } from "../../lib/capabilities";
+
+const featureGrain = "0 0 0 0 0.18  0 0 0 0 0.08  0 0 0 0 0.06  0 0 0 0.5 0";
+---
+
+<section id="capabilities" class="bg-bone-50 py-40">
+  <div class="shell">
+    <div class="reveal mb-16">
+      <h2 class="section-heading max-w-[18ch]">What we build.</h2>
+    </div>
+
+    <div class="reveal capability-split">
+      <div class="capability-feature">
+        <div class="capability-feature-surface" aria-hidden="true">
+          <GrainSurface
+            id="cap-feat-grain"
+            baseFrequency={1.0}
+            seed={21}
+            matrix={featureGrain}
+            class="capability-feature-grain"
+          />
+          <PlaceholderLabel tone="light" position="bottom-left">
+            Capabilities feature image&nbsp;&nbsp;·&nbsp;&nbsp;Operator at-screen, calm focus, mid-build
+          </PlaceholderLabel>
+        </div>
+      </div>
+
+      <div class="capability-stack">
+        {
+          capabilities.map((t, i) => (
+            <a href={t.href} class="capability-row" style={i === 0 ? "border-top: 1px solid var(--bone-200);" : undefined}>
+              <div class="capability-row__head">
+                <span class="capability-row__label">{t.label}</span>
+                <Icon name="arrow-right" size={16} />
+              </div>
+              <p class="capability-row__copy">{t.copy}</p>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>

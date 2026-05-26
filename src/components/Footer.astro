@@ -1,0 +1,128 @@
+---
+import Icon from "./Icon.astro";
+
+const navLinks = [
+  { label: "Work", href: "/#work" },
+  { label: "Build", href: "/build" },
+  { label: "Process", href: "/process" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
+];
+---
+
+<footer>
+  <div class="inner">
+    <div class="top">
+      <div>
+        <div class="wordmark">KP Solutions</div>
+        <p class="tagline">Bespoke software for how your business actually works.</p>
+      </div>
+      <div class="contact">
+        <a href="mailto:hello@kpsolutions.io" class="email">hello@kpsolutions.io</a>
+        <a href="/contact" class="btn btn-inverse cta">Start a conversation <Icon name="arrow-right" size={14} /></a>
+      </div>
+    </div>
+
+    <nav class="links" aria-label="Footer">
+      {navLinks.map((l) => <a href={l.href}>{l.label}</a>)}
+    </nav>
+
+    <div class="legal">
+      <span>© 2026 KP Solutions</span>
+      <div class="legal-links">
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  footer {
+    background: var(--ox-900);
+    color: var(--bone-0);
+  }
+  .inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 120px 32px 40px;
+  }
+  .top {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 64px;
+    align-items: end;
+    padding-bottom: 80px;
+    border-bottom: 1px solid oklch(98.5% 0.008 60 / 0.18);
+  }
+  .wordmark {
+    font-size: clamp(3.5rem, 2rem + 5vw, 6.5rem);
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    line-height: 0.95;
+    color: var(--bone-0);
+  }
+  .tagline {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(1.5rem, 1rem + 1.3vw, 2.25rem);
+    letter-spacing: -0.022em;
+    line-height: 1.15;
+    color: oklch(96% 0.012 60 / 0.78);
+    margin: 24px 0 0;
+    max-width: 24ch;
+  }
+  .contact {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 22px;
+    padding-bottom: 8px;
+  }
+  .email {
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--bone-0);
+    text-decoration: underline;
+    text-decoration-color: oklch(96% 0.012 60 / 0.35);
+    text-underline-offset: 0.3em;
+    text-decoration-thickness: 1px;
+  }
+  .cta { padding: 15px 24px; font-size: 14px; }
+
+  .links {
+    padding: 48px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 40px;
+    border-bottom: 1px solid oklch(98.5% 0.008 60 / 0.18);
+  }
+  .links a {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--bone-0);
+    text-decoration: none;
+    letter-spacing: -0.005em;
+    transition: color 160ms var(--ease-out);
+  }
+  .links a:hover { color: var(--ochre-300); }
+
+  .legal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 28px;
+    gap: 24px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: oklch(96% 0.012 60 / 0.62);
+    letter-spacing: -0.003em;
+  }
+  .legal-links { display: flex; gap: 24px; }
+  .legal-links a { color: inherit; text-decoration: none; }
+
+  @media (max-width: 960px) {
+    .top { grid-template-columns: 1fr; gap: 40px; }
+  }
+</style>
