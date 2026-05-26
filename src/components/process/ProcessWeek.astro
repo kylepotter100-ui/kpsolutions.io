@@ -1,0 +1,52 @@
+---
+import ProcessWeekImage from "./ProcessWeekImage.astro";
+
+interface Props {
+  marker: string;
+  name: string;
+  italicWord?: string;
+  description: string;
+  outcomes: string[];
+  surface: string;
+  label: string;
+  imageLeft?: boolean;
+}
+const { marker, name, italicWord, description, outcomes, surface, label, imageLeft = false } = Astro.props;
+const parts = italicWord ? name.split(italicWord) : null;
+---
+
+<section class:list={["process-week", imageLeft ? "process-week--image-left" : "process-week--image-right"]}>
+  <div class="shell-wide process-week__grid">
+    {imageLeft && <ProcessWeekImage surface={surface} label={label} variant={marker} />}
+
+    <div class="reveal process-week__text">
+      <div class="process-week__marker">Week {marker}</div>
+      <h2 class="process-week__name">
+        {
+          parts ? (
+            <Fragment>
+              {parts[0]}
+              <span class="process-week__italic">{italicWord}</span>
+              {parts[1]}
+            </Fragment>
+          ) : (
+            name
+          )
+        }.
+      </h2>
+      <p class="process-week__body">{description}</p>
+      <ul class="process-week__outcomes">
+        {
+          outcomes.map((o) => (
+            <li class="process-week__outcome">
+              <span class="process-week__outcome-mark">—</span>
+              <span>{o}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    {!imageLeft && <ProcessWeekImage surface={surface} label={label} variant={marker} />}
+  </div>
+</section>
