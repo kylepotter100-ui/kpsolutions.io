@@ -1,0 +1,324 @@
+/* ============================================================
+   /build — page-specific surfaces. Shared primitives in ui.css.
+   Ported from designs/styles.css (build slice).
+   ============================================================ */
+
+.build-hero {
+  background: var(--bone-0);
+  min-height: 55vh;
+  display: flex;
+  align-items: flex-end;
+  padding: 200px 0 80px;
+  border-bottom: 1px solid var(--bone-200);
+}
+.build-hero__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  max-width: 1280px;
+  padding: 0 32px;
+}
+.build-hero__title {
+  font-size: clamp(2.5rem, 1.3rem + 5vw, 5.5rem);
+  line-height: 0.96;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  margin: 0;
+  max-width: 18ch;
+  color: var(--ox-900);
+  text-wrap: balance;
+}
+.build-hero__italic {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: -0.04em;
+}
+.build-hero__sub {
+  font-size: clamp(1.0625rem, 0.85rem + 0.55vw, 1.3125rem);
+  line-height: 1.5;
+  max-width: 54ch;
+  margin: 0;
+  color: var(--bone-500);
+  font-weight: 400;
+}
+
+/* Category shared */
+.build-cat { background: var(--bone-0); }
+.build-cat__grid {
+  display: grid;
+  gap: 64px;
+  align-items: start;
+  padding: 0 32px;
+}
+.build-cat__grid--40-60 { grid-template-columns: 0.4fr 0.6fr; }
+.build-cat__grid--60-40 { grid-template-columns: 0.6fr 0.4fr; }
+
+.build-cat__text {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  max-width: 48ch;
+}
+.build-cat__title {
+  font-size: clamp(2rem, 1.3rem + 2.4vw, 3.25rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin: 0;
+  color: var(--ox-900);
+  max-width: 14ch;
+  text-wrap: balance;
+}
+.build-cat__title--centred {
+  text-align: center;
+  margin: 0 auto;
+  max-width: 18ch;
+}
+.build-cat__italic {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: -0.04em;
+}
+.build-cat__body {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--bone-500);
+  margin: 0;
+  max-width: 46ch;
+}
+.build-cat__example {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ox-900);
+  margin: 0;
+  max-width: 46ch;
+  padding-top: 16px;
+  border-top: 1px solid var(--bone-200);
+}
+.build-cat__example-label {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 16px;
+  margin-right: 6px;
+  color: var(--ox-700);
+}
+
+/* Category 1 — Custom platforms (40/60 split, image right, sticky) */
+.build-cat--split-right { padding: 160px 0; }
+.build-cat__image-col { position: relative; }
+.build-cat__image-col--sticky { min-height: 760px; }
+.build-cat__sticky {
+  position: sticky;
+  top: 110px;
+  aspect-ratio: 4 / 5;
+}
+
+/* Category 2 — Internal tools (full-bleed, text overlay left) */
+.build-cat--bleed { padding: 0; }
+.build-cat__bleed-surface {
+  position: relative;
+  width: 100%;
+  min-height: 82vh;
+  overflow: hidden;
+}
+.build-cat__bleed-surface--internal {
+  background:
+    radial-gradient(55% 70% at 70% 25%, oklch(62% 0.080 45 / 0.50) 0%, transparent 60%),
+    radial-gradient(80% 100% at 15% 95%, oklch(28% 0.080 22 / 0.65) 0%, transparent 65%),
+    linear-gradient(160deg, oklch(24% 0.065 28) 0%, oklch(13% 0.035 22) 100%);
+}
+.build-cat__bleed-grain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.18;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+.build-cat__bleed-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, oklch(8% 0.020 22 / 0.55) 0%, oklch(8% 0.020 22 / 0.3) 38%, transparent 65%),
+    linear-gradient(180deg, transparent 50%, oklch(8% 0.020 22 / 0.35) 100%);
+  pointer-events: none;
+}
+.build-cat__bleed-content {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(80px, 12vh, 140px) 32px;
+  color: var(--bone-0);
+  display: flex;
+  align-items: center;
+  min-height: 82vh;
+}
+.build-cat__bleed-content .build-cat__title { color: var(--bone-0); }
+.build-cat__bleed-content .build-cat__body { color: oklch(96% 0.014 60 / 0.84); }
+.build-cat__bleed-content .build-cat__example {
+  color: var(--bone-0);
+  border-top-color: oklch(96% 0.014 60 / 0.25);
+}
+.build-cat__bleed-content .build-cat__example-label { color: var(--ochre-300); }
+.build-cat__bleed-content .build-cat__text { max-width: 38ch; }
+
+/* Category 3 — AI-visible web presence (centred, extra weight) */
+.build-cat--centred { padding: 160px 0; background: var(--bone-50); }
+.build-cat__centred-head { text-align: center; margin: 0 auto 56px; }
+.build-cat__editorial-image {
+  position: relative;
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto 56px;
+  aspect-ratio: 21 / 9;
+  padding: 0 32px;
+}
+.build-cat__centred-body {
+  max-width: 56ch;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+.build-cat__centred-desc {
+  font-size: clamp(1.0625rem, 0.95rem + 0.4vw, 1.1875rem);
+  line-height: 1.65;
+  color: var(--ox-900);
+  margin: 0 auto;
+  text-align: center;
+  max-width: 50ch;
+  text-wrap: pretty;
+}
+
+/* Category 4 — Integrations & automation (60/40, image left) */
+.build-cat--split-left { padding: 160px 0; }
+.build-cat--split-left .build-cat__image-col {
+  position: relative;
+  min-height: 540px;
+}
+.build-cat--split-left .build-cat__image-col .placeholder-surface {
+  position: absolute;
+  inset: 0;
+}
+.build-cat--split-left .build-cat__text-col {
+  padding-top: 24px;
+}
+
+/* Category 5 — Legacy replacement (text-only, compressed) */
+.build-cat--text-only {
+  padding: 96px 0;
+  background: var(--bone-0);
+  border-top: 1px solid var(--bone-200);
+  border-bottom: 1px solid var(--bone-200);
+}
+.build-cat--text-only .build-cat__title { max-width: 16ch; }
+
+/* Atmospheric break between cats 3 and 4 */
+.build-break { position: relative; width: 100%; }
+.build-break__surface {
+  position: relative;
+  width: 100%;
+  min-height: 60vh;
+  overflow: hidden;
+  background:
+    radial-gradient(65% 75% at 75% 35%, oklch(54% 0.115 55 / 0.55) 0%, transparent 60%),
+    radial-gradient(80% 95% at 18% 90%, oklch(30% 0.090 28 / 0.6) 0%, transparent 65%),
+    linear-gradient(160deg, oklch(22% 0.060 28) 0%, oklch(12% 0.035 22) 100%);
+}
+.build-break__grain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.18;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+.build-break__scrim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 80% at 50% 50%, transparent 50%, oklch(8% 0.020 22 / 0.4) 100%);
+  pointer-events: none;
+}
+
+/* Build closing */
+.build-closing { padding: 200px 0; background: var(--bone-0); }
+.build-closing__inner { max-width: 720px; }
+.build-closing__title {
+  font-size: clamp(2.5rem, 1.5rem + 3.4vw, 4.5rem);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+  margin: 0;
+  color: var(--ox-900);
+  max-width: 14ch;
+  text-wrap: balance;
+}
+.build-closing__body {
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--bone-500);
+  margin: 32px 0 56px;
+  max-width: 44ch;
+}
+
+/* Shared placeholder surface — used by build categories */
+.placeholder-surface {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.build-cat__sticky .placeholder-surface { position: absolute; inset: 0; }
+.build-cat__editorial-image .placeholder-surface { position: absolute; inset: 0; }
+.placeholder-surface--platform {
+  background:
+    radial-gradient(55% 65% at 70% 25%, oklch(56% 0.110 50 / 0.55) 0%, transparent 60%),
+    radial-gradient(85% 95% at 15% 95%, oklch(30% 0.085 22 / 0.60) 0%, transparent 65%),
+    linear-gradient(160deg, oklch(26% 0.075 28) 0%, oklch(14% 0.040 22) 100%);
+}
+.placeholder-surface--aeo {
+  background:
+    radial-gradient(40% 55% at 50% 50%, oklch(52% 0.140 55 / 0.55) 0%, transparent 65%),
+    radial-gradient(80% 80% at 50% 100%, oklch(22% 0.060 22 / 0.6) 0%, transparent 60%),
+    linear-gradient(180deg, oklch(13% 0.035 22) 0%, oklch(8% 0.020 22) 100%);
+}
+.placeholder-surface--integrations {
+  background:
+    radial-gradient(60% 80% at 30% 30%, oklch(58% 0.090 60 / 0.45) 0%, transparent 60%),
+    radial-gradient(80% 100% at 80% 90%, oklch(28% 0.075 24 / 0.65) 0%, transparent 65%),
+    linear-gradient(135deg, oklch(28% 0.075 30) 0%, oklch(14% 0.035 22) 100%);
+}
+.placeholder-surface__grain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+.placeholder-surface__scrim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 80% at 50% 50%, transparent 55%, oklch(8% 0.020 22 / 0.35) 100%);
+  pointer-events: none;
+}
+
+/* ── Mobile / narrow ───────────────────────────────────────── */
+@media (max-width: 960px) {
+  .build-cat__grid--40-60,
+  .build-cat__grid--60-40 { grid-template-columns: 1fr; gap: 40px; }
+  .build-cat__image-col--sticky { min-height: 0; }
+  .build-cat__sticky { position: relative; top: auto; aspect-ratio: 16 / 10; }
+  .build-cat--split-left .build-cat__image-col { min-height: 60vw; position: relative; }
+  .build-cat--split-right,
+  .build-cat--split-left,
+  .build-cat--centred,
+  .build-closing { padding: 96px 0; }
+  .build-cat__bleed-content { min-height: 70vh; padding: 80px 32px; }
+  .build-cat__editorial-image { aspect-ratio: 4 / 3; }
+}

@@ -1,0 +1,55 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import BuildHero from "../components/build/BuildHero.astro";
+import CustomPlatforms from "../components/build/CustomPlatforms.astro";
+import InternalTools from "../components/build/InternalTools.astro";
+import AIVisible from "../components/build/AIVisible.astro";
+import AtmosphericBreak from "../components/build/AtmosphericBreak.astro";
+import Integrations from "../components/build/Integrations.astro";
+import LegacyReplacement from "../components/build/LegacyReplacement.astro";
+import BuildClosing from "../components/build/BuildClosing.astro";
+import { serviceSchema, breadcrumbSchema, type JsonLdSchema } from "../lib/schema";
+import "../styles/build.css";
+
+const SITE = "https://kpsolutions.io";
+const title = "Build — KP Solutions";
+const description =
+  "Five shapes of bespoke software. Software is the product. The shape it takes depends on what your operation actually needs.";
+
+const schemas: JsonLdSchema[] = [
+  serviceSchema({
+    name: "Bespoke software",
+    description:
+      "Custom platforms, internal tools, AI-visible web presence, integrations and automation, and phased legacy replacement — built around how your operation actually works.",
+    url: `${SITE}/build`,
+    serviceType: "Custom software development",
+  }),
+  breadcrumbSchema([
+    { name: "Home", url: `${SITE}/` },
+    { name: "Build", url: `${SITE}/build` },
+  ]),
+];
+---
+
+<BaseLayout title={title} description={description} schemas={schemas}>
+  <Header heroMode="light" />
+  <main>
+    <BuildHero />
+    <CustomPlatforms />
+    <InternalTools />
+    <AIVisible />
+    <AtmosphericBreak />
+    <Integrations />
+    <LegacyReplacement />
+    <BuildClosing />
+  </main>
+  <Footer />
+</BaseLayout>
+
+<script>
+  import "../scripts/reveal.ts";
+</script>

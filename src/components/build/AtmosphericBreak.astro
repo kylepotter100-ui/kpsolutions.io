@@ -1,0 +1,16 @@
+---
+import GrainSurface from "../GrainSurface.astro";
+import PlaceholderLabel from "../PlaceholderLabel.astro";
+
+const grain = "0 0 0 0 0.95  0 0 0 0 0.85  0 0 0 0 0.75  0 0 0 0.42 0";
+---
+
+<section aria-label="Atmospheric break" class="build-break">
+  <div class="build-break__surface">
+    <GrainSurface id="break-grain" baseFrequency={0.85} seed={51} matrix={grain} class="build-break__grain" />
+    <div class="build-break__scrim"></div>
+    <PlaceholderLabel tone="light" position="bottom-left">
+      Atmospheric break — operational scene at golden hour, warm tonal palette
+    </PlaceholderLabel>
+  </div>
+</section>
