@@ -34,7 +34,7 @@ This file is the source of truth for how every page, component, and feature is b
 - **JSON-LD structured data on every page.** Organization schema sitewide via the root layout. Page-specific schemas as appropriate: Service (service pages), Article (insights), FAQPage (any page with a FAQ block), BreadcrumbList (deep pages).
 - **40-60 word direct answer near the top of every page.** This is the AI-extractable summary.
 - **Strict heading hierarchy.** One H1 per page; H2 for major sections; H3 for sub-sections. Never skip levels.
-- **FAQ block on at least the homepage and every service page**, marked up with FAQPage schema.
+- **FAQ block with FAQPage JSON-LD schema on /build and /process pages**, where prospect questions fit contextually. Homepage relies on its direct-answer block and Organization schema for AEO leverage.
 - **llms.txt at root** — concise, under 5KB, leads with brand summary, links to canonical pages.
 - **robots.txt allows** GPTBot, ClaudeBot, PerplexityBot, Google-Extended, BingBot, and Googlebot. Do not block AI crawlers.
 

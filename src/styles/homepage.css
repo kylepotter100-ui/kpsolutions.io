@@ -1,0 +1,560 @@
+/* ============================================================
+   Homepage — layout helpers + bespoke surfaces on top of tokens.
+   Ported from designs/styles.css (homepage slice only; the
+   tile-grid / browser / build-/process-/about-/case-/contact-
+   rules are intentionally excluded to protect the CSS budget).
+   Loaded after tokens.css; rules are unlayered so they win over
+   the @layer base element defaults (matching the design system).
+   ============================================================ */
+
+html, body { margin: 0; }
+body { background: var(--bone-0); color: var(--ox-900); }
+*, *::before, *::after { box-sizing: border-box; }
+
+img, svg { display: block; max-width: 100%; }
+
+a { text-decoration: none; color: inherit; }
+
+/* ── Layout shells ─────────────────────────────────────────── */
+.shell { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+.shell-wide  { max-width: 1440px; margin: 0 auto; padding: 0 32px; }
+.shell-tight { max-width: 960px;  margin: 0 auto; padding: 0 32px; }
+
+/* ── Reveal motion (single page-load fade, IO-driven) ──────── */
+.reveal { opacity: 1; transition: opacity 520ms var(--ease-out); }
+.reveal-stagger > * { opacity: 1; transition: opacity 520ms var(--ease-out); }
+html.js-reveal .reveal:not(.is-in) {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 520ms var(--ease-out), transform 520ms var(--ease-out);
+}
+html.js-reveal .reveal.is-in { opacity: 1; transform: none; }
+html.js-reveal .reveal-stagger:not(.is-in) > * {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 520ms var(--ease-out), transform 520ms var(--ease-out);
+}
+html.js-reveal .reveal-stagger.is-in > * { opacity: 1; transform: none; }
+html.js-reveal .reveal-stagger.is-in > *:nth-child(1) { transition-delay: 0ms; }
+html.js-reveal .reveal-stagger.is-in > *:nth-child(2) { transition-delay: 80ms; }
+html.js-reveal .reveal-stagger.is-in > *:nth-child(3) { transition-delay: 160ms; }
+html.js-reveal .reveal-stagger.is-in > *:nth-child(4) { transition-delay: 240ms; }
+html.js-reveal .reveal-stagger.is-in > *:nth-child(5) { transition-delay: 320ms; }
+html.js-reveal .reveal-stagger.is-in > *:nth-child(6) { transition-delay: 400ms; }
+
+/* ── Buttons ───────────────────────────────────────────────── */
+.btn {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  padding: 15px 22px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 160ms var(--ease-out), color 160ms var(--ease-out), border-color 160ms var(--ease-out);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  line-height: 1;
+  border-radius: 0;
+}
+.btn-primary { background: var(--ox-900); color: var(--bone-0); }
+.btn-primary:hover { background: var(--ox-700); color: var(--bone-0); }
+.btn-secondary { background: transparent; color: var(--ox-900); border-color: var(--ox-900); }
+.btn-secondary:hover { background: var(--ox-900); color: var(--bone-0); }
+.btn-inverse { background: var(--bone-0); color: var(--ox-900); }
+.btn-inverse:hover { background: var(--ochre-300); color: var(--ox-900); }
+
+.btn-hero-primary {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  padding: 18px 28px;
+  border: 1px solid var(--bone-0);
+  background: var(--bone-0);
+  color: var(--ox-900);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  line-height: 1;
+  border-radius: 0;
+  transition: background 180ms var(--ease-out), color 180ms var(--ease-out), border-color 180ms var(--ease-out);
+}
+.btn-hero-primary:hover {
+  background: transparent;
+  color: var(--bone-0);
+  border-color: var(--bone-0);
+}
+
+/* ── Underlined link with arrow ────────────────────────────── */
+.link-arrow {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ox-900);
+  text-decoration: underline;
+  text-decoration-color: var(--ox-900);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.28em;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  transition: text-decoration-color 160ms var(--ease-out), color 160ms var(--ease-out);
+}
+.link-arrow:hover {
+  text-decoration-color: var(--ochre-700);
+  color: var(--ochre-700);
+}
+
+/* ── Hero ──────────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  background: oklch(13% 0.035 22);
+  color: var(--bone-0);
+  isolation: isolate;
+}
+.hero-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+.hero-bg-field {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(95% 70% at 78% 18%, oklch(46% 0.090 48) 0%, transparent 55%),
+    radial-gradient(75% 90% at 12% 96%, oklch(28% 0.085 22) 0%, transparent 60%),
+    radial-gradient(60% 60% at 60% 60%, oklch(22% 0.060 28) 0%, transparent 70%),
+    linear-gradient(180deg, oklch(18% 0.045 26) 0%, oklch(11% 0.030 22) 100%);
+}
+.hero-bg-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(45% 35% at 82% 12%, oklch(68% 0.110 60 / 0.22) 0%, transparent 70%);
+  mix-blend-mode: screen;
+}
+/* Hero grain "baked" to a single seamless tiled texture (inline SVG data URI,
+   stitchTiles) — rasterized once over a 160px tile and repeated, instead of a
+   full-bleed feTurbulence pass. Same generator/params as the export, so the
+   look is unchanged. (AVIF would be smaller but needs an encoder unavailable in CI.) */
+.hero-bg-grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.14;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22160%22%20height%3D%22160%22%3E%3Cfilter%20id%3D%22g%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%220.9%22%20numOctaves%3D%222%22%20seed%3D%227%22%20stitchTiles%3D%22stitch%22%2F%3E%3CfeColorMatrix%20values%3D%220%200%200%200%200.95%200%200%200%200%200.85%200%200%200%200%200.75%200%200%200%200.45%200%22%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20filter%3D%22url(%23g)%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: repeat;
+  background-size: 160px 160px;
+}
+.hero-bg-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    /* top scrim — guarantees nav/logo legibility over a bright video frame */
+    linear-gradient(180deg, oklch(8% 0.020 22 / 0.55) 0%, oklch(8% 0.020 22 / 0.18) 9%, transparent 20%),
+    /* bottom-up scrim for headline + CTA */
+    linear-gradient(180deg, transparent 0%, transparent 45%, oklch(11% 0.030 22 / 0.55) 100%),
+    /* gentle vignette */
+    radial-gradient(110% 75% at 50% 50%, transparent 50%, oklch(8% 0.020 22 / 0.45) 100%);
+  pointer-events: none;
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 200px 32px 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  max-width: 1280px;
+}
+.hero-headline {
+  font-size: clamp(2.75rem, 1.2rem + 6.8vw, 7.5rem);
+  line-height: 0.94;
+  font-weight: 500;
+  letter-spacing: -0.038em;
+  margin: 0;
+  max-width: 16ch;
+  color: var(--bone-0);
+  text-wrap: balance;
+}
+.hero-italic {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: -0.04em;
+}
+.hero-sub {
+  font-size: clamp(1.0625rem, 0.85rem + 0.55vw, 1.3125rem);
+  line-height: 1.5;
+  max-width: 56ch;
+  margin: 0;
+  color: oklch(96% 0.014 60 / 0.86);
+  font-weight: 400;
+  text-wrap: pretty;
+}
+.hero-cta-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+/* ── "Whoever you are" framing ─────────────────────────────── */
+.whoever { display: flex; flex-direction: column; }
+.whoever-row {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 64px;
+  align-items: baseline;
+  padding: 56px 0;
+  border-bottom: 1px solid var(--bone-200);
+}
+.whoever-row:first-child { border-top: 1px solid var(--bone-200); }
+.whoever-hook {
+  font-size: clamp(1.625rem, 1.05rem + 1.6vw, 2.5rem);
+  font-weight: 500;
+  letter-spacing: -0.028em;
+  line-height: 1.05;
+  color: var(--ox-900);
+  margin: 0;
+  max-width: 18ch;
+  text-wrap: balance;
+}
+.whoever-body {
+  font-size: clamp(1rem, 0.9rem + 0.3vw, 1.125rem);
+  line-height: 1.55;
+  color: var(--bone-500);
+  margin: 0;
+  max-width: 48ch;
+}
+
+/* ── Section heading (shared "What we build." / "Selected work.") ── */
+.section-heading {
+  font-size: clamp(2.25rem, 1.4rem + 2.6vw, 3.25rem);
+  font-weight: 500;
+  letter-spacing: -0.028em;
+  line-height: 1.02;
+  margin: 0;
+  color: var(--ox-900);
+}
+
+/* ── Homepage typography one-offs (from the design's inline styles) ── */
+.display-italic { font-family: var(--font-display); font-style: italic; font-weight: 300; }
+
+.direct-answer {
+  font-size: clamp(1.375rem, 0.95rem + 1.1vw, 1.875rem);
+  line-height: 1.4;
+  color: var(--ox-900);
+  margin: 0;
+  max-width: 38ch;
+  letter-spacing: -0.018em;
+  font-weight: 400;
+}
+
+.work-desc {
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--bone-500);
+  margin: 0;
+  max-width: 44ch;
+}
+
+.process-callout__text {
+  font-size: clamp(1.375rem, 1rem + 1.1vw, 1.875rem);
+  font-weight: 500;
+  letter-spacing: -0.022em;
+  line-height: 1.2;
+  color: var(--ox-900);
+  margin: 0;
+  max-width: 24ch;
+}
+.process-callout__muted { color: var(--bone-500); font-weight: 400; }
+
+.closing-cta__title {
+  font-size: clamp(2.5rem, 1.5rem + 3.4vw, 4.5rem);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+  margin: 0;
+  color: var(--ox-900);
+  max-width: 16ch;
+}
+.closing-cta__sub {
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--bone-500);
+  margin: 32px 0 56px;
+  max-width: 42ch;
+}
+
+/* ── Capability tiles — asymmetric 60/40 ───────────────────── */
+.capability-split {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 48px;
+  align-items: stretch;
+}
+.capability-feature { position: relative; min-height: 540px; }
+.capability-feature-surface {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(60% 70% at 75% 25%, oklch(70% 0.085 50 / 0.55) 0%, transparent 60%),
+    radial-gradient(80% 90% at 15% 95%, oklch(34% 0.090 22 / 0.55) 0%, transparent 65%),
+    linear-gradient(155deg, oklch(34% 0.105 24) 0%, oklch(18% 0.060 22) 100%);
+}
+.capability-feature-grain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.55;
+  mix-blend-mode: multiply;
+}
+.capability-stack { display: flex; flex-direction: column; }
+.capability-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 32px 4px;
+  text-decoration: none;
+  color: inherit;
+  border-bottom: 1px solid var(--bone-200);
+  transition: padding-left 200ms var(--ease-out), background 180ms var(--ease-out);
+}
+.capability-row:hover { padding-left: 14px; background: oklch(98% 0.012 60); }
+.capability-row:hover .capability-row__head svg { transform: translateX(3px); color: var(--ochre-700); }
+.capability-row__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.capability-row__head svg {
+  color: var(--ox-900);
+  transition: transform 180ms var(--ease-out), color 180ms var(--ease-out);
+}
+.capability-row__label {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.018em;
+  line-height: 1.2;
+  color: var(--ox-900);
+}
+.capability-row__copy {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--bone-500);
+  margin: 0;
+  max-width: 42ch;
+}
+
+/* ── Placeholder label — designer annotation in an image region ── */
+.placeholder-label {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-sans);
+  font-size: 10.5px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  line-height: 1.3;
+  padding: 9px 13px;
+  border: 1px solid currentColor;
+  z-index: 4;
+  pointer-events: none;
+  max-width: 60ch;
+}
+.placeholder-label__dot {
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+  display: inline-block;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+.placeholder-label--light { color: oklch(96% 0.012 60 / 0.62); }
+.placeholder-label--dark  { color: oklch(13% 0.025 22 / 0.55); }
+.placeholder-label--bottom-left  { left: 20px;  bottom: 20px; }
+.placeholder-label--bottom-right { right: 20px; bottom: 20px; }
+.placeholder-label--top-left     { left: 20px;  top: 20px; }
+.placeholder-label--top-right    { right: 20px; top: 20px; }
+.placeholder-label--hero {
+  position: absolute;
+  right: 32px;
+  bottom: 32px;
+  color: oklch(96% 0.012 60 / 0.42);
+  z-index: 3;
+}
+
+/* ── Atmospheric interlude — full-bleed image placeholder ─── */
+.interlude { position: relative; width: 100%; }
+.interlude-surface { position: relative; width: 100%; min-height: 62vh; overflow: hidden; }
+.interlude-grain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.18;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+.interlude-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, transparent 40%, oklch(11% 0.030 22 / 0.55) 100%),
+    radial-gradient(120% 80% at 50% 50%, transparent 50%, oklch(8% 0.020 22 / 0.4) 100%);
+  pointer-events: none;
+}
+.interlude-quote { position: absolute; right: 8%; bottom: 14%; max-width: 32ch; z-index: 3; }
+.interlude-quote__body {
+  font-size: clamp(1.5rem, 1rem + 1.2vw, 2.125rem);
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: -0.022em;
+  color: var(--bone-0);
+  margin: 0;
+  text-wrap: balance;
+  text-shadow: 0 1px 24px oklch(8% 0.02 22 / 0.4);
+}
+.interlude--studio .interlude-surface {
+  background:
+    radial-gradient(55% 70% at 80% 25%, oklch(58% 0.105 55 / 0.55) 0%, transparent 60%),
+    radial-gradient(80% 100% at 15% 95%, oklch(28% 0.085 22 / 0.65) 0%, transparent 65%),
+    linear-gradient(165deg, oklch(22% 0.060 28) 0%, oklch(13% 0.035 22) 100%);
+}
+
+/* ── Full-width screenshot placeholder ─────────────────────── */
+.screenshot-placeholder {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--bone-50);
+  border: 1px solid var(--bone-200);
+  box-shadow:
+    0 28px 70px -22px oklch(17% 0.04 22 / 0.20),
+    0 8px 20px -10px oklch(17% 0.04 22 / 0.10);
+}
+.screenshot-placeholder__surface {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(55% 65% at 70% 30%, oklch(54% 0.095 50 / 0.45) 0%, transparent 60%),
+    radial-gradient(85% 100% at 15% 95%, oklch(28% 0.085 22 / 0.55) 0%, transparent 65%),
+    linear-gradient(170deg, oklch(26% 0.075 28) 0%, oklch(14% 0.040 22) 100%);
+}
+.screenshot-placeholder__grain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+.screenshot-placeholder__url {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: oklch(96% 0.012 60 / 0.55);
+  z-index: 3;
+}
+
+/* ── Pinned build moment — sticky image + scrolling text ───── */
+.pinned-section { background: var(--bone-0); padding: 160px 0; }
+.pinned-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: start;
+  padding: 0 32px;
+}
+.pinned-image { position: relative; }
+.pinned-image__sticky { position: sticky; top: 96px; aspect-ratio: 4 / 5; overflow: hidden; }
+.pinned-image__surface {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60% 65% at 80% 20%, oklch(62% 0.105 55 / 0.55) 0%, transparent 60%),
+    radial-gradient(75% 100% at 20% 95%, oklch(28% 0.090 22 / 0.65) 0%, transparent 65%),
+    linear-gradient(165deg, oklch(22% 0.060 28) 0%, oklch(12% 0.030 22) 100%);
+  overflow: hidden;
+}
+.pinned-image__grain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.18;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+.pinned-image__scrim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(110% 80% at 50% 50%, transparent 55%, oklch(8% 0.020 22 / 0.4) 100%);
+  pointer-events: none;
+}
+.pinned-text { display: flex; flex-direction: column; gap: 200px; padding: 64px 0 200px; }
+.pinned-moment { max-width: 44ch; }
+.pinned-moment__heading {
+  font-size: clamp(1.875rem, 1.2rem + 1.8vw, 2.625rem);
+  font-weight: 500;
+  letter-spacing: -0.028em;
+  line-height: 1.05;
+  margin: 0 0 20px;
+  color: var(--ox-900);
+  text-wrap: balance;
+}
+.pinned-moment__body { font-size: 17px; line-height: 1.6; color: var(--bone-500); margin: 0; }
+
+/* ── Selected work — title link ────────────────────────────── */
+.work-title-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 12px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(2rem, 1.2rem + 2.4vw, 3rem);
+  letter-spacing: -0.028em;
+  line-height: 1.05;
+  color: var(--ox-900);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 4px;
+  transition: border-color 180ms var(--ease-out), color 180ms var(--ease-out);
+}
+.work-title-link:hover { color: var(--ox-700); border-bottom-color: var(--ochre-700); }
+.work-title-link svg { align-self: center; }
+
+/* ── Focus rings (real ones, never outline:none) ───────────── */
+:focus-visible { outline: 2px solid var(--ox-500); outline-offset: 3px; }
+
+/* ── Mobile / narrow (nav responsive lives in Header.astro) ──── */
+@media (max-width: 960px) {
+  .whoever-row { grid-template-columns: 1fr; gap: 20px; padding: 40px 0; }
+  .hero-content { padding: 140px 32px 80px; gap: 28px; }
+  .capability-split { grid-template-columns: 1fr; gap: 32px; }
+  .capability-feature { min-height: 60vw; }
+  .pinned-grid { grid-template-columns: 1fr; gap: 32px; }
+  .pinned-image__sticky { position: relative; top: auto; aspect-ratio: 16 / 10; }
+  .pinned-text { gap: 64px; padding: 32px 0; }
+  .interlude-quote { right: 24px; left: 24px; bottom: 32px; max-width: none; }
+  .placeholder-label { font-size: 9.5px; padding: 7px 10px; }
+  .placeholder-label--hero { right: 20px; bottom: 20px; }
+}

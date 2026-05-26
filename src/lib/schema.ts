@@ -27,6 +27,17 @@ export function organizationSchema(): JsonLdSchema {
   };
 }
 
+export function webSiteSchema(): JsonLdSchema {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${SITE_URL}/#website`,
+    url: SITE_URL,
+    name: ORG_NAME,
+    publisher: orgRef,
+  };
+}
+
 export interface ServiceSchemaInput {
   name: string;
   description: string;

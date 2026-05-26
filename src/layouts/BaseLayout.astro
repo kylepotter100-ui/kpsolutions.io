@@ -40,12 +40,11 @@ const jsonLd: JsonLdSchema[] = [organizationSchema(), ...schemas];
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
 
-    {/*
-      Font-loading placeholder — self-hosted fonts only (never a CDN).
-      Drop .woff2 files in public/fonts/ and preload the display + body faces here, e.g.:
-      <link rel="preload" href="/fonts/display.woff2" as="font" type="font/woff2" crossorigin />
-      Declare @font-face and expose tokens in src/styles/tokens.css (pending design output).
-    */}
+    {/* Self-hosted fonts — preload the two above-the-fold faces only
+        (hero headline weight + the Boska display italic). @font-face
+        lives in src/styles/tokens.css; woff2 files in public/fonts/. */}
+    <link rel="preload" href="/fonts/Switzer-Medium.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/Boska-LightItalic.woff2" as="font" type="font/woff2" crossorigin />
 
     {/* Open Graph */}
     <meta property="og:type" content={ogType} />

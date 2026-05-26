@@ -1,0 +1,23 @@
+---
+import GrainSurface from "../GrainSurface.astro";
+import PlaceholderLabel from "../PlaceholderLabel.astro";
+
+const interludeGrain = "0 0 0 0 0.95  0 0 0 0 0.85  0 0 0 0 0.75  0 0 0 0.4 0";
+---
+
+<section aria-label="Studio interior" class="interlude interlude--studio">
+  <div class="interlude-surface">
+    <GrainSurface id="ia-studio-grain" baseFrequency={0.85} seed={13} matrix={interludeGrain} class="interlude-grain" />
+    <div class="interlude-scrim"></div>
+
+    <div class="reveal interlude-quote">
+      <p class="interlude-quote__body">
+        Built once, around the way <span class="display-italic">you actually work</span> — not the way a vendor sold it to you.
+      </p>
+    </div>
+
+    <PlaceholderLabel tone="light" position="top-left">
+      Atmospheric still&nbsp;&nbsp;·&nbsp;&nbsp;Studio interior, working surfaces, warm late-afternoon light
+    </PlaceholderLabel>
+  </div>
+</section>

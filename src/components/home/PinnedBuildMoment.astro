@@ -1,0 +1,48 @@
+---
+import GrainSurface from "../GrainSurface.astro";
+import PlaceholderLabel from "../PlaceholderLabel.astro";
+
+const pinGrain = "0 0 0 0 0.95  0 0 0 0 0.85  0 0 0 0 0.75  0 0 0 0.42 0";
+
+const moments = [
+  {
+    heading: "Brief on Monday.",
+    body: "A 90-minute call. No slides, no discovery deck. By the end, the brief is written in your words and signed off.",
+  },
+  {
+    heading: "Build through the week.",
+    body: "Real screens, not wireframes. Schema, auth, and the risky integrations land first. Staging URL on day three.",
+  },
+  {
+    heading: "Live on Friday week four.",
+    body: "Production cutover with you on call. Source repo transferred to your organisation. A runbook and a walkthrough.",
+  },
+];
+---
+
+<section aria-label="How a build feels" class="pinned-section">
+  <div class="shell-wide pinned-grid">
+    <div class="pinned-image">
+      <div class="pinned-image__sticky">
+        <div class="pinned-image__surface" aria-hidden="true">
+          <GrainSurface id="pin-grain" baseFrequency={0.95} seed={41} matrix={pinGrain} class="pinned-image__grain" />
+          <div class="pinned-image__scrim"></div>
+        </div>
+        <PlaceholderLabel tone="light" position="bottom-left">
+          Build moment still&nbsp;&nbsp;·&nbsp;&nbsp;Terminal + notebook + cold coffee, warm window light&nbsp;&nbsp;·&nbsp;&nbsp;Pinned while text scrolls
+        </PlaceholderLabel>
+      </div>
+    </div>
+
+    <div class="pinned-text">
+      {
+        moments.map((m) => (
+          <div class="reveal pinned-moment">
+            <h3 class="pinned-moment__heading">{m.heading}</h3>
+            <p class="pinned-moment__body">{m.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
