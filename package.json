@@ -17,5 +17,8 @@
     "astro": "^6.3.7",
     "motion": "^12.40.0",
     "tailwindcss": "^4.3.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.94.0"
   }
 }
