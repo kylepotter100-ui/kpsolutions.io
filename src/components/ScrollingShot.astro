@@ -64,6 +64,13 @@ const {
   .pshot__url--top-right { top: 20px; right: 20px; }
   .pshot__url--bottom-left { left: 20px; bottom: 20px; }
 
+  /* The screenshot is a desktop-width capture; on phones, zoom in slightly so
+     the content reads larger and fills the frame instead of looking tiny.
+     (A dedicated mobile capture, when supplied, supersedes this.) */
+  @media (max-width: 700px) {
+    .pshot__img { width: 125%; left: -12.5%; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .pshot__img { transform: none !important; }
   }
@@ -115,10 +122,16 @@ const {
       { amount: 0.2 },
     );
 
+    // Rebuild only when the width changes. Mobile browsers fire `resize` on
+    // every scroll as the URL bar shows/hides (height-only); rebuilding on
+    // those restarted the loop from the top — the "glitch back to start".
     let t = 0;
+    let lastW = window.innerWidth;
     window.addEventListener(
       "resize",
       () => {
+        if (window.innerWidth === lastW) return;
+        lastW = window.innerWidth;
         clearTimeout(t);
         t = window.setTimeout(build, 200);
       },
