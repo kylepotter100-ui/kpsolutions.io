@@ -1,119 +1,72 @@
 ---
-import Icon from "../Icon.astro";
-import { capabilities } from "../../lib/capabilities";
-
-// Panel copy authored here (longer than the capabilities.ts one-liners); ids
-// stay in lockstep with capabilities.ts so the homepage Service JSON-LD matches.
-const panels = [
+// "What we build" — a light scrollytelling accordion. Three services pinned
+// across 450vh; as each service's band scrolls, its sub-sections collapse in
+// order (Challenge -> Offer -> Outcome stays). Driven by reveal.ts initWhatWeBuild
+// (desktop only); mobile/reduced-motion/no-JS render all three services static,
+// fully expanded. ids stay in lockstep with capabilities.ts for the Service JSON-LD.
+const services = [
   {
     id: "bespoke",
     lead: "Bespoke",
     accent: "software",
-    desc: "Custom platforms, internal tools, and integrations built around how your business actually works, not how a vendor imagined it. The data model comes first; the interface follows. You get exactly what you run on, and nothing you don't.",
-    bullets: [
-      "Custom platforms and internal tools",
-      "Integrations between systems that should already talk",
-      "Built on your data model, not a template",
-      "Full source ownership from day one",
-    ],
+    challenge:
+      "Off-the-shelf SaaS forces you to bend your operations to fit its assumptions. Critical workflows live in spreadsheets, internal tools nobody documented, and tabs the team has to remember to keep open.",
+    offer:
+      "Custom platforms, internal tools, and integrations built around how your business actually works. Full ownership of the source code. Built on your data model, not a template.",
     outcome:
-      "A UK pottery retreat went from paper diaries and a dead Squarespace page to a custom booking, accounts, and admin platform, shipped in four weeks.",
+      "Software that does exactly what your operation needs, without paying per-seat licenses for features you'll never use. When you want to change something, you can — because you own it.",
   },
   {
     id: "aeo",
     lead: "AI-visible",
     accent: "web presence",
-    desc: "A site engineered to be found and cited by ChatGPT, Claude, Perplexity, and Google's AI answers, not just indexed by traditional search. Structured data, direct-answer content, and clean server-rendered HTML do the work.",
-    bullets: [
-      "Structured data and schema for AI answer engines",
-      "Direct-answer content built to be quoted",
-      "Server-rendered HTML crawlers can actually read",
-      "Fast, accessible, and yours to own",
-    ],
+    challenge:
+      "Traditional SEO targets Google search. But increasingly, prospects ask ChatGPT, Claude, or Perplexity to recommend services. If your site isn't engineered for AI crawlers, you're invisible to that traffic.",
+    offer:
+      "Marketing sites built with JSON-LD schema, llms.txt manifests, direct-answer content blocks, and structured data designed specifically for LLM citation. The technical SEO of 2026, not 2018.",
     outcome:
-      "Within months of launch, ChatGPT, Claude, and Perplexity were citing the client's residency pages directly, in answers they'd previously been invisible to.",
+      "A web presence that gets cited by AI search engines when prospects ask about services in your space. New traffic from channels your competitors aren't optimized for yet.",
   },
   {
     id: "ai-ops",
     lead: "AI built into your",
     accent: "operations",
-    desc: "AI used quietly inside your workflows, where it earns its keep, never as a sticker on a homepage. The unglamorous automation that gives you back a morning a week.",
-    bullets: [
-      "Automation inside the workflows you already run",
-      "Drafting, triage, and reconciliation that save real hours",
-      "Human-in-the-loop where judgment matters",
-      "Measured against time saved, not novelty",
-    ],
+    challenge:
+      "AI tools are useful but most teams use them as a sticker on a homepage or a chat sidebar. The real value is AI doing actual work inside your operations — triaging support, drafting proposals, summarizing meetings.",
+    offer:
+      "AI integrated directly into your workflows using the Anthropic API. Custom prompts, tool use, structured outputs — not generic chatbots. Built for the specific operational problems you have.",
     outcome:
-      "Six weeks of accounting reconciliation that used to eat three Sunday nights, condensed into a single Tuesday morning.",
+      "Hours of repetitive work absorbed by AI that knows your business context. Your team focuses on judgment calls, not data entry.",
   },
 ];
-
-const labelFor = (id: string) => capabilities.find((c) => c.id === id)?.label ?? id;
 ---
 
-<section id="capabilities" class="cap-section">
-  <div class="shell">
-    <h2 class="section-heading cap-section__heading">What we build.</h2>
-
-    <div class="cap-tabs">
-      {/* Radios first so :checked ~ reaches both the rail label and the panel.
-          Pure CSS — no island, works with JS disabled. */}
+<section id="capabilities" class="wwb" data-wwb aria-label="What we build">
+  <div class="wwb__sticky">
+    <div class="wwb__stage">
       {
-        panels.map((p, i) => (
-          <input type="radio" name="cap" id={`cap-radio-${p.id}`} class="cap-radio" checked={i === 0} />
+        services.map((s, i) => (
+          <article class="wwb-card" data-wwb-service={i} aria-hidden={i === 0 ? "false" : "true"}>
+            <h2 class="wwb-card__title">
+              {s.lead} <span class="display-italic">{s.accent}</span>.
+            </h2>
+            <div class="wwb-card__grid">
+              <div class="wwb-sub" data-sub="challenge">
+                <h3 class="wwb-sub__label">The Challenge</h3>
+                <div class="wwb-sub__body"><p>{s.challenge}</p></div>
+              </div>
+              <div class="wwb-sub" data-sub="offer">
+                <h3 class="wwb-sub__label">What We Offer</h3>
+                <div class="wwb-sub__body"><p>{s.offer}</p></div>
+              </div>
+              <div class="wwb-sub" data-sub="outcome">
+                <h3 class="wwb-sub__label">The Outcome</h3>
+                <div class="wwb-sub__body"><p>{s.outcome}</p></div>
+              </div>
+            </div>
+          </article>
         ))
       }
-
-      <div class="cap-tablist">
-        {
-          panels.map((p) => (
-            <label class="cap-tab" for={`cap-radio-${p.id}`} id={`cap-tab-${p.id}`}>
-              <span class="cap-tab__slash" aria-hidden="true">/</span>
-              <span class="cap-tab__label">{labelFor(p.id)}</span>
-            </label>
-          ))
-        }
-      </div>
-
-      <div class="cap-panels">
-        {
-          panels.map((p) => (
-            <article class="cap-content" id={`cap-panel-${p.id}`} aria-labelledby={`cap-tab-${p.id}`}>
-              <h3 class="cap-content__title">
-                {p.lead} <span class="display-italic">{p.accent}</span>.
-              </h3>
-              <div class="cap-sub">
-                <h4 class="cap-sub__label">What it is</h4>
-                <p class="cap-content__desc">{p.desc}</p>
-              </div>
-              <div class="cap-sub">
-                <h4 class="cap-sub__label">What's included</h4>
-                <ul class="cap-content__list">
-                  {p.bullets.map((b) => <li>{b}</li>)}
-                </ul>
-              </div>
-              <div class="cap-sub">
-                <h4 class="cap-sub__label">Example outcome</h4>
-                <p class="cap-content__outcome">{p.outcome}</p>
-              </div>
-              <svg class="cap-content__mark" viewBox="0 0 120 120" aria-hidden="true">
-                <g fill="none" stroke="currentColor" stroke-width="1">
-                  <rect x="8" y="8" width="104" height="104" opacity="0.35"></rect>
-                  <line x1="8" y1="42" x2="112" y2="42" opacity="0.5"></line>
-                  <line x1="8" y1="78" x2="112" y2="78" opacity="0.5"></line>
-                  <line x1="42" y1="8" x2="42" y2="112" opacity="0.5"></line>
-                  <line x1="78" y1="8" x2="78" y2="112" opacity="0.5"></line>
-                  <rect x="42" y="42" width="36" height="36" fill="currentColor" opacity="0.12" stroke="none"></rect>
-                </g>
-              </svg>
-              <a href={`/build#${p.id}`} class="link-arrow cap-content__link">
-                Learn more <Icon name="arrow-right" size={14} />
-              </a>
-            </article>
-          ))
-        }
-      </div>
     </div>
   </div>
 </section>

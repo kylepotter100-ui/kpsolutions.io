@@ -120,14 +120,14 @@
   margin-top: 12px;
 }
 
-/* Per-word headline units — inline-block so the on-load transform applies. */
-.hero-word { display: inline-block; }
-/* On-load hide — ONLY under js-reveal (set pre-paint), so no-JS/crawlers see the
-   full headline and the LCP element paints immediately. JS animates these in;
-   reduced-motion force-unhides. */
+/* Per-word headline units — inline-block so the type-assembly transform applies. */
+.hero-word { display: inline-block; transform-origin: 50% 50%; }
+/* On-load: under js-reveal words start faint (JS sets the random scatter transform
+   inline, then animates to identity — no CSS scatter to flash). Faint-not-hidden
+   keeps the headline readable as the LCP candidate. No-JS shows final; reduced-motion
+   force-shows. */
 html.js-reveal .hero-headline[data-hero-headline] .hero-word {
-  opacity: 0;
-  transform: translateY(14px);
+  opacity: 0.3;
 }
 html.js-reveal .reveal-hero {
   opacity: 0;
@@ -162,7 +162,8 @@ html.js-reveal .reveal-hero {
   font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
   line-height: 1.4;
   letter-spacing: -0.018em;
-  max-width: 60ch;
+  max-width: 75ch;
+  padding-inline: clamp(24px, 6vw, 96px);
   text-align: center;
   text-wrap: pretty;
   color: var(--bone-400);
@@ -182,6 +183,15 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   html.js-reveal .pinned-passage .activate { color: var(--ox-500); opacity: 1; }
   .pinned { height: auto; }
   .pinned-content { position: static; height: auto; padding: clamp(96px, 14vw, 160px) 32px; }
+}
+@media (max-width: 768px) {
+  .pinned { height: 150vh; }
+  .pinned-passage {
+    font-size: clamp(1.125rem, 1rem + 1vw, 1.5rem);
+    padding-inline: clamp(20px, 8vw, 40px);
+    max-width: 40ch;
+  }
+  .pinned-content { padding: 0 20px; }
 }
 
 /* ── Marquee strip ─────────────────────────────────────────── */
@@ -244,14 +254,14 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
 .process-callout__muted { color: var(--bone-500); font-weight: 400; }
 /* ── Final CTA — full-bleed conviction moment ──────────────── */
 .closing-cta { padding: clamp(120px, 14vw, 180px) 0; }
-.closing-cta--bright { background: var(--ox-700); color: var(--bone-0); }
+.closing-cta--bright { background: var(--bone-50); color: var(--ox-900); }
 .closing-cta__inner { max-width: 880px; }
 .closing-cta__eyebrow {
   font-size: 12px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  color: oklch(96% 0.012 60 / 0.72);
+  color: var(--ochre-700);
   margin: 0 0 24px;
 }
 .closing-cta__title {
@@ -260,14 +270,14 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   letter-spacing: -0.035em;
   line-height: 0.98;
   margin: 0;
-  color: var(--bone-0);
+  color: var(--ox-900);
   max-width: 16ch;
 }
-.closing-cta--bright .closing-cta__title .display-italic { color: var(--ochre-300); }
+.closing-cta--bright .closing-cta__title .display-italic { color: var(--ochre-700); }
 .closing-cta__sub {
   font-size: 18px;
   line-height: 1.55;
-  color: oklch(96% 0.012 60 / 0.86);
+  color: var(--ox-700);
   margin: 32px 0 56px;
   max-width: 42ch;
 }
@@ -312,157 +322,105 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   z-index: 3;
 }
 
-/* ── "What we build" — dark tab selector (pure CSS) ─────────── */
-.cap-section {
-  background: var(--ox-900);
-  color: var(--bone-0);
-  padding: clamp(96px, 9vw, 140px) 0;
+/* ── "What we build" — light scrollytelling accordion ──────── */
+/* Base (no-JS / crawler): the section is normal-flow and all three service
+   cards stack, fully expanded. The pinned overlay choreography is layered on
+   only under html.js-reveal, and reverted on mobile / reduced-motion. */
+.wwb { position: relative; background: var(--bone-50); color: var(--ox-900); }
+.wwb__sticky { display: block; }
+.wwb__stage { position: relative; width: 90vw; max-width: 1400px; margin: 0 auto; }
+.wwb-card {
+  padding: 96px 64px;
+  background:
+    radial-gradient(120% 140% at 100% 0%, oklch(72% 0.05 60 / 0.10) 0%, transparent 55%),
+    var(--bone-50);
+  border: 1px solid oklch(22% 0.06 22 / 0.15);
 }
-.cap-section__heading { color: var(--bone-0); margin-bottom: clamp(40px, 6vw, 72px); }
-.cap-tabs {
-  display: grid;
-  grid-template-columns: 40% 60%;
-  gap: clamp(40px, 6vw, 88px);
-  align-items: start;
-}
-/* radios visually hidden but focusable + out of grid flow */
-.cap-radio {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  border: 0;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-.cap-tablist { display: flex; flex-direction: column; }
-.cap-tab {
-  display: flex;
-  align-items: baseline;
-  gap: 14px;
-  padding: 20px 0 20px 18px;
-  border-left: 2px solid oklch(96% 0.012 60 / 0.18);
-  font-family: var(--font-sans);
-  font-weight: 500;
-  font-size: clamp(1.0625rem, 0.9rem + 0.6vw, 1.375rem);
-  letter-spacing: -0.018em;
-  color: var(--bone-0);
-  opacity: 0.55;
-  cursor: pointer;
-  min-height: 44px;
-  transition: opacity 180ms var(--ease-out), border-color 180ms var(--ease-out);
-}
-.cap-tab__slash { color: var(--ochre-500); font-weight: 400; }
-.cap-tab:hover { opacity: 0.85; }
-
-.cap-panels { position: relative; }
-.cap-content { display: none; }
-.cap-content__title {
+.wwb-card + .wwb-card { margin-top: 20px; }
+.wwb-card__title {
   font-size: clamp(1.875rem, 1.2rem + 2.2vw, 3rem);
   font-weight: 500;
   letter-spacing: -0.03em;
   line-height: 1.04;
-  color: var(--bone-0);
-  margin: 0 0 24px;
+  color: var(--ox-900);
+  margin: 0 0 clamp(32px, 4vw, 56px);
 }
-.cap-content__title .display-italic { color: var(--ochre-300); }
-.cap-content__desc {
-  font-size: clamp(1rem, 0.92rem + 0.3vw, 1.1875rem);
-  line-height: 1.55;
-  color: oklch(96% 0.012 60 / 0.82);
-  max-width: 46ch;
-  margin: 0 0 28px;
+.wwb-card__title .display-italic { color: var(--ochre-700); }
+.wwb-card__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(32px, 4vw, 64px);
+  align-items: start;
 }
-.cap-content__list { list-style: none; margin: 0 0 32px; padding: 0; display: flex; flex-direction: column; gap: 12px; }
-.cap-content__list li {
-  position: relative;
-  padding-left: 22px;
-  font-size: 0.9375rem;
-  line-height: 1.5;
-  color: oklch(96% 0.012 60 / 0.74);
-}
-.cap-content__list li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.62em;
-  width: 6px;
-  height: 6px;
-  background: var(--ochre-500);
-}
-.cap-content__mark { display: block; width: 108px; height: 108px; color: oklch(96% 0.012 60 / 0.6); margin: 0 0 28px; }
-.cap-content__link { color: var(--bone-0); }
-.cap-content__link:hover { color: var(--ochre-300); }
-
-/* :checked wiring — radios precede .cap-tablist and .cap-panels */
-#cap-radio-bespoke:checked ~ .cap-tablist #cap-tab-bespoke,
-#cap-radio-aeo:checked ~ .cap-tablist #cap-tab-aeo,
-#cap-radio-ai-ops:checked ~ .cap-tablist #cap-tab-ai-ops {
-  opacity: 1;
-  border-left-color: var(--ox-500);
-}
-#cap-radio-bespoke:checked ~ .cap-panels #cap-panel-bespoke,
-#cap-radio-aeo:checked ~ .cap-panels #cap-panel-aeo,
-#cap-radio-ai-ops:checked ~ .cap-panels #cap-panel-ai-ops {
-  display: block;
-  animation: cap-fade 200ms var(--ease-out) both;
-}
-@keyframes cap-fade { from { opacity: 0; } to { opacity: 1; } }
-#cap-radio-bespoke:focus-visible ~ .cap-tablist #cap-tab-bespoke,
-#cap-radio-aeo:focus-visible ~ .cap-tablist #cap-tab-aeo,
-#cap-radio-ai-ops:focus-visible ~ .cap-tablist #cap-tab-ai-ops {
-  outline: 2px solid var(--ochre-500);
-  outline-offset: 3px;
-}
-@media (prefers-reduced-motion: reduce) { .cap-content { animation: none !important; } }
-
-/* Tab panel sub-sections + active ochre marker + SVG re-fade */
-.cap-sub { padding: 22px 0; border-top: 1px solid oklch(96% 0.012 60 / 0.12); }
-.cap-sub:first-of-type { border-top: 0; padding-top: 0; }
-.cap-sub__label {
+.wwb-sub__label {
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.085em;
-  color: var(--ochre-300);
-  margin: 0 0 12px;
+  color: var(--ochre-700);
+  margin: 0 0 14px;
 }
-.cap-content__outcome {
+.wwb-sub__body {
+  display: grid;
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transition: grid-template-rows 400ms var(--ease-in-out), opacity 400ms var(--ease-in-out);
+}
+.wwb-sub__body > p {
+  overflow: hidden;
+  margin: 0;
   font-size: clamp(1rem, 0.92rem + 0.3vw, 1.125rem);
   line-height: 1.55;
-  color: oklch(96% 0.012 60 / 0.82);
-  max-width: 46ch;
-  margin: 0;
+  color: var(--ox-900);
 }
-.cap-content__desc { margin: 0; }
-.cap-content__list { margin: 0; }
-.cap-tab { position: relative; }
-.cap-tab::before {
-  content: "";
+.wwb-sub.is-collapsed .wwb-sub__body { grid-template-rows: 0fr; opacity: 0; }
+
+/* JS desktop: pin the section + overlay the cards; only the active one shows. */
+html.js-reveal .wwb { height: 450vh; }
+html.js-reveal .wwb__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+}
+html.js-reveal .wwb__stage { min-height: clamp(440px, 64vh, 620px); }
+html.js-reveal .wwb-card {
   position: absolute;
-  left: -2px;
-  top: 50%;
-  height: 0;
-  width: 2px;
-  background: var(--ochre-500);
-  transform: translateY(-50%);
-  transition: height 180ms var(--ease-out);
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  transform: translateX(40px);
+  pointer-events: none;
+  transition: opacity 600ms var(--ease-in-out), transform 600ms var(--ease-in-out);
 }
-#cap-radio-bespoke:checked ~ .cap-tablist #cap-tab-bespoke::before,
-#cap-radio-aeo:checked ~ .cap-tablist #cap-tab-aeo::before,
-#cap-radio-ai-ops:checked ~ .cap-tablist #cap-tab-ai-ops::before { height: 60%; }
-#cap-radio-bespoke:checked ~ .cap-panels #cap-panel-bespoke .cap-content__mark,
-#cap-radio-aeo:checked ~ .cap-panels #cap-panel-aeo .cap-content__mark,
-#cap-radio-ai-ops:checked ~ .cap-panels #cap-panel-ai-ops .cap-content__mark {
-  animation: cap-mark-fade 600ms var(--ease-out) both;
+html.js-reveal .wwb-card.is-active { opacity: 1; transform: translateX(0); pointer-events: auto; }
+html.js-reveal .wwb-card.is-prev { transform: translateX(-40px); }
+
+/* Mobile + reduced-motion: revert to static stacked cards, all expanded. */
+@media (max-width: 768px) {
+  html.js-reveal .wwb { height: auto; }
+  html.js-reveal .wwb__sticky { position: static; height: auto; display: block; }
+  .wwb__stage { width: auto; }
+  html.js-reveal .wwb__stage { min-height: 0; }
+  html.js-reveal .wwb-card {
+    position: static;
+    inset: auto;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+    margin: 0 0 20px;
+  }
+  .wwb-card { padding: 56px 28px; }
+  .wwb-card__grid { grid-template-columns: 1fr; }
+  html.js-reveal .wwb-sub.is-collapsed .wwb-sub__body { grid-template-rows: 1fr; opacity: 1; }
 }
-@keyframes cap-mark-fade { from { opacity: 0; } to { opacity: 0.6; } }
 @media (prefers-reduced-motion: reduce) {
-  .cap-tab::before { transition: none; }
-  .cap-content__mark { animation: none !important; }
+  html.js-reveal .wwb { height: auto; }
+  html.js-reveal .wwb__sticky { position: static; height: auto; display: block; }
+  html.js-reveal .wwb__stage { min-height: 0; }
+  html.js-reveal .wwb-card { position: static; inset: auto; opacity: 1; transform: none; pointer-events: auto; margin: 0 0 20px; }
+  html.js-reveal .wwb-sub.is-collapsed .wwb-sub__body { grid-template-rows: 1fr; opacity: 1; }
 }
 
 /* ── Process callout — dark inverted moment ────────────────── */
@@ -471,8 +429,28 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   border-bottom: 1px solid var(--bone-200);
 }
 .process-callout--dark {
-  background: var(--ox-900);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: oklch(13% 0.025 22);
   border-color: oklch(96% 0.012 60 / 0.12);
+}
+/* Animated oxblood gradient layer — same recipe + drift as the hero. */
+.process-callout__field {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-size: 130% 130%;
+  background-position: 50% 50%;
+  background-image:
+    radial-gradient(95% 70% at 78% 18%, oklch(46% 0.090 48) 0%, transparent 55%),
+    radial-gradient(75% 90% at 12% 96%, oklch(28% 0.085 22) 0%, transparent 60%),
+    radial-gradient(60% 60% at 60% 60%, oklch(22% 0.060 28) 0%, transparent 70%),
+    linear-gradient(180deg, oklch(18% 0.045 26) 0%, oklch(11% 0.030 22) 100%);
+  animation: hero-drift 35s ease-in-out infinite alternate;
+}
+@media (prefers-reduced-motion: reduce) {
+  .process-callout__field { animation: none; background-position: 50% 50%; }
 }
 .process-callout--dark .process-callout__text { color: var(--bone-0); }
 .process-callout--dark .process-callout__muted { color: oklch(96% 0.012 60 / 0.6); }
@@ -546,9 +524,6 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
 @media (max-width: 960px) {
   .hero-content { padding: 88px 32px; gap: 28px; }
   .hero-cta-row { flex-direction: column; align-items: flex-start; gap: 14px; }
-  /* "What we build" tabs stack: rail above the active panel (no horizontal scroll). */
-  .cap-tabs { display: block; }
-  .cap-tablist { margin-bottom: 28px; }
   .who-grid { grid-template-columns: 1fr; }
   .who-card { padding: 32px; }
 }
