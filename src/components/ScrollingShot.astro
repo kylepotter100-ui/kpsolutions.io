@@ -1,45 +1,50 @@
 ---
 // Auto-scrolling screenshot: a tall full-page screenshot that scrolls
 // vertically on a loop inside a clipped frame (fills its positioned parent).
-// motion-driven so the scroll distance adapts to the image + frame size;
-// reduced-motion shows the top of the page, static. The image asset is
-// supplied separately (a full-page screenshot of the live site).
+// motion-driven so the scroll distance adapts to the image + frame size, and
+// the duration is derived from that distance so the speed stays consistent
+// across very different captures. Reduced-motion shows the top, static.
+// A desktop capture (wide) is the default; an optional mobile capture
+// (single-column) is served to phones via <picture>.
 interface Props {
   src: string;
+  srcMobile?: string;
   alt: string;
   urlLabel?: string;
   urlPosition?: "top-right" | "bottom-left";
   eager?: boolean;
-  duration?: number;
   class?: string;
 }
 const {
   src,
+  srcMobile,
   alt,
   urlLabel,
   urlPosition = "top-right",
   eager = false,
-  duration = 30,
   class: className,
 } = Astro.props;
 ---
 
-<div class:list={["pshot", className]} data-pshot>
-  <img
-    class="pshot__img"
-    src={src}
-    alt={alt}
-    data-pshot-img
-    data-duration={duration}
-    loading={eager ? "eager" : "lazy"}
-    decoding="async"
-    fetchpriority={eager ? "high" : "auto"}
-  />
+<div class:list={["pshot", className, !srcMobile && "pshot--desktop-only"]} data-pshot>
+  <picture>
+    {srcMobile && <source srcset={srcMobile} media="(max-width: 700px)" />}
+    <img
+      class="pshot__img"
+      src={src}
+      alt={alt}
+      data-pshot-img
+      loading={eager ? "eager" : "lazy"}
+      decoding="async"
+      fetchpriority={eager ? "high" : "auto"}
+    />
+  </picture>
   {urlLabel && <span class:list={["pshot__url", `pshot__url--${urlPosition}`]}>{urlLabel}</span>}
 </div>
 
 <style>
   .pshot { position: absolute; inset: 0; overflow: hidden; background: var(--bone-100); }
+  .pshot picture { display: contents; }
   .pshot__img {
     position: absolute;
     top: 0;
@@ -64,6 +69,13 @@ const {
   .pshot__url--top-right { top: 20px; right: 20px; }
   .pshot__url--bottom-left { left: 20px; bottom: 20px; }
 
+  /* No mobile capture supplied: zoom the desktop capture slightly on phones so
+     it reads larger instead of tiny. When a mobile capture is served, it
+     already fits, so this is skipped. */
+  @media (max-width: 700px) {
+    .pshot--desktop-only .pshot__img { width: 125%; left: -12.5%; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .pshot__img { transform: none !important; }
   }
@@ -72,16 +84,18 @@ const {
 <script>
   import { animate, inView } from "motion";
 
+  const SPEED = 120; // px/second — keeps the scroll feel consistent across captures
+
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   document.querySelectorAll<HTMLElement>("[data-pshot]").forEach((shot) => {
     const img = shot.querySelector<HTMLImageElement>("[data-pshot-img]");
     if (!img) return;
-    const dur = Number(img.dataset.duration) || 30;
     let controls: ReturnType<typeof animate> | null = null;
     let visible = false;
 
-    // (Re)build the loop sized to the current image + frame. Starts paused;
+    // (Re)build the loop sized to the current image + frame. Duration is
+    // derived from the scroll distance so speed is constant. Starts paused;
     // play/pause is driven by whether the section is in view.
     const build = () => {
       controls?.stop();
@@ -89,17 +103,20 @@ const {
       if (reduce) return;
       const dist = img.offsetHeight - shot.offsetHeight;
       if (dist <= 4) return;
+      const duration = Math.min(Math.max(dist / SPEED, 16), 80);
       controls = animate(
         img,
         { y: [0, -dist] },
-        { duration: dur, ease: "linear", repeat: Infinity, repeatType: "reverse" },
+        { duration, ease: "linear", repeat: Infinity, repeatType: "reverse" },
       );
       if (visible) controls.play();
       else controls.pause();
     };
 
+    // Build on initial load and whenever the source swaps (e.g. <picture>
+    // crossing the breakpoint), which fires a fresh load event.
     if (img.complete && img.naturalHeight) build();
-    else img.addEventListener("load", build, { once: true });
+    img.addEventListener("load", build);
 
     // Only scroll the project while the section is on screen.
     inView(
@@ -115,10 +132,16 @@ const {
       { amount: 0.2 },
     );
 
+    // Rebuild only when the width changes. Mobile browsers fire `resize` on
+    // every scroll as the URL bar shows/hides (height-only); rebuilding on
+    // those restarted the loop from the top — the "glitch back to start".
     let t = 0;
+    let lastW = window.innerWidth;
     window.addEventListener(
       "resize",
       () => {
+        if (window.innerWidth === lastW) return;
+        lastW = window.innerWidth;
         clearTimeout(t);
         t = window.setTimeout(build, 200);
       },
