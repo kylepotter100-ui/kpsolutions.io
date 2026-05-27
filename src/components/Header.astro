@@ -2,26 +2,25 @@
 import Icon from "./Icon.astro";
 
 interface Props {
+  // Retained for backwards-compat: every page still passes heroMode, but the
+  // bar is now persistently dark, so the value is intentionally ignored.
   heroMode?: "dark" | "light";
 }
-const { heroMode = "dark" } = Astro.props;
-
 const navItems = [
   { label: "Work", href: "/work" },
   { label: "Build", href: "/build" },
   { label: "Process", href: "/process" },
   { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
 ];
 ---
 
-<header data-hero-mode={heroMode} class:list={[{ "is-past-hero": heroMode === "light" }]}>
+<header data-nav>
   <div class="bar">
     <a href="/" class="logo">KP Solutions</a>
 
     <nav class="nav-desktop" aria-label="Primary">
       {navItems.map((it) => <a href={it.href} class="nav-link">{it.label}</a>)}
-      <span class="divider" aria-hidden="true"></span>
-      <a href="/contact" class="nav-cta">Start a conversation <Icon name="arrow-right" size={13} /></a>
     </nav>
 
     <button class="nav-mobile-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-sheet">
@@ -33,7 +32,6 @@ const navItems = [
   <div class="nav-mobile-sheet" id="mobile-sheet">
     <div class="sheet-inner">
       {navItems.map((it) => <a href={it.href} class="sheet-link">{it.label}</a>)}
-      <a href="/contact" class="btn btn-primary sheet-cta">Start a conversation <Icon name="arrow-right" size={14} /></a>
     </div>
   </div>
 </header>
@@ -45,31 +43,27 @@ const navItems = [
     left: 0;
     right: 0;
     z-index: 50;
-    color: var(--nav-fg);
-    background: transparent;
-    border-bottom: 1px solid transparent;
-    transition: background 220ms var(--ease-out), border-color 220ms var(--ease-out), color 220ms var(--ease-out);
-    --nav-fg: var(--bone-0);
-    --nav-muted: oklch(98.5% 0.006 60 / 0.92);
-    --nav-divider: oklch(96% 0.012 60 / 0.3);
+    background: var(--ox-900);
+    border-bottom: 1px solid var(--ox-500);
+    color: var(--bone-0);
+    -webkit-backdrop-filter: blur(0) saturate(1);
+    backdrop-filter: blur(0) saturate(1);
+    transition:
+      backdrop-filter 220ms var(--ease-out),
+      -webkit-backdrop-filter 220ms var(--ease-out),
+      background 220ms var(--ease-out);
+  }
+  /* Past-hero / scrolled: slightly translucent + real blur so content ghosts
+     behind the bar. Bar stays dark — no foreground colour flip. */
+  header.is-scrolled {
+    background: oklch(13% 0.025 22 / 0.82);
+    -webkit-backdrop-filter: blur(10px) saturate(1.05);
+    backdrop-filter: blur(10px) saturate(1.05);
   }
   header.is-past-hero {
-    background: oklch(98.5% 0.008 60 / 0.86);
-    border-bottom-color: var(--bone-200);
-    --nav-fg: var(--ox-900);
-    --nav-muted: var(--bone-500);
-    --nav-divider: var(--bone-200);
-  }
-  header.is-scrolled.is-past-hero {
-    backdrop-filter: blur(12px) saturate(1.05);
-    -webkit-backdrop-filter: blur(12px) saturate(1.05);
-  }
-  /* Transparent-over-hero state: scrim shadow so light nav text stays legible
-     over a bright video frame, without losing the transparency aesthetic. */
-  header:not(.is-past-hero) .logo,
-  header:not(.is-past-hero) .nav-link,
-  header:not(.is-past-hero) .nav-cta {
-    text-shadow: 0 1px 14px oklch(8% 0.02 22 / 0.6), 0 0 2px oklch(8% 0.02 22 / 0.45);
+    background: oklch(13% 0.025 22 / 0.7);
+    -webkit-backdrop-filter: blur(16px) saturate(1.08);
+    backdrop-filter: blur(16px) saturate(1.08);
   }
 
   .bar {
@@ -82,50 +76,53 @@ const navItems = [
   }
 
   .logo {
-    font-size: 17px;
-    font-weight: 600;
+    position: relative;
+    font-family: var(--font-sans);
+    font-size: 1.5rem;
+    font-weight: 700;
     letter-spacing: -0.025em;
-    color: var(--nav-fg);
+    color: var(--bone-0);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
     min-height: 44px;
+    transition: color 200ms var(--ease-out);
   }
 
-  .nav-desktop {
-    display: flex;
-    gap: 36px;
-    align-items: center;
-  }
+  .nav-desktop { display: flex; gap: 36px; align-items: center; }
   .nav-link {
-    font-size: 14px;
-    font-weight: 400;
-    letter-spacing: -0.003em;
-    color: var(--nav-muted);
-    text-decoration: none;
-    transition: color 160ms var(--ease-out);
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-  }
-  .nav-link:hover { color: var(--nav-fg); }
-  .divider {
-    width: 1px;
-    height: 14px;
-    background: var(--nav-divider);
-    display: inline-block;
-  }
-  .nav-cta {
+    position: relative;
+    font-family: var(--font-sans);
     font-size: 14px;
     font-weight: 500;
     letter-spacing: -0.003em;
-    color: var(--nav-fg);
+    color: var(--bone-0);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-    gap: 8px;
+    transition: color 200ms var(--ease-out);
   }
+
+  /* Left→right underline reveal — pseudo scaleX, compositor-only. */
+  .logo::after,
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 8px;
+    width: 100%;
+    height: 1px;
+    background: var(--ochre-500);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 200ms var(--ease-out);
+  }
+  .logo:hover,
+  .nav-link:hover { color: var(--ochre-500); }
+  .logo:hover::after,
+  .nav-link:hover::after,
+  .nav-link:focus-visible::after { transform: scaleX(1); }
 
   .nav-mobile-btn {
     display: none;
@@ -138,7 +135,7 @@ const navItems = [
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: var(--nav-fg);
+    color: var(--bone-0);
   }
   .icon-close { display: none; }
   header.menu-open .icon-open { display: none; }
@@ -146,9 +143,9 @@ const navItems = [
 
   .nav-mobile-sheet {
     display: none;
-    background: var(--bone-0);
-    border-top: 1px solid var(--bone-200);
-    color: var(--ox-900);
+    background: var(--ox-900);
+    border-top: 1px solid var(--ox-500);
+    color: var(--bone-0);
   }
   header.menu-open .nav-mobile-sheet { display: block; }
   .sheet-inner {
@@ -160,16 +157,18 @@ const navItems = [
     gap: 18px;
   }
   .sheet-link {
+    font-family: var(--font-sans);
     font-size: 22px;
     font-weight: 500;
     letter-spacing: -0.018em;
-    color: var(--ox-900);
+    color: var(--bone-0);
     text-decoration: none;
     display: flex;
     align-items: center;
     min-height: 44px;
+    transition: color 200ms var(--ease-out);
   }
-  .sheet-cta { margin-top: 12px; align-self: flex-start; }
+  .sheet-link:hover { color: var(--ochre-500); }
 
   @media (max-width: 960px) {
     .nav-desktop { display: none; }
@@ -178,17 +177,18 @@ const navItems = [
   @media (min-width: 961px) {
     .nav-mobile-sheet { display: none !important; }
   }
+  @media (prefers-reduced-motion: reduce) {
+    .logo::after,
+    .nav-link::after { transition: none; }
+  }
 </style>
 
 <script>
-  const header = document.querySelector<HTMLElement>("header[data-hero-mode]");
+  const header = document.querySelector<HTMLElement>("header[data-nav]");
   if (header) {
-    const mode = header.getAttribute("data-hero-mode");
     const onScroll = () => {
       header.classList.toggle("is-scrolled", window.scrollY > 8);
-      if (mode === "dark") {
-        header.classList.toggle("is-past-hero", window.scrollY > window.innerHeight * 0.7);
-      }
+      header.classList.toggle("is-past-hero", window.scrollY > window.innerHeight * 0.6);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
