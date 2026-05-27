@@ -27,7 +27,7 @@ if (reduceMotion) {
 
   initHeroOnLoad();
   initHeroParallax();
-  initTextActivate();
+  initPinnedPassage();
 }
 
 // Hero on-load: headline words stagger in, then subhead / principle / CTAs
@@ -71,36 +71,22 @@ function initHeroParallax(): void {
   }
 }
 
-// Progressive text highlight (Darktrace-style). CLS/INP-safe: spans keep a
-// constant font-weight; we only drive the `--act` custom property (0→1), which
-// CSS maps to color + opacity. No layout reads/writes per frame.
-function initTextActivate(): void {
-  // AEO paragraph: phrases light in reading order as it scrolls through.
-  document.querySelectorAll<HTMLElement>("[data-text-scrub]").forEach((para) => {
-    const spans = Array.from(para.querySelectorAll<HTMLElement>(".text-activate"));
-    if (!spans.length) return;
-    const n = spans.length;
-    const band = 1 / n;
-    const lead = 0.6; // overlap bands for a flowing feel
-    scroll(
-      (progress: number) => {
-        spans.forEach((span, i) => {
-          const t = (progress - i * band * lead) / band;
-          const act = t < 0 ? 0 : t > 1 ? 1 : t;
-          span.style.setProperty("--act", act.toFixed(3));
-        });
-      },
-      { target: para, offset: ["start 0.8", "start 0.35"] },
-    );
-  });
+// Pinned passage: phrases activate in reading order as the 200vh section is
+// scroll-pinned. CLS/INP-safe — toggles a class (color + opacity only), no
+// per-frame layout. Element-guarded so the shared script no-ops elsewhere.
+function initPinnedPassage(): void {
+  const section = document.querySelector<HTMLElement>("[data-pinned]");
+  if (!section) return;
+  const spans = Array.from(section.querySelectorAll<HTMLElement>(".activate"));
+  if (!spans.length) return;
+  const thresholds = spans.map((s) => parseFloat(s.dataset.activateAt ?? "0"));
 
-  // WhoeverYouAre hooks: activate (snap to 1) as each row enters.
-  inView(
-    "[data-hook-activate]",
-    (target) => {
-      const el = target instanceof Element ? target : (target as IntersectionObserverEntry).target;
-      (el as HTMLElement).style.setProperty("--act", "1");
+  scroll(
+    (progress: number) => {
+      for (let i = 0; i < spans.length; i++) {
+        spans[i].classList.toggle("is-active", progress >= thresholds[i]);
+      }
     },
-    { amount: 0.6 },
+    { target: section, offset: ["start start", "end end"] },
   );
 }

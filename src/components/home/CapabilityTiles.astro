@@ -16,6 +16,8 @@ const panels = [
       "Built on your data model, not a template",
       "Full source ownership from day one",
     ],
+    outcome:
+      "A UK pottery retreat went from paper diaries and a dead Squarespace page to a custom booking, accounts, and admin platform, shipped in four weeks.",
   },
   {
     id: "aeo",
@@ -28,6 +30,8 @@ const panels = [
       "Server-rendered HTML crawlers can actually read",
       "Fast, accessible, and yours to own",
     ],
+    outcome:
+      "Within months of launch, ChatGPT, Claude, and Perplexity were citing the client's residency pages directly, in answers they'd previously been invisible to.",
   },
   {
     id: "ai-ops",
@@ -40,6 +44,8 @@ const panels = [
       "Human-in-the-loop where judgment matters",
       "Measured against time saved, not novelty",
     ],
+    outcome:
+      "Six weeks of accounting reconciliation that used to eat three Sunday nights, condensed into a single Tuesday morning.",
   },
 ];
 
@@ -77,10 +83,20 @@ const labelFor = (id: string) => capabilities.find((c) => c.id === id)?.label ??
               <h3 class="cap-content__title">
                 {p.lead} <span class="display-italic">{p.accent}</span>.
               </h3>
-              <p class="cap-content__desc">{p.desc}</p>
-              <ul class="cap-content__list">
-                {p.bullets.map((b) => <li>{b}</li>)}
-              </ul>
+              <div class="cap-sub">
+                <h4 class="cap-sub__label">What it is</h4>
+                <p class="cap-content__desc">{p.desc}</p>
+              </div>
+              <div class="cap-sub">
+                <h4 class="cap-sub__label">What's included</h4>
+                <ul class="cap-content__list">
+                  {p.bullets.map((b) => <li>{b}</li>)}
+                </ul>
+              </div>
+              <div class="cap-sub">
+                <h4 class="cap-sub__label">Example outcome</h4>
+                <p class="cap-content__outcome">{p.outcome}</p>
+              </div>
               <svg class="cap-content__mark" viewBox="0 0 120 120" aria-hidden="true">
                 <g fill="none" stroke="currentColor" stroke-width="1">
                   <rect x="8" y="8" width="104" height="104" opacity="0.35"></rect>

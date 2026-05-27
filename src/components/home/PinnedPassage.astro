@@ -1,0 +1,21 @@
+---
+// Pinned scroll passage. The full sentence is server-rendered verbatim (AEO /
+// crawler readable). Key phrases activate in reading order as the section is
+// scroll-pinned. CLS-safe: spans keep a constant weight; only color + opacity
+// animate. No-JS + reduced-motion render every phrase already activated.
+---
+
+<section class="pinned" data-pinned aria-label="What KP Solutions does">
+  <div class="pinned-content">
+    <p class="pinned-passage">
+      KP Solutions builds <span class="activate" data-activate-at="0.15">bespoke
+      software</span> for businesses that want their tools to <span class="activate"
+      data-activate-at="0.25">fit how they actually work</span> — whether you're
+      <span class="activate" data-activate-at="0.4">just starting out</span>,
+      <span class="activate" data-activate-at="0.55">growing fast</span>, or finally
+      <span class="activate" data-activate-at="0.7">moving on from off-the-shelf
+      SaaS</span>. Custom platforms, internal tools, integrations, and
+      <span class="activate" data-activate-at="0.85">AI-visible web presence</span>.
+    </p>
+  </div>
+</section>

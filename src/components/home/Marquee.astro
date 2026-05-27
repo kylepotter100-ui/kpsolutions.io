@@ -1,0 +1,29 @@
+---
+const phrases = [
+  "Code 100% owned by you",
+  "Live in 4 weeks",
+  "Built custom to you",
+  "Fixed fee, never an estimate",
+  "Zero vendor lock-in",
+  "Built for how you actually work",
+];
+---
+
+<section class="marquee" aria-label="What you get">
+  <div class="marquee-track">
+    <ul class="marquee-row">
+      {
+        phrases.map((p) => (
+          <li class="marquee-item">{p}<span class="marquee-star" aria-hidden="true">✱</span></li>
+        ))
+      }
+    </ul>
+    <ul class="marquee-row" aria-hidden="true">
+      {
+        phrases.map((p) => (
+          <li class="marquee-item">{p}<span class="marquee-star" aria-hidden="true">✱</span></li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
