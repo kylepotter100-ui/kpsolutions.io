@@ -1,0 +1,25 @@
+---
+const principles = [
+  "Brief on Monday.",
+  "Live in four weeks.",
+  "Fixed fee, never an estimate.",
+  "Code owned by you from day one.",
+  "Zero vendor lock-in.",
+  "Built for how you actually work.",
+];
+---
+
+<section aria-label="How we work" class="principle-callouts">
+  <div class="shell">
+    <div class="reveal-stagger principle-grid">
+      {
+        principles.map((p) => (
+          <div class="principle-cell">
+            <span class="principle-mark" aria-hidden="true"></span>
+            <p class="principle-text">{p}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

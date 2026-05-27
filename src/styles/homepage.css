@@ -9,7 +9,7 @@
   position: relative;
   min-height: 100vh;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   overflow: hidden;
   background: oklch(13% 0.035 22);
   color: var(--bone-0);
@@ -60,11 +60,13 @@
   position: relative;
   z-index: 2;
   width: 100%;
-  padding: 200px 32px 96px;
+  padding: 96px 32px;
   display: flex;
   flex-direction: column;
-  gap: 36px;
+  gap: 32px;
   max-width: 1280px;
+  transform-origin: 50% 100%;
+  will-change: transform, opacity;
 }
 .hero-headline {
   font-size: clamp(2.75rem, 1.2rem + 6.8vw, 7.5rem);
@@ -91,19 +93,41 @@
   font-weight: 400;
   text-wrap: pretty;
 }
+.hero-principle {
+  font-size: clamp(1.0625rem, 0.9rem + 0.45vw, 1.25rem);
+  line-height: 1.5;
+  color: oklch(96% 0.014 60 / 0.92);
+  font-weight: 400;
+  margin: 4px 0;
+  max-width: 52ch;
+}
 .hero-cta-row {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
   flex-wrap: wrap;
-  margin-top: 8px;
+  margin-top: 12px;
 }
-.placeholder-label--hero {
-  position: absolute;
-  right: 32px;
-  bottom: 32px;
-  color: oklch(96% 0.012 60 / 0.42);
-  z-index: 3;
+
+/* Per-word headline units — inline-block so the on-load transform applies. */
+.hero-word { display: inline-block; }
+/* On-load hide — ONLY under js-reveal (set pre-paint), so no-JS/crawlers see the
+   full headline and the LCP element paints immediately. JS animates these in;
+   reduced-motion force-unhides. */
+html.js-reveal .hero-headline[data-hero-headline] .hero-word {
+  opacity: 0;
+  transform: translateY(14px);
+}
+html.js-reveal .reveal-hero {
+  opacity: 0;
+  transform: translateY(10px);
+}
+@media (prefers-reduced-motion: reduce) {
+  html.js-reveal .hero-headline[data-hero-headline] .hero-word,
+  html.js-reveal .reveal-hero {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
 /* ── "Whoever you are" framing ─────────────────────────────── */
@@ -113,7 +137,7 @@
   grid-template-columns: 0.9fr 1.1fr;
   gap: 64px;
   align-items: baseline;
-  padding: 56px 0;
+  padding: 44px 0;
   border-bottom: 1px solid var(--bone-200);
 }
 .whoever-row:first-child { border-top: 1px solid var(--bone-200); }
@@ -137,12 +161,12 @@
 
 /* ── Homepage typography one-offs ──────────────────────────── */
 .direct-answer {
-  font-size: clamp(1.375rem, 0.95rem + 1.1vw, 1.875rem);
-  line-height: 1.4;
+  font-size: clamp(1.0625rem, 0.85rem + 0.55vw, 1.3125rem);
+  line-height: 1.55;
   color: var(--ox-900);
   margin: 0;
-  max-width: 38ch;
-  letter-spacing: -0.018em;
+  max-width: 62ch;
+  letter-spacing: -0.01em;
   font-weight: 400;
 }
 .process-callout__text {
@@ -172,14 +196,7 @@
   max-width: 42ch;
 }
 
-/* ── Capability tiles — asymmetric 60/40 ───────────────────── */
-.capability-split {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: 48px;
-  align-items: stretch;
-}
-.capability-feature { position: relative; min-height: 540px; }
+/* ── Capability surface (fills the pinned image region) ────── */
 .capability-feature-surface {
   position: absolute;
   inset: 0;
@@ -197,7 +214,6 @@
   opacity: 0.55;
   mix-blend-mode: multiply;
 }
-.capability-stack { display: flex; flex-direction: column; }
 .capability-row {
   display: flex;
   flex-direction: column;
@@ -233,44 +249,6 @@
   color: var(--bone-500);
   margin: 0;
   max-width: 42ch;
-}
-
-/* ── Atmospheric interlude — full-bleed image placeholder ─── */
-.interlude { position: relative; width: 100%; }
-.interlude-surface { position: relative; width: 100%; min-height: 62vh; overflow: hidden; }
-.interlude-grain {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.18;
-  mix-blend-mode: overlay;
-  pointer-events: none;
-}
-.interlude-scrim {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(180deg, transparent 40%, oklch(11% 0.030 22 / 0.55) 100%),
-    radial-gradient(120% 80% at 50% 50%, transparent 50%, oklch(8% 0.020 22 / 0.4) 100%);
-  pointer-events: none;
-}
-.interlude-quote { position: absolute; right: 8%; bottom: 14%; max-width: 32ch; z-index: 3; }
-.interlude-quote__body {
-  font-size: clamp(1.5rem, 1rem + 1.2vw, 2.125rem);
-  line-height: 1.2;
-  font-weight: 500;
-  letter-spacing: -0.022em;
-  color: var(--bone-0);
-  margin: 0;
-  text-wrap: balance;
-  text-shadow: 0 1px 24px oklch(8% 0.02 22 / 0.4);
-}
-.interlude--studio .interlude-surface {
-  background:
-    radial-gradient(55% 70% at 80% 25%, oklch(58% 0.105 55 / 0.55) 0%, transparent 60%),
-    radial-gradient(80% 100% at 15% 95%, oklch(28% 0.085 22 / 0.65) 0%, transparent 65%),
-    linear-gradient(165deg, oklch(22% 0.060 28) 0%, oklch(13% 0.035 22) 100%);
 }
 
 /* ── Full-width screenshot placeholder ─────────────────────── */
@@ -313,53 +291,71 @@
   z-index: 3;
 }
 
-/* ── Pinned build moment — sticky image + scrolling text ───── */
-.pinned-section { background: var(--bone-0); padding: 160px 0; }
-.pinned-grid {
+/* ── "What we build" — pinned-scroll cinematic ─────────────── */
+.cap-pinned {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+.cap-pinned__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+}
+.cap-pinned__image {
+  position: relative;
+  width: 100%;
+  height: 80vh;
+  overflow: hidden;
+  transform-origin: center;
+  will-change: transform;
+}
+.cap-pinned__tiles {
+  display: flex;
+  flex-direction: column;
+  gap: 70vh;
+  padding: 25vh 0;
+}
+.cap-tile { will-change: opacity; }
+
+/* ── Principle callouts ────────────────────────────────────── */
+.principle-callouts { background: var(--bone-50); padding: 96px 0; }
+.principle-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 64px;
-  align-items: start;
-  padding: 0 32px;
+  border-top: 1px solid var(--bone-200);
+  border-left: 1px solid var(--bone-200);
 }
-.pinned-image { position: relative; }
-.pinned-image__sticky { position: sticky; top: 96px; aspect-ratio: 4 / 5; overflow: hidden; }
-.pinned-image__surface {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(60% 65% at 80% 20%, oklch(62% 0.105 55 / 0.55) 0%, transparent 60%),
-    radial-gradient(75% 100% at 20% 95%, oklch(28% 0.090 22 / 0.65) 0%, transparent 65%),
-    linear-gradient(165deg, oklch(22% 0.060 28) 0%, oklch(12% 0.030 22) 100%);
-  overflow: hidden;
+.principle-cell {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 30px 32px;
+  border-right: 1px solid var(--bone-200);
+  border-bottom: 1px solid var(--bone-200);
+  min-height: 112px;
 }
-.pinned-image__grain {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.18;
-  mix-blend-mode: overlay;
-  pointer-events: none;
+.principle-mark {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--ochre-500);
+  flex-shrink: 0;
+  margin-top: 0.55em;
 }
-.pinned-image__scrim {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(110% 80% at 50% 50%, transparent 55%, oklch(8% 0.020 22 / 0.4) 100%);
-  pointer-events: none;
-}
-.pinned-text { display: flex; flex-direction: column; gap: 200px; padding: 64px 0 200px; }
-.pinned-moment { max-width: 44ch; }
-.pinned-moment__heading {
-  font-size: clamp(1.875rem, 1.2rem + 1.8vw, 2.625rem);
-  font-weight: 500;
-  letter-spacing: -0.028em;
-  line-height: 1.05;
-  margin: 0 0 20px;
+.principle-text {
+  font-family: var(--font-sans);
+  font-size: clamp(1.25rem, 1.05rem + 0.5vw, 1.5rem);
+  font-weight: 600;
+  letter-spacing: -0.014em;
+  line-height: 1.3;
   color: var(--ox-900);
+  margin: 0;
   text-wrap: balance;
 }
-.pinned-moment__body { font-size: 17px; line-height: 1.6; color: var(--bone-500); margin: 0; }
 
 /* ── Selected work — title link ────────────────────────────── */
 .work-title-link {
@@ -383,13 +379,14 @@
 
 /* ── Mobile / narrow ───────────────────────────────────────── */
 @media (max-width: 960px) {
-  .whoever-row { grid-template-columns: 1fr; gap: 20px; padding: 40px 0; }
-  .hero-content { padding: 140px 32px 80px; gap: 28px; }
-  .capability-split { grid-template-columns: 1fr; gap: 32px; }
-  .capability-feature { min-height: 60vw; }
-  .pinned-grid { grid-template-columns: 1fr; gap: 32px; }
-  .pinned-image__sticky { position: relative; top: auto; aspect-ratio: 16 / 10; }
-  .pinned-text { gap: 64px; padding: 32px 0; }
-  .interlude-quote { right: 24px; left: 24px; bottom: 32px; max-width: none; }
-  .placeholder-label--hero { right: 20px; bottom: 20px; }
+  .whoever-row { grid-template-columns: 1fr; gap: 20px; padding: 36px 0; }
+  .hero-content { padding: 88px 32px; gap: 28px; }
+  .hero-cta-row { flex-direction: column; align-items: flex-start; gap: 14px; }
+  /* "What we build" drops the pin on mobile — image flows above the tiles,
+     which fall back to the standard .reveal staggered fade-in. */
+  .cap-pinned { display: flex; flex-direction: column; gap: 24px; }
+  .cap-pinned__sticky { position: static; height: auto; display: block; }
+  .cap-pinned__image { height: auto; aspect-ratio: 16 / 11; transform: none !important; }
+  .cap-pinned__tiles { gap: 0; padding: 0; }
+  .principle-grid { grid-template-columns: 1fr; }
 }

@@ -36,6 +36,13 @@ const jsonLd: JsonLdSchema[] = [organizationSchema(), ...schemas];
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
 
+    {/* Set js-reveal before paint so reveal/hero on-load elements hide without
+        a flash. No-JS keeps everything visible (crawler-safe); reduced-motion
+        is force-unhidden in CSS. */}
+    <script is:inline>
+      document.documentElement.classList.add("js-reveal");
+    </script>
+
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
