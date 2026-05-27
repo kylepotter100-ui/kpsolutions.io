@@ -22,13 +22,24 @@ if (reduceMotion) {
     { amount: 0.15 },
   );
 
-  // Hero parallax — translate only the background field, never the LCP headline.
+  // Hero parallax — as the hero scrolls out, the whole hero (background +
+  // content) recedes like a camera pulling back: scales down, lags upward
+  // (slower than the page, so the next section rises over it), and fades.
+  // Transform + opacity only — compositor-driven, INP-safe. At scroll
+  // progress 0 the transform is identity, so the LCP headline paints
+  // untouched. This branch is reduce-gated, so reduced motion skips it.
   const hero = document.querySelector<HTMLElement>(".hero");
-  const heroField = document.querySelector<HTMLElement>(".hero-bg-field");
-  if (hero && heroField) {
-    scroll(animate(heroField, { y: [0, 80] }, { ease: "linear" }), {
-      target: hero,
-      offset: ["start start", "end start"],
-    });
+  if (hero) {
+    const layers = hero.querySelectorAll<HTMLElement>(".hero-bg, .hero-content");
+    if (layers.length) {
+      scroll(
+        animate(
+          layers,
+          { scale: [1, 0.92], y: [0, 90], opacity: [1, 0.7] },
+          { ease: "linear" },
+        ),
+        { target: hero, offset: ["start start", "end start"] },
+      );
+    }
   }
 }

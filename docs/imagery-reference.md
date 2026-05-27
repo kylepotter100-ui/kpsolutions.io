@@ -1,9 +1,14 @@
 # Imagery Reference — KP Solutions
 
 Single source of truth for all generated site imagery. The **first approved still**
-(the homepage interlude) sets the visual register — palette, lighting, composition,
-and mood — that every subsequent image must match. Imagery is generated via the
-**Higgsfield MCP** and post-processed to AVIF/WebP before committing.
+sets the visual register — palette, lighting, composition, and mood — that every
+subsequent image must match. Imagery is generated via the **Higgsfield MCP** and
+post-processed to AVIF/WebP before committing.
+
+> **Cancelled.** The homepage atmospheric interlude still (originally image 01) is no
+> longer generated — that section was cut and replaced by a scroll-parallax cinematic
+> moment (the hero recedes as the next section rises). The first still in the sequence
+> is now whichever placement we generate first.
 
 > **Direction (current).** Abstract **structural & architectural** register — the
 > *software* domain. This supersedes the earlier "hands at craft / workshop / human
@@ -91,6 +96,6 @@ not approved are not logged here (iteration costs are reported in chat during re
 
 | # | Placement | Filename | Model | Credits | Date | Prompt |
 |---|-----------|----------|-------|---------|------|--------|
-| _(none yet — first still pending generation; see `docs/imagery-prompts/01-homepage-interlude.md`)_ ||||||||
+| _(none yet — no images generated)_ ||||||||
 
 ### Total credits spent on approved imagery: 0
