@@ -179,75 +179,33 @@ html.js-reveal .reveal-hero {
   max-width: 24ch;
 }
 .process-callout__muted { color: var(--bone-500); font-weight: 400; }
+/* ── Final CTA — full-bleed conviction moment ──────────────── */
+.closing-cta { padding: clamp(120px, 14vw, 180px) 0; }
+.closing-cta--bright { background: var(--ox-500); color: var(--bone-0); }
+.closing-cta__inner { max-width: 880px; }
+.closing-cta__eyebrow {
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: oklch(96% 0.012 60 / 0.72);
+  margin: 0 0 24px;
+}
 .closing-cta__title {
   font-size: clamp(2.5rem, 1.5rem + 3.4vw, 4.5rem);
   font-weight: 500;
   letter-spacing: -0.035em;
   line-height: 0.98;
   margin: 0;
-  color: var(--ox-900);
+  color: var(--bone-0);
   max-width: 16ch;
 }
+.closing-cta--bright .closing-cta__title .display-italic { color: var(--ochre-300); }
 .closing-cta__sub {
   font-size: 18px;
   line-height: 1.55;
-  color: var(--bone-500);
+  color: oklch(96% 0.012 60 / 0.86);
   margin: 32px 0 56px;
-  max-width: 42ch;
-}
-
-/* ── Capability surface (fills the pinned image region) ────── */
-.capability-feature-surface {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  background:
-    radial-gradient(60% 70% at 75% 25%, oklch(70% 0.085 50 / 0.55) 0%, transparent 60%),
-    radial-gradient(80% 90% at 15% 95%, oklch(34% 0.090 22 / 0.55) 0%, transparent 65%),
-    linear-gradient(155deg, oklch(34% 0.105 24) 0%, oklch(18% 0.060 22) 100%);
-}
-.capability-feature-grain {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.55;
-  mix-blend-mode: multiply;
-}
-.capability-row {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 32px 4px;
-  text-decoration: none;
-  color: inherit;
-  border-bottom: 1px solid var(--bone-200);
-  transition: padding-left 200ms var(--ease-out), background 180ms var(--ease-out);
-}
-.capability-row:hover { padding-left: 14px; background: oklch(98% 0.012 60); }
-.capability-row:hover .capability-row__head svg { transform: translateX(3px); color: var(--ochre-700); }
-.capability-row__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-.capability-row__head svg {
-  color: var(--ox-900);
-  transition: transform 180ms var(--ease-out), color 180ms var(--ease-out);
-}
-.capability-row__label {
-  font-size: 20px;
-  font-weight: 500;
-  letter-spacing: -0.018em;
-  line-height: 1.2;
-  color: var(--ox-900);
-}
-.capability-row__copy {
-  font-size: 14.5px;
-  line-height: 1.55;
-  color: var(--bone-500);
-  margin: 0;
   max-width: 42ch;
 }
 
@@ -291,35 +249,146 @@ html.js-reveal .reveal-hero {
   z-index: 3;
 }
 
-/* ── "What we build" — pinned-scroll cinematic ─────────────── */
-.cap-pinned {
+/* ── Progressive text activation (Darktrace-style) ──────────── */
+/* CLS/INP-safe: constant font-weight; only the `--act` var drives color.
+   Default (--act:1) = fully activated, so no-JS / crawlers / reduced-motion
+   read it at full contrast. JS sets --act:0 (muted) then scrubs it up.
+   Muted endpoint is a readable bone-500 (not 50% opacity) to keep WCAG AA. */
+.text-activate {
+  font-weight: 600;
+  --act: 1;
+  color: color-mix(in oklch, var(--bone-500) calc((1 - var(--act)) * 100%), var(--ox-500));
+}
+html.js-reveal .text-activate { --act: 0; }
+@media (prefers-reduced-motion: reduce) {
+  html.js-reveal .text-activate { --act: 1; }
+}
+/* Hooks are headings → resolve to full ink; smooth fade on inView snap. */
+.whoever-hook.text-activate {
+  color: color-mix(in oklch, var(--bone-500) calc((1 - var(--act)) * 100%), var(--ox-900));
+  transition: color 280ms var(--ease-out);
+}
+
+/* ── "What we build" — dark tab selector (pure CSS) ─────────── */
+.cap-section {
+  background: var(--ox-900);
+  color: var(--bone-0);
+  padding: clamp(96px, 9vw, 140px) 0;
+}
+.cap-section__heading { color: var(--bone-0); margin-bottom: clamp(40px, 6vw, 72px); }
+.cap-tabs {
   display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: 48px;
+  grid-template-columns: 40% 60%;
+  gap: clamp(40px, 6vw, 88px);
   align-items: start;
 }
-.cap-pinned__sticky {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-}
-.cap-pinned__image {
-  position: relative;
-  width: 100%;
-  height: 80vh;
+/* radios visually hidden but focusable + out of grid flow */
+.cap-radio {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
   overflow: hidden;
-  transform-origin: center;
-  will-change: transform;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
-.cap-pinned__tiles {
+.cap-tablist { display: flex; flex-direction: column; }
+.cap-tab {
   display: flex;
-  flex-direction: column;
-  gap: 70vh;
-  padding: 25vh 0;
+  align-items: baseline;
+  gap: 14px;
+  padding: 20px 0 20px 18px;
+  border-left: 2px solid oklch(96% 0.012 60 / 0.18);
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: clamp(1.0625rem, 0.9rem + 0.6vw, 1.375rem);
+  letter-spacing: -0.018em;
+  color: var(--bone-0);
+  opacity: 0.55;
+  cursor: pointer;
+  min-height: 44px;
+  transition: opacity 180ms var(--ease-out), border-color 180ms var(--ease-out);
 }
-.cap-tile { will-change: opacity; }
+.cap-tab__slash { color: var(--ochre-500); font-weight: 400; }
+.cap-tab:hover { opacity: 0.85; }
+
+.cap-panels { position: relative; }
+.cap-content { display: none; }
+.cap-content__title {
+  font-size: clamp(1.875rem, 1.2rem + 2.2vw, 3rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.04;
+  color: var(--bone-0);
+  margin: 0 0 24px;
+}
+.cap-content__title .display-italic { color: var(--ochre-300); }
+.cap-content__desc {
+  font-size: clamp(1rem, 0.92rem + 0.3vw, 1.1875rem);
+  line-height: 1.55;
+  color: oklch(96% 0.012 60 / 0.82);
+  max-width: 46ch;
+  margin: 0 0 28px;
+}
+.cap-content__list { list-style: none; margin: 0 0 32px; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.cap-content__list li {
+  position: relative;
+  padding-left: 22px;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: oklch(96% 0.012 60 / 0.74);
+}
+.cap-content__list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 6px;
+  height: 6px;
+  background: var(--ochre-500);
+}
+.cap-content__mark { display: block; width: 108px; height: 108px; color: oklch(96% 0.012 60 / 0.6); margin: 0 0 28px; }
+.cap-content__link { color: var(--bone-0); }
+.cap-content__link:hover { color: var(--ochre-300); }
+
+/* :checked wiring — radios precede .cap-tablist and .cap-panels */
+#cap-radio-bespoke:checked ~ .cap-tablist #cap-tab-bespoke,
+#cap-radio-aeo:checked ~ .cap-tablist #cap-tab-aeo,
+#cap-radio-ai-ops:checked ~ .cap-tablist #cap-tab-ai-ops {
+  opacity: 1;
+  border-left-color: var(--ox-500);
+}
+#cap-radio-bespoke:checked ~ .cap-panels #cap-panel-bespoke,
+#cap-radio-aeo:checked ~ .cap-panels #cap-panel-aeo,
+#cap-radio-ai-ops:checked ~ .cap-panels #cap-panel-ai-ops {
+  display: block;
+  animation: cap-fade 200ms var(--ease-out) both;
+}
+@keyframes cap-fade { from { opacity: 0; } to { opacity: 1; } }
+#cap-radio-bespoke:focus-visible ~ .cap-tablist #cap-tab-bespoke,
+#cap-radio-aeo:focus-visible ~ .cap-tablist #cap-tab-aeo,
+#cap-radio-ai-ops:focus-visible ~ .cap-tablist #cap-tab-ai-ops {
+  outline: 2px solid var(--ochre-500);
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) { .cap-content { animation: none !important; } }
+
+/* ── Process callout — dark inverted moment ────────────────── */
+.process-callout {
+  border-top: 1px solid var(--bone-200);
+  border-bottom: 1px solid var(--bone-200);
+}
+.process-callout--dark {
+  background: var(--ox-900);
+  border-color: oklch(96% 0.012 60 / 0.12);
+}
+.process-callout--dark .process-callout__text { color: var(--bone-0); }
+.process-callout--dark .process-callout__muted { color: oklch(96% 0.012 60 / 0.6); }
+.process-callout--dark .link-arrow { color: var(--bone-0); }
+.process-callout--dark .link-arrow:hover { color: var(--ochre-300); }
 
 /* ── Principle callouts ────────────────────────────────────── */
 .principle-callouts { background: var(--bone-50); padding: 96px 0; }
@@ -382,11 +451,8 @@ html.js-reveal .reveal-hero {
   .whoever-row { grid-template-columns: 1fr; gap: 20px; padding: 36px 0; }
   .hero-content { padding: 88px 32px; gap: 28px; }
   .hero-cta-row { flex-direction: column; align-items: flex-start; gap: 14px; }
-  /* "What we build" drops the pin on mobile — image flows above the tiles,
-     which fall back to the standard .reveal staggered fade-in. */
-  .cap-pinned { display: flex; flex-direction: column; gap: 24px; }
-  .cap-pinned__sticky { position: static; height: auto; display: block; }
-  .cap-pinned__image { height: auto; aspect-ratio: 16 / 11; transform: none !important; }
-  .cap-pinned__tiles { gap: 0; padding: 0; }
+  /* "What we build" tabs stack: rail above the active panel (no horizontal scroll). */
+  .cap-tabs { display: block; }
+  .cap-tablist { margin-bottom: 28px; }
   .principle-grid { grid-template-columns: 1fr; }
 }

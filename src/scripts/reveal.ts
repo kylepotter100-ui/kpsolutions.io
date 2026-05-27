@@ -27,7 +27,7 @@ if (reduceMotion) {
 
   initHeroOnLoad();
   initHeroParallax();
-  initCapabilityPinned();
+  initTextActivate();
 }
 
 // Hero on-load: headline words stagger in, then subhead / principle / CTAs
@@ -71,32 +71,36 @@ function initHeroParallax(): void {
   }
 }
 
-// "What we build" pinned choreography (desktop only): as the 200vh section
-// scrolls, the 3 tiles hand off prominence (1 → 0.4) and the pinned image
-// drifts a 5% zoom. Opacity/transform only. Mobile (≤960px) and reduced-motion
-// skip this and use the standard .reveal fade-in.
-function initCapabilityPinned(): void {
-  const pinned = document.querySelector<HTMLElement>("[data-cap-pinned]");
-  if (!pinned) return;
-  if (!window.matchMedia("(min-width: 961px)").matches) return;
-
-  const tiles = Array.from(pinned.querySelectorAll<HTMLElement>("[data-cap-tile]"));
-  if (!tiles.length) return;
-  const image = pinned.querySelector<HTMLElement>("[data-cap-image]");
-  const range = { target: pinned, offset: ["start start", "end end"] } as const;
-
-  // JS owns the tiles' opacity now — neutralise the .reveal hide-state.
-  tiles.forEach((t) => t.classList.add("is-in"));
-
-  const curves = [
-    [1, 0.4, 0.4],
-    [0.4, 1, 0.4],
-    [0.4, 0.4, 1],
-  ];
-  tiles.forEach((tile, i) => {
-    scroll(animate(tile, { opacity: curves[i] ?? [0.4, 1, 0.4] }, { ease: "linear" }), range);
+// Progressive text highlight (Darktrace-style). CLS/INP-safe: spans keep a
+// constant font-weight; we only drive the `--act` custom property (0→1), which
+// CSS maps to color + opacity. No layout reads/writes per frame.
+function initTextActivate(): void {
+  // AEO paragraph: phrases light in reading order as it scrolls through.
+  document.querySelectorAll<HTMLElement>("[data-text-scrub]").forEach((para) => {
+    const spans = Array.from(para.querySelectorAll<HTMLElement>(".text-activate"));
+    if (!spans.length) return;
+    const n = spans.length;
+    const band = 1 / n;
+    const lead = 0.6; // overlap bands for a flowing feel
+    scroll(
+      (progress: number) => {
+        spans.forEach((span, i) => {
+          const t = (progress - i * band * lead) / band;
+          const act = t < 0 ? 0 : t > 1 ? 1 : t;
+          span.style.setProperty("--act", act.toFixed(3));
+        });
+      },
+      { target: para, offset: ["start 0.8", "start 0.35"] },
+    );
   });
-  if (image) {
-    scroll(animate(image, { scale: [1, 1.05] }, { ease: "linear" }), range);
-  }
+
+  // WhoeverYouAre hooks: activate (snap to 1) as each row enters.
+  inView(
+    "[data-hook-activate]",
+    (target) => {
+      const el = target instanceof Element ? target : (target as IntersectionObserverEntry).target;
+      (el as HTMLElement).style.setProperty("--act", "1");
+    },
+    { amount: 0.6 },
+  );
 }

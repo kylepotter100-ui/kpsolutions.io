@@ -1,51 +1,100 @@
 ---
-import GrainSurface from "../GrainSurface.astro";
-import PlaceholderLabel from "../PlaceholderLabel.astro";
 import Icon from "../Icon.astro";
 import { capabilities } from "../../lib/capabilities";
 
-const featureGrain = "0 0 0 0 0.18  0 0 0 0 0.08  0 0 0 0 0.06  0 0 0 0.5 0";
+// Panel copy authored here (longer than the capabilities.ts one-liners); ids
+// stay in lockstep with capabilities.ts so the homepage Service JSON-LD matches.
+const panels = [
+  {
+    id: "bespoke",
+    lead: "Bespoke",
+    accent: "software",
+    desc: "Custom platforms, internal tools, and integrations built around how your business actually works, not how a vendor imagined it. The data model comes first; the interface follows. You get exactly what you run on, and nothing you don't.",
+    bullets: [
+      "Custom platforms and internal tools",
+      "Integrations between systems that should already talk",
+      "Built on your data model, not a template",
+      "Full source ownership from day one",
+    ],
+  },
+  {
+    id: "aeo",
+    lead: "AI-visible",
+    accent: "web presence",
+    desc: "A site engineered to be found and cited by ChatGPT, Claude, Perplexity, and Google's AI answers, not just indexed by traditional search. Structured data, direct-answer content, and clean server-rendered HTML do the work.",
+    bullets: [
+      "Structured data and schema for AI answer engines",
+      "Direct-answer content built to be quoted",
+      "Server-rendered HTML crawlers can actually read",
+      "Fast, accessible, and yours to own",
+    ],
+  },
+  {
+    id: "ai-ops",
+    lead: "AI built into your",
+    accent: "operations",
+    desc: "AI used quietly inside your workflows, where it earns its keep, never as a sticker on a homepage. The unglamorous automation that gives you back a morning a week.",
+    bullets: [
+      "Automation inside the workflows you already run",
+      "Drafting, triage, and reconciliation that save real hours",
+      "Human-in-the-loop where judgment matters",
+      "Measured against time saved, not novelty",
+    ],
+  },
+];
+
+const labelFor = (id: string) => capabilities.find((c) => c.id === id)?.label ?? id;
 ---
 
-<section id="capabilities" class="bg-bone-50 py-40">
+<section id="capabilities" class="cap-section">
   <div class="shell">
-    <div class="reveal mb-16">
-      <h2 class="section-heading max-w-[18ch]">What we build.</h2>
-    </div>
+    <h2 class="section-heading cap-section__heading">What we build.</h2>
 
-    <div class="cap-pinned" data-cap-pinned>
-      <div class="cap-pinned__sticky">
-        <div class="cap-pinned__image" data-cap-image>
-          <div class="capability-feature-surface" aria-hidden="true">
-            <GrainSurface
-              id="cap-feat-grain"
-              baseFrequency={1.0}
-              seed={21}
-              matrix={featureGrain}
-              class="capability-feature-grain"
-            />
-          </div>
-          <PlaceholderLabel tone="light" position="bottom-left">
-            Capabilities still&nbsp;&nbsp;·&nbsp;&nbsp;Abstract structural geometry, warm light, no people
-          </PlaceholderLabel>
-        </div>
+    <div class="cap-tabs">
+      {/* Radios first so :checked ~ reaches both the rail label and the panel.
+          Pure CSS — no island, works with JS disabled. */}
+      {
+        panels.map((p, i) => (
+          <input type="radio" name="cap" id={`cap-radio-${p.id}`} class="cap-radio" checked={i === 0} />
+        ))
+      }
+
+      <div class="cap-tablist">
+        {
+          panels.map((p) => (
+            <label class="cap-tab" for={`cap-radio-${p.id}`} id={`cap-tab-${p.id}`}>
+              <span class="cap-tab__slash" aria-hidden="true">/</span>
+              <span class="cap-tab__label">{labelFor(p.id)}</span>
+            </label>
+          ))
+        }
       </div>
 
-      <div class="cap-pinned__tiles">
+      <div class="cap-panels">
         {
-          capabilities.map((t, i) => (
-            <a
-              href={t.href}
-              class="reveal capability-row cap-tile"
-              data-cap-tile
-              style={i === 0 ? "border-top: 1px solid var(--bone-200);" : undefined}
-            >
-              <div class="capability-row__head">
-                <span class="capability-row__label">{t.label}</span>
-                <Icon name="arrow-right" size={16} />
-              </div>
-              <p class="capability-row__copy">{t.copy}</p>
-            </a>
+          panels.map((p) => (
+            <article class="cap-content" id={`cap-panel-${p.id}`} aria-labelledby={`cap-tab-${p.id}`}>
+              <h3 class="cap-content__title">
+                {p.lead} <span class="display-italic">{p.accent}</span>.
+              </h3>
+              <p class="cap-content__desc">{p.desc}</p>
+              <ul class="cap-content__list">
+                {p.bullets.map((b) => <li>{b}</li>)}
+              </ul>
+              <svg class="cap-content__mark" viewBox="0 0 120 120" aria-hidden="true">
+                <g fill="none" stroke="currentColor" stroke-width="1">
+                  <rect x="8" y="8" width="104" height="104" opacity="0.35"></rect>
+                  <line x1="8" y1="42" x2="112" y2="42" opacity="0.5"></line>
+                  <line x1="8" y1="78" x2="112" y2="78" opacity="0.5"></line>
+                  <line x1="42" y1="8" x2="42" y2="112" opacity="0.5"></line>
+                  <line x1="78" y1="8" x2="78" y2="112" opacity="0.5"></line>
+                  <rect x="42" y="42" width="36" height="36" fill="currentColor" opacity="0.12" stroke="none"></rect>
+                </g>
+              </svg>
+              <a href={`/build#${p.id}`} class="link-arrow cap-content__link">
+                Learn more <Icon name="arrow-right" size={14} />
+              </a>
+            </article>
           ))
         }
       </div>
