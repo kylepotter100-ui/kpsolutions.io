@@ -107,50 +107,56 @@ function initPinnedPassage(): void {
   );
 }
 
-// "What we build" scrollytelling accordion: 3 services pinned across 450vh; each
-// service's sub-sections collapse per phase (Challenge -> Offer; Outcome stays).
-// Discrete class toggles only — no per-frame layout (the collapse is a CSS
-// grid-rows transition). Desktop-only; mobile/reduced-motion render static via CSS.
-// Flip WWB_COLLAPSE to drop the per-sub-section collapse (escape hatch) while
-// keeping service pinning + slide.
+// "What we build" vertical sticky scrollytelling: 3 services pinned across 450vh.
+// One service is expanded at a time; within it, each sub unit (label + body)
+// translates upward and fades — physically scrolling up behind the service's
+// opaque header in reading order (Challenge -> Offer -> Outcome). Once all three
+// have gone, that service collapses (CSS max-height) and the next expands.
+// Per-frame work is transform/opacity writes only (compositor-safe, no layout
+// reads). Desktop-only; mobile/reduced-motion render static via CSS.
+// Flip WWB_COLLAPSE to drop the per-unit translate/fade (escape hatch) while
+// keeping the service pinning + accordion expand/collapse.
 const WWB_COLLAPSE = true;
 function initWhatWeBuild(): void {
   const section = document.querySelector<HTMLElement>("[data-wwb]");
   if (!section) return;
-  const cards = Array.from(section.querySelectorAll<HTMLElement>("[data-wwb-service]"));
-  if (cards.length !== 3) return;
+  const services = Array.from(section.querySelectorAll<HTMLElement>("[data-wwb-service]"));
+  if (services.length !== 3) return;
   if (!window.matchMedia("(min-width: 769px)").matches) return;
 
-  const subs = cards.map((c) => ({
-    challenge: c.querySelector<HTMLElement>('[data-sub="challenge"]'),
-    offer: c.querySelector<HTMLElement>('[data-sub="offer"]'),
-  }));
+  const tracks = services.map((s) => s.querySelector<HTMLElement>("[data-wwb-track]"));
+  const units = services.map((s) => Array.from(s.querySelectorAll<HTMLElement>("[data-wwb-unit]")));
+  // Overlapping exit windows keep the upward scroll continuous across the trio.
+  const bands: ReadonlyArray<readonly [number, number]> = [
+    [0, 0.42],
+    [0.29, 0.71],
+    [0.58, 1],
+  ];
+  const c01 = (n: number) => (n < 0 ? 0 : n > 1 ? 1 : n);
+  // easeOutQuint — matches the restrained easeOut bezier [0.22, 1, 0.36, 1].
+  const eo = (t: number) => 1 - Math.pow(1 - t, 5);
 
   let activeIdx = -1;
-  let activePhase = -1;
 
   scroll(
     (p: number) => {
-      const raw = Math.min(0.99999, Math.max(0, p)) * 3;
-      const idx = Math.floor(raw);
+      const raw = c01(p) * 3;
+      const idx = Math.min(2, Math.floor(raw));
       const local = raw - idx;
-      const phase = local < 1 / 3 ? 0 : local < 2 / 3 ? 1 : 2;
 
       if (idx !== activeIdx) {
-        cards.forEach((c, i) => {
-          c.classList.toggle("is-active", i === idx);
-          c.classList.toggle("is-prev", i < idx);
-          c.setAttribute("aria-hidden", i === idx ? "false" : "true");
-        });
+        services.forEach((s, i) => s.classList.toggle("is-active", i === idx));
         activeIdx = idx;
-        activePhase = -1;
       }
 
-      if (WWB_COLLAPSE && phase !== activePhase) {
-        const s = subs[idx];
-        s.challenge?.classList.toggle("is-collapsed", phase >= 1);
-        s.offer?.classList.toggle("is-collapsed", phase >= 2);
-        activePhase = phase;
+      if (!WWB_COLLAPSE) return;
+
+      const track = tracks[idx];
+      if (track) track.style.transform = `translateY(${(eo(local) * -100).toFixed(2)}%)`;
+      const us = units[idx];
+      for (let i = 0; i < us.length; i++) {
+        const [a, b] = bands[i];
+        us[i].style.opacity = (1 - eo(c01((local - a) / (b - a)))).toFixed(3);
       }
     },
     { target: section, offset: ["start start", "end end"] },

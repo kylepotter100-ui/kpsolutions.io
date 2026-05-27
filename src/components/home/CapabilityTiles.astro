@@ -1,72 +1,101 @@
 ---
-// "What we build" — a light scrollytelling accordion. Three services pinned
-// across 450vh; as each service's band scrolls, its sub-sections collapse in
-// order (Challenge -> Offer -> Outcome stays). Driven by reveal.ts initWhatWeBuild
-// (desktop only); mobile/reduced-motion/no-JS render all three services static,
-// fully expanded. ids stay in lockstep with capabilities.ts for the Service JSON-LD.
+// "What we build" — vertical stacked sticky scrollytelling. The section pins
+// for 450vh; the heading + the three service names stay anchored while one
+// service is expanded at a time. Within the active service, each sub-section
+// unit (label + body) translates upward and fades, physically scrolling up
+// behind the service header in reading order (Challenge -> Offer -> Outcome);
+// once all three have gone, that service collapses and the next expands.
+// Driven by reveal.ts initWhatWeBuild (desktop only). Mobile / reduced-motion /
+// no-JS render all three services static and fully expanded. ids stay in
+// lockstep with capabilities.ts for the Service JSON-LD.
 const services = [
   {
     id: "bespoke",
     lead: "Bespoke",
     accent: "software",
-    challenge:
-      "Off-the-shelf SaaS forces you to bend your operations to fit its assumptions. Critical workflows live in spreadsheets, internal tools nobody documented, and tabs the team has to remember to keep open.",
-    offer:
-      "Custom platforms, internal tools, and integrations built around how your business actually works. Full ownership of the source code. Built on your data model, not a template.",
-    outcome:
-      "Software that does exactly what your operation needs, without paying per-seat licenses for features you'll never use. When you want to change something, you can — because you own it.",
+    subs: [
+      {
+        label: "The Challenge",
+        body: "Off-the-shelf SaaS forces you to bend your operations to fit its assumptions. Critical workflows live in spreadsheets, internal tools nobody documented, and tabs the team has to remember to keep open.",
+      },
+      {
+        label: "What We Offer",
+        body: "Custom platforms, internal tools, and integrations built around how your business actually works. Full ownership of the source code. Built on your data model, not a template.",
+      },
+      {
+        label: "The Outcome",
+        body: "Software that does exactly what your operation needs, without paying per-seat licenses for features you'll never use. When you want to change something, you can — because you own it.",
+      },
+    ],
   },
   {
     id: "aeo",
     lead: "AI-visible",
     accent: "web presence",
-    challenge:
-      "Traditional SEO targets Google search. But increasingly, prospects ask ChatGPT, Claude, or Perplexity to recommend services. If your site isn't engineered for AI crawlers, you're invisible to that traffic.",
-    offer:
-      "Marketing sites built with JSON-LD schema, llms.txt manifests, direct-answer content blocks, and structured data designed specifically for LLM citation. The technical SEO of 2026, not 2018.",
-    outcome:
-      "A web presence that gets cited by AI search engines when prospects ask about services in your space. New traffic from channels your competitors aren't optimized for yet.",
+    subs: [
+      {
+        label: "The Challenge",
+        body: "Traditional SEO targets Google search. But increasingly, prospects ask ChatGPT, Claude, or Perplexity to recommend services. If your site isn't engineered for AI crawlers, you're invisible to that traffic.",
+      },
+      {
+        label: "What We Offer",
+        body: "Marketing sites built with JSON-LD schema, llms.txt manifests, direct-answer content blocks, and structured data designed specifically for LLM citation. The technical SEO of 2026, not 2018.",
+      },
+      {
+        label: "The Outcome",
+        body: "A web presence that gets cited by AI search engines when prospects ask about services in your space. New traffic from channels your competitors aren't optimized for yet.",
+      },
+    ],
   },
   {
     id: "ai-ops",
     lead: "AI built into your",
     accent: "operations",
-    challenge:
-      "AI tools are useful but most teams use them as a sticker on a homepage or a chat sidebar. The real value is AI doing actual work inside your operations — triaging support, drafting proposals, summarizing meetings.",
-    offer:
-      "AI integrated directly into your workflows using the Anthropic API. Custom prompts, tool use, structured outputs — not generic chatbots. Built for the specific operational problems you have.",
-    outcome:
-      "Hours of repetitive work absorbed by AI that knows your business context. Your team focuses on judgment calls, not data entry.",
+    subs: [
+      {
+        label: "The Challenge",
+        body: "AI tools are useful but most teams use them as a sticker on a homepage or a chat sidebar. The real value is AI doing actual work inside your operations — triaging support, drafting proposals, summarizing meetings.",
+      },
+      {
+        label: "What We Offer",
+        body: "AI integrated directly into your workflows using the Anthropic API. Custom prompts, tool use, structured outputs — not generic chatbots. Built for the specific operational problems you have.",
+      },
+      {
+        label: "The Outcome",
+        body: "Hours of repetitive work absorbed by AI that knows your business context. Your team focuses on judgment calls, not data entry.",
+      },
+    ],
   },
 ];
 ---
 
-<section id="capabilities" class="wwb" data-wwb aria-label="What we build">
-  <div class="wwb__sticky">
-    <div class="wwb__stage">
-      {
-        services.map((s, i) => (
-          <article class="wwb-card" data-wwb-service={i} aria-hidden={i === 0 ? "false" : "true"}>
-            <h2 class="wwb-card__title">
-              {s.lead} <span class="display-italic">{s.accent}</span>.
-            </h2>
-            <div class="wwb-card__grid">
-              <div class="wwb-sub" data-sub="challenge">
-                <h3 class="wwb-sub__label">The Challenge</h3>
-                <div class="wwb-sub__body"><p>{s.challenge}</p></div>
+<section id="capabilities" class="wwb" data-wwb aria-labelledby="wwb-heading">
+  <div class="wwb__outer">
+    <div class="wwb__inner shell">
+      <h2 id="wwb-heading" class="section-heading wwb__heading">What we build.</h2>
+      <div class="wwb__list">
+        {
+          services.map((s, i) => (
+            <article class={i === 0 ? "wwb-service is-active" : "wwb-service"} data-wwb-service={i}>
+              <div class="wwb-service__header">
+                <h3 class="wwb-service__name">
+                  {s.lead} <span class="display-italic">{s.accent}</span>.
+                </h3>
               </div>
-              <div class="wwb-sub" data-sub="offer">
-                <h3 class="wwb-sub__label">What We Offer</h3>
-                <div class="wwb-sub__body"><p>{s.offer}</p></div>
+              <div class="wwb-service__subs">
+                <div class="wwb-service__track" data-wwb-track>
+                  {s.subs.map((sub) => (
+                    <div class="wwb-sub" data-wwb-unit>
+                      <h4 class="wwb-sub__label">{sub.label}</h4>
+                      <p class="wwb-sub__body">{sub.body}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div class="wwb-sub" data-sub="outcome">
-                <h3 class="wwb-sub__label">The Outcome</h3>
-                <div class="wwb-sub__body"><p>{s.outcome}</p></div>
-              </div>
-            </div>
-          </article>
-        ))
-      }
+            </article>
+          ))
+        }
+      </div>
     </div>
   </div>
 </section>

@@ -144,7 +144,7 @@ html.js-reveal .reveal-hero {
 /* ── Pinned passage (Apple-style manifesto) ────────────────── */
 .pinned {
   position: relative;
-  height: 200vh;
+  height: 135vh;
   background: radial-gradient(70% 55% at 50% 50%, oklch(97% 0.012 55) 0%, var(--bone-0) 70%);
 }
 .pinned-content {
@@ -182,10 +182,10 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
 @media (prefers-reduced-motion: reduce) {
   html.js-reveal .pinned-passage .activate { color: var(--ox-500); opacity: 1; }
   .pinned { height: auto; }
-  .pinned-content { position: static; height: auto; padding: clamp(96px, 14vw, 160px) 32px; }
+  .pinned-content { position: static; height: auto; padding: clamp(58px, 8.4vw, 96px) 32px clamp(48px, 7vw, 80px); }
 }
 @media (max-width: 768px) {
-  .pinned { height: 150vh; }
+  .pinned { height: 105vh; }
   .pinned-passage {
     font-size: clamp(1.125rem, 1rem + 1vw, 1.5rem);
     padding-inline: clamp(20px, 8vw, 40px);
@@ -322,105 +322,131 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   z-index: 3;
 }
 
-/* ── "What we build" — light scrollytelling accordion ──────── */
-/* Base (no-JS / crawler): the section is normal-flow and all three service
-   cards stack, fully expanded. The pinned overlay choreography is layered on
-   only under html.js-reveal, and reverted on mobile / reduced-motion. */
+/* ── "What we build" — vertical stacked sticky scrollytelling ── */
+/* Base (no-JS / crawler / mobile / reduced-motion): a static vertical list —
+   section heading, then three services, each with its name + three sub-sections
+   (label + body), fully expanded. The pinned choreography (one service expanded
+   at a time; its sub units translating up + fading behind the service header)
+   is layered only under html.js-reveal on desktop. */
 .wwb { position: relative; background: var(--bone-50); color: var(--ox-900); }
-.wwb__sticky { display: block; }
-.wwb__stage { position: relative; width: 90vw; max-width: 1400px; margin: 0 auto; }
-.wwb-card {
-  padding: 96px 64px;
-  background:
-    radial-gradient(120% 140% at 100% 0%, oklch(72% 0.05 60 / 0.10) 0%, transparent 55%),
-    var(--bone-50);
-  border: 1px solid oklch(22% 0.06 22 / 0.15);
-}
-.wwb-card + .wwb-card { margin-top: 20px; }
-.wwb-card__title {
-  font-size: clamp(1.875rem, 1.2rem + 2.2vw, 3rem);
+.wwb__inner { padding-block: clamp(96px, 9vw, 140px); }
+.wwb__heading { margin-bottom: clamp(40px, 6vw, 72px); }
+
+.wwb-service { padding-block: clamp(28px, 3vw, 44px); border-top: 1px solid oklch(22% 0.06 22 / 0.14); }
+.wwb-service:last-child { border-bottom: 1px solid oklch(22% 0.06 22 / 0.14); }
+.wwb-service__header { background: var(--bone-50); }
+.wwb-service__name {
+  font-size: clamp(1.75rem, 1.15rem + 2.1vw, 2.875rem);
   font-weight: 500;
   letter-spacing: -0.03em;
-  line-height: 1.04;
+  line-height: 1.05;
   color: var(--ox-900);
-  margin: 0 0 clamp(32px, 4vw, 56px);
+  margin: 0;
 }
-.wwb-card__title .display-italic { color: var(--ochre-700); }
-.wwb-card__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(32px, 4vw, 64px);
-  align-items: start;
-}
+.wwb-service__name .display-italic { color: var(--ochre-700); }
+
+.wwb-service__subs { margin-top: clamp(20px, 2.4vw, 32px); }
+.wwb-service__track { display: flex; flex-direction: column; gap: clamp(22px, 2.6vw, 34px); }
+.wwb-sub { max-width: 72ch; }
 .wwb-sub__label {
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.085em;
   color: var(--ochre-700);
-  margin: 0 0 14px;
+  margin: 0 0 10px;
 }
 .wwb-sub__body {
-  display: grid;
-  grid-template-rows: 1fr;
-  opacity: 1;
-  transition: grid-template-rows 400ms var(--ease-in-out), opacity 400ms var(--ease-in-out);
-}
-.wwb-sub__body > p {
-  overflow: hidden;
   margin: 0;
   font-size: clamp(1rem, 0.92rem + 0.3vw, 1.125rem);
   line-height: 1.55;
   color: var(--ox-900);
 }
-.wwb-sub.is-collapsed .wwb-sub__body { grid-template-rows: 0fr; opacity: 0; }
 
-/* JS desktop: pin the section + overlay the cards; only the active one shows. */
-html.js-reveal .wwb { height: 450vh; }
-html.js-reveal .wwb__sticky {
+/* JS desktop: pin the section, accordion the services, scroll each sub unit up
+   behind the active service's opaque header. */
+html.js-reveal .wwb__outer { height: 450vh; }
+html.js-reveal .wwb__inner {
   position: sticky;
   top: 0;
   height: 100vh;
+  padding-block: 0;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
 }
-html.js-reveal .wwb__stage { min-height: clamp(440px, 64vh, 620px); }
-html.js-reveal .wwb-card {
-  position: absolute;
-  inset: 0;
-  margin: 0;
-  opacity: 0;
-  transform: translateX(40px);
-  pointer-events: none;
-  transition: opacity 600ms var(--ease-in-out), transform 600ms var(--ease-in-out);
-}
-html.js-reveal .wwb-card.is-active { opacity: 1; transform: translateX(0); pointer-events: auto; }
-html.js-reveal .wwb-card.is-prev { transform: translateX(-40px); }
+html.js-reveal .wwb__heading { margin-bottom: clamp(28px, 4vw, 56px); flex: none; }
 
-/* Mobile + reduced-motion: revert to static stacked cards, all expanded. */
+html.js-reveal .wwb-service { padding-block: 0; border-top: none; }
+html.js-reveal .wwb-service:last-child { border-bottom: none; }
+html.js-reveal .wwb-service + .wwb-service { margin-top: clamp(6px, 1vw, 14px); }
+html.js-reveal .wwb-service__header {
+  position: relative;
+  z-index: 2;
+  padding-block: clamp(8px, 1.2vw, 16px);
+}
+/* Dim non-active service names so the active one leads (color, not opacity). */
+html.js-reveal .wwb-service__name { transition: color 420ms var(--ease-out); }
+html.js-reveal .wwb-service:not(.is-active) .wwb-service__name { color: oklch(42% 0.052 32); }
+
+/* Collapsed services show their header only; the active one expands its subs. */
+html.js-reveal .wwb-service__subs {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+  transition: max-height 540ms var(--ease-in-out), opacity 360ms var(--ease-in-out),
+    margin-top 540ms var(--ease-in-out);
+}
+html.js-reveal .wwb-service.is-active .wwb-service__subs {
+  max-height: 46vh;
+  opacity: 1;
+  margin-top: clamp(16px, 2vw, 28px);
+}
+/* The track is translated up (0 -> -100% of its own height) by JS; each unit's
+   opacity is driven per band — compositor-only, no per-frame layout reads. */
+html.js-reveal .wwb-service__track { will-change: transform; }
+
+/* Mobile + reduced-motion: revert to the static, fully expanded vertical list. */
 @media (max-width: 768px) {
-  html.js-reveal .wwb { height: auto; }
-  html.js-reveal .wwb__sticky { position: static; height: auto; display: block; }
-  .wwb__stage { width: auto; }
-  html.js-reveal .wwb__stage { min-height: 0; }
-  html.js-reveal .wwb-card {
+  html.js-reveal .wwb__outer { height: auto; }
+  html.js-reveal .wwb__inner {
     position: static;
-    inset: auto;
-    opacity: 1;
-    transform: none;
-    pointer-events: auto;
-    margin: 0 0 20px;
+    height: auto;
+    display: block;
+    overflow: visible;
+    padding-block: clamp(72px, 12vw, 110px);
   }
-  .wwb-card { padding: 56px 28px; }
-  .wwb-card__grid { grid-template-columns: 1fr; }
-  html.js-reveal .wwb-sub.is-collapsed .wwb-sub__body { grid-template-rows: 1fr; opacity: 1; }
+  html.js-reveal .wwb__heading { margin-bottom: clamp(32px, 8vw, 56px); }
+  html.js-reveal .wwb-service { padding-block: clamp(28px, 6vw, 40px); border-top: 1px solid oklch(22% 0.06 22 / 0.14); }
+  html.js-reveal .wwb-service:last-child { border-bottom: 1px solid oklch(22% 0.06 22 / 0.14); }
+  html.js-reveal .wwb-service + .wwb-service { margin-top: 0; }
+  html.js-reveal .wwb-service__header { background: none; padding-block: 0; }
+  html.js-reveal .wwb-service__subs { max-height: none; opacity: 1; overflow: visible; margin-top: clamp(22px, 6vw, 30px); }
+  html.js-reveal .wwb-service__track { transform: none !important; }
+  html.js-reveal .wwb-sub { opacity: 1 !important; }
+  html.js-reveal .wwb-service:not(.is-active) .wwb-service__name { color: var(--ox-900); }
 }
 @media (prefers-reduced-motion: reduce) {
-  html.js-reveal .wwb { height: auto; }
-  html.js-reveal .wwb__sticky { position: static; height: auto; display: block; }
-  html.js-reveal .wwb__stage { min-height: 0; }
-  html.js-reveal .wwb-card { position: static; inset: auto; opacity: 1; transform: none; pointer-events: auto; margin: 0 0 20px; }
-  html.js-reveal .wwb-sub.is-collapsed .wwb-sub__body { grid-template-rows: 1fr; opacity: 1; }
+  html.js-reveal .wwb__outer { height: auto; }
+  html.js-reveal .wwb__inner {
+    position: static;
+    height: auto;
+    display: block;
+    overflow: visible;
+    padding-block: clamp(96px, 9vw, 140px);
+  }
+  html.js-reveal .wwb-service { padding-block: clamp(28px, 3vw, 44px); border-top: 1px solid oklch(22% 0.06 22 / 0.14); }
+  html.js-reveal .wwb-service:last-child { border-bottom: 1px solid oklch(22% 0.06 22 / 0.14); }
+  html.js-reveal .wwb-service + .wwb-service { margin-top: 0; }
+  html.js-reveal .wwb-service__header { background: none; padding-block: 0; }
+  html.js-reveal .wwb-service__subs { max-height: none; opacity: 1; overflow: visible; margin-top: clamp(20px, 2vw, 28px); }
+  html.js-reveal .wwb-service__track { transform: none !important; }
+  html.js-reveal .wwb-sub { opacity: 1 !important; }
+  html.js-reveal .wwb-service:not(.is-active) .wwb-service__name { color: var(--ox-900); }
 }
 
 /* ── Process callout — dark inverted moment ────────────────── */
@@ -457,14 +483,14 @@ html.js-reveal .wwb-card.is-prev { transform: translateX(-40px); }
 .process-callout--dark .link-arrow { color: var(--bone-0); }
 .process-callout--dark .link-arrow:hover { color: var(--ochre-300); }
 
-/* ── Who we work with — card grid ──────────────────────────── */
-.who { background: var(--ox-900); color: var(--bone-0); padding: clamp(96px, 9vw, 140px) 0; }
-.who__heading { color: var(--bone-0); margin-bottom: clamp(40px, 6vw, 72px); }
+/* ── Who we work with — card grid (cream) ──────────────────── */
+.who { background: var(--bone-50); color: var(--ox-900); padding: clamp(96px, 9vw, 140px) 0; }
+.who__heading { color: var(--ox-900); margin-bottom: clamp(40px, 6vw, 72px); }
 .who-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .who-card {
   position: relative;
-  background: var(--ox-800);
-  border: 1px solid var(--ox-700);
+  background: var(--bone-0);
+  border: 1px solid oklch(22% 0.060 22 / 0.15);
   padding: 48px;
   overflow: hidden;
   transition: border-color 200ms var(--ease-out), transform 200ms var(--ease-out);
@@ -474,7 +500,7 @@ html.js-reveal .wwb-card.is-prev { transform: translateX(-40px); }
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(120% 120% at 100% 0%, oklch(46% 0.090 48 / 0.16) 0%, transparent 60%);
+  background: radial-gradient(120% 120% at 100% 0%, oklch(72% 0.145 72 / 0.10) 0%, transparent 60%);
   opacity: 0;
   transition: opacity 200ms var(--ease-out);
   pointer-events: none;
@@ -487,14 +513,14 @@ html.js-reveal .wwb-card.is-prev { transform: translateX(-40px); }
   font-weight: 600;
   font-size: 1.5rem;
   letter-spacing: -0.018em;
-  color: var(--bone-0);
+  color: var(--ox-900);
   margin: 0 0 14px;
 }
 .who-card__desc {
   position: relative;
   font-size: clamp(1rem, 0.94rem + 0.2vw, 1.0625rem);
   line-height: 1.55;
-  color: var(--bone-300);
+  color: var(--ox-700);
   margin: 0;
   max-width: 42ch;
 }
