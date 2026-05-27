@@ -1,7 +1,7 @@
 ---
 import Icon from "../Icon.astro";
 import ScrollingShot from "../ScrollingShot.astro";
-import { PS_SHOT, PS_DOMAIN } from "../../lib/work";
+import { PS_SHOT, PS_SHOT_MOBILE, PS_DOMAIN } from "../../lib/work";
 ---
 
 <section id="work" class="bg-bone-0 pt-40 pb-35">
@@ -15,10 +15,10 @@ import { PS_SHOT, PS_DOMAIN } from "../../lib/work";
       <div class="screenshot-placeholder" aria-label="Potter Sanctuary — live site preview">
         <ScrollingShot
           src={PS_SHOT}
+          srcMobile={PS_SHOT_MOBILE}
           alt="Live preview of the Potter Sanctuary homepage, scrolling through the landing page"
           urlLabel={PS_DOMAIN}
           urlPosition="top-right"
-          duration={30}
         />
       </div>
     </div>
