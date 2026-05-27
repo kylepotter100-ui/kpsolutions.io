@@ -1,0 +1,58 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import AboutHero from "../components/about/AboutHero.astro";
+import AboutFounder from "../components/about/AboutFounder.astro";
+import AboutWhy from "../components/about/AboutWhy.astro";
+import AboutBreak from "../components/about/AboutBreak.astro";
+import AboutPrinciples from "../components/about/AboutPrinciples.astro";
+import AboutNotDo from "../components/about/AboutNotDo.astro";
+import AboutClosing from "../components/about/AboutClosing.astro";
+import { breadcrumbSchema, type JsonLdSchema } from "../lib/schema";
+import "../styles/about.css";
+
+const SITE = "https://kpsolutions.io";
+const title = "About — KP Solutions";
+const description =
+  "Built by someone who's seen what gets in the way. One person, end-to-end. No agency overhead. No handoff theatre.";
+
+const personSchema: JsonLdSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Kyle Potter",
+  jobTitle: "Founder",
+  url: `${SITE}/about`,
+  worksFor: { "@type": "Organization", name: "KP Solutions", url: SITE },
+  description:
+    "Founder of KP Solutions. Fifteen years building software inside the businesses that ran it, as developer, CTO, and founder.",
+};
+
+const schemas: JsonLdSchema[] = [
+  personSchema,
+  breadcrumbSchema([
+    { name: "Home", url: `${SITE}/` },
+    { name: "About", url: `${SITE}/about` },
+  ]),
+];
+---
+
+<BaseLayout title={title} description={description} schemas={schemas}>
+  <Header heroMode="light" />
+  <main>
+    <AboutHero />
+    <AboutFounder />
+    <AboutWhy />
+    <AboutBreak />
+    <AboutPrinciples />
+    <AboutNotDo />
+    <AboutClosing />
+  </main>
+  <Footer />
+</BaseLayout>
+
+<script>
+  import "../scripts/reveal.ts";
+</script>

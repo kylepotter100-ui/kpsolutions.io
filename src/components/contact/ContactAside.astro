@@ -1,0 +1,30 @@
+---
+import Icon from "../Icon.astro";
+import { ORG_EMAIL } from "../../lib/site";
+---
+
+<aside class="contact-aside">
+  <div class="contact-aside__block">
+    <h2 class="contact-aside__label">Skip the form.</h2>
+    <p class="contact-aside__body">
+      If you'd rather talk first, put the 90-minute call straight on the calendar.
+    </p>
+    <a href="https://cal.com/kylepotter" target="_blank" rel="noopener noreferrer" class="link-arrow">
+      Book directly <Icon name="arrow-right" size={14} />
+    </a>
+  </div>
+
+  <div class="contact-aside__block">
+    <h2 class="contact-aside__label">Direct email.</h2>
+    <p class="contact-aside__body">For shorter questions, or if a form feels like too much.</p>
+    <a href={`mailto:${ORG_EMAIL}`} class="contact-aside__email">{ORG_EMAIL}</a>
+  </div>
+
+  <div class="contact-aside__block">
+    <h2 class="contact-aside__label">When you'll hear back.</h2>
+    <p class="contact-aside__body">
+      Within 48 hours, Monday to Thursday. If you write on a Friday, the reply
+      will land on Monday morning.
+    </p>
+  </div>
+</aside>

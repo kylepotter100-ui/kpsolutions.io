@@ -1,0 +1,16 @@
+---
+import GrainSurface from "../GrainSurface.astro";
+import PlaceholderLabel from "../PlaceholderLabel.astro";
+
+const grain = "0 0 0 0 0.95  0 0 0 0 0.85  0 0 0 0 0.75  0 0 0 0.4 0";
+---
+
+<section aria-label="Atmospheric break" class="contact-break">
+  <div class="contact-break__surface">
+    <GrainSurface id="contact-break-grain" baseFrequency={0.85} seed={211} matrix={grain} class="contact-break__grain" />
+    <div class="contact-break__scrim"></div>
+    <PlaceholderLabel tone="light" position="bottom-left">
+      Atmospheric — quiet working moment, considered tools, warm light
+    </PlaceholderLabel>
+  </div>
+</section>

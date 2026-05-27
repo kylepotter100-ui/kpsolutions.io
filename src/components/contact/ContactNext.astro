@@ -1,0 +1,35 @@
+---
+const steps = [
+  {
+    title: "A quick call.",
+    body: "Ninety minutes, no slides. I listen to what you're working with and ask the operator questions that matter.",
+  },
+  {
+    title: "A short written response.",
+    body: "Inside 48 hours. What I think the right shape of the answer is, in plain language. No proposal-grade theatre.",
+  },
+  {
+    title: "If it's a fit, we scope Week One.",
+    body: "Fixed fee agreed before anything starts. If it isn't a fit, I'll tell you that too — and where to look instead.",
+  },
+];
+---
+
+<section class="contact-next">
+  <div class="shell">
+    <h2 class="contact-next__title">
+      What happens <span class="contact-italic">next</span>.
+    </h2>
+    <div class="contact-next__grid">
+      {
+        steps.map((s) => (
+          <div class="contact-next__step">
+            <div class="contact-next__mark"></div>
+            <h3 class="contact-next__step-title">{s.title}</h3>
+            <p class="contact-next__step-body">{s.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

@@ -1,3 +1,5 @@
+import { ORG_EMAIL } from "./site";
+
 const SITE_URL = "https://kpsolutions.io";
 const ORG_NAME = "KP Solutions";
 const ORG_ID = `${SITE_URL}/#organization`;
@@ -23,7 +25,14 @@ export function organizationSchema(): JsonLdSchema {
     url: SITE_URL,
     description:
       "Custom software for established operators. KP Solutions is a one-person bespoke software studio building software that solves operational problems.",
-    // logo, sameAs, and contactPoint pending brand assets and published profiles.
+    email: ORG_EMAIL,
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "sales",
+      email: ORG_EMAIL,
+      availableLanguage: "English",
+    },
+    // logo and sameAs pending brand assets and published profiles.
   };
 }
 
