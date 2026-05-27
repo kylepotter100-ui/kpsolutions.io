@@ -1,0 +1,267 @@
+/* ============================================================
+   /about — founder + positioning. Shared primitives in ui.css.
+   Ported from designs/styles.css (about slice).
+   ============================================================ */
+
+.about-hero {
+  background: var(--bone-0);
+  min-height: 50vh;
+  display: flex;
+  align-items: flex-end;
+  padding: 200px 0 80px;
+  border-bottom: 1px solid var(--bone-200);
+}
+.about-hero__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  max-width: 1280px;
+  padding: 0 32px;
+}
+.about-hero__title {
+  font-size: clamp(2.5rem, 1.3rem + 5vw, 5.25rem);
+  line-height: 0.98;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  margin: 0;
+  max-width: 18ch;
+  color: var(--ox-900);
+  text-wrap: balance;
+}
+.about-italic {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: -0.04em;
+}
+.about-hero__sub {
+  font-size: clamp(1.0625rem, 0.85rem + 0.55vw, 1.3125rem);
+  line-height: 1.5;
+  max-width: 54ch;
+  margin: 0;
+  color: var(--bone-500);
+  font-weight: 400;
+}
+
+/* Founder block — asymmetric 40/60 with sticky portrait */
+.about-founder { padding: 140px 0; background: var(--bone-0); }
+.about-founder__grid {
+  display: grid;
+  grid-template-columns: 0.4fr 0.6fr;
+  gap: 96px;
+  align-items: start;
+  padding: 0 32px;
+}
+.about-founder__image { position: relative; }
+.about-founder__sticky {
+  position: sticky;
+  top: 110px;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+}
+.about-founder__sticky .placeholder-surface { position: absolute; inset: 0; overflow: hidden; }
+.placeholder-surface--portrait {
+  background:
+    radial-gradient(60% 75% at 60% 30%, oklch(58% 0.090 48 / 0.55) 0%, transparent 60%),
+    radial-gradient(85% 100% at 18% 95%, oklch(28% 0.080 22 / 0.65) 0%, transparent 65%),
+    linear-gradient(165deg, oklch(28% 0.080 28) 0%, oklch(14% 0.040 22) 100%);
+}
+.about-founder__text {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  max-width: 56ch;
+  padding-top: 16px;
+}
+.about-founder__name {
+  font-size: clamp(2rem, 1.3rem + 2.2vw, 2.75rem);
+  font-weight: 500;
+  letter-spacing: -0.028em;
+  line-height: 1;
+  color: var(--ox-900);
+}
+.about-founder__role {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--bone-500);
+  margin: 0;
+  max-width: 50ch;
+}
+.about-founder__body {
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--ox-900);
+  margin: 12px 0 0;
+  padding-top: 28px;
+  border-top: 1px solid var(--bone-200);
+  max-width: 56ch;
+}
+
+/* Shared about section title */
+.about-section-title {
+  font-size: clamp(2rem, 1.3rem + 2.4vw, 3.25rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+  margin: 0 0 40px;
+  color: var(--ox-900);
+  max-width: 16ch;
+  text-wrap: balance;
+}
+
+/* Why this exists — narrow centred long-form */
+.about-why { padding: 120px 0; background: var(--bone-50); }
+.about-why__inner { max-width: 720px; margin: 0 auto; }
+.about-prose {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--ox-900);
+  margin: 0 0 24px;
+  max-width: 65ch;
+  text-wrap: pretty;
+}
+.about-prose:last-child { margin-bottom: 0; }
+.about-prose--emphasis {
+  padding-top: 24px;
+  margin-top: 8px;
+  border-top: 1px solid var(--bone-200);
+  font-size: clamp(1.1875rem, 1rem + 0.55vw, 1.4375rem);
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+  color: var(--ox-900);
+  max-width: 36ch;
+}
+
+/* Atmospheric break */
+.about-break { position: relative; width: 100%; }
+.about-break__surface {
+  position: relative;
+  width: 100%;
+  min-height: 50vh;
+  overflow: hidden;
+  background:
+    radial-gradient(60% 75% at 70% 30%, oklch(58% 0.110 55 / 0.55) 0%, transparent 60%),
+    radial-gradient(80% 95% at 20% 92%, oklch(28% 0.080 22 / 0.65) 0%, transparent 65%),
+    linear-gradient(155deg, oklch(24% 0.065 28) 0%, oklch(12% 0.030 22) 100%);
+}
+.about-break__grain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.18;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+.about-break__scrim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 80% at 50% 50%, transparent 50%, oklch(8% 0.020 22 / 0.4) 100%);
+  pointer-events: none;
+}
+
+/* How I work — principles grid */
+.about-principles { padding: 140px 0; background: var(--bone-0); }
+.about-principles__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-top: 1px solid var(--bone-200);
+  border-left: 1px solid var(--bone-200);
+}
+.about-principle {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 16px;
+  padding: 32px 32px;
+  border-right: 1px solid var(--bone-200);
+  border-bottom: 1px solid var(--bone-200);
+  min-height: 140px;
+}
+.about-principle--span { grid-column: span 2; background: var(--bone-50); }
+.about-principle__mark {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--ochre-500);
+  display: inline-block;
+  flex-shrink: 0;
+  margin-top: 9px;
+}
+.about-principle__text {
+  font-size: clamp(1.0625rem, 0.95rem + 0.4vw, 1.25rem);
+  font-weight: 500;
+  letter-spacing: -0.012em;
+  line-height: 1.35;
+  color: var(--ox-900);
+  margin: 0;
+  max-width: 36ch;
+  text-wrap: balance;
+}
+.about-principle--span .about-principle__text { max-width: 52ch; }
+
+/* What I don't do — compressed */
+.about-notdo {
+  padding: 72px 0;
+  background: var(--bone-0);
+  border-top: 1px solid var(--bone-200);
+  border-bottom: 1px solid var(--bone-200);
+}
+.about-notdo__inner {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.about-notdo__label {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ochre-700);
+  margin: 0;
+}
+.about-notdo__text {
+  font-size: clamp(1.125rem, 1rem + 0.4vw, 1.375rem);
+  line-height: 1.5;
+  color: var(--ox-900);
+  margin: 0;
+  max-width: 52ch;
+  letter-spacing: -0.012em;
+}
+
+/* Closing */
+.about-closing { padding: 180px 0; background: var(--bone-0); }
+.about-closing__inner { max-width: 880px; }
+.about-closing__title {
+  font-size: clamp(2.5rem, 1.5rem + 3.4vw, 4.5rem);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+  margin: 0;
+  color: var(--ox-900);
+  max-width: 14ch;
+  text-wrap: balance;
+}
+.about-closing__body {
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--bone-500);
+  margin: 32px 0 56px;
+  max-width: 42ch;
+}
+
+/* ── Mobile / narrow ───────────────────────────────────────── */
+@media (max-width: 960px) {
+  .about-founder__grid { grid-template-columns: 1fr; gap: 48px; }
+  .about-founder__sticky { position: relative; top: auto; aspect-ratio: 4 / 3; }
+  .about-founder,
+  .about-why,
+  .about-principles,
+  .about-closing { padding: 80px 0; }
+  .about-principles__grid { grid-template-columns: 1fr; }
+  .about-principle--span { grid-column: span 1; }
+  .about-principle { padding: 28px 24px; min-height: 0; }
+}
