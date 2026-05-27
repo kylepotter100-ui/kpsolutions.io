@@ -1,16 +1,16 @@
 ---
 import ScrollingShot from "../ScrollingShot.astro";
-import { PS_SHOT, PS_DOMAIN } from "../../lib/work";
+import { PS_SHOT, PS_SHOT_MOBILE, PS_DOMAIN } from "../../lib/work";
 ---
 
 <section class="case-hero" id="top">
   <ScrollingShot
     src={PS_SHOT}
+    srcMobile={PS_SHOT_MOBILE}
     alt="Live preview of the Potter Sanctuary homepage, scrolling through the landing page"
     urlLabel={PS_DOMAIN}
     urlPosition="top-right"
     eager
-    duration={36}
   />
   <div class="case-hero__scrim"></div>
 
