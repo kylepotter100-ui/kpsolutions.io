@@ -1,5 +1,6 @@
 ---
 import Icon from "./Icon.astro";
+import { ORG_EMAIL } from "../lib/site";
 
 const navLinks = [
   { label: "Work", href: "/work" },
@@ -18,7 +19,7 @@ const navLinks = [
         <p class="tagline">Bespoke software for how your business actually works.</p>
       </div>
       <div class="contact">
-        <a href="mailto:hello@kpsolutions.io" class="email">hello@kpsolutions.io</a>
+        <a href={`mailto:${ORG_EMAIL}`} class="email">{ORG_EMAIL}</a>
         <a href="/contact" class="btn btn-inverse cta">Start a conversation <Icon name="arrow-right" size={14} /></a>
       </div>
     </div>
