@@ -42,4 +42,17 @@ if (reduceMotion) {
       );
     }
   }
+
+  // Capability grid — "zoom out into the grid": as the section rises into view,
+  // the grid eases back from a slight zoom-in and fades up, like the camera
+  // pulling out to reveal how we build. Transform + opacity only (INP-safe);
+  // the section clips overscale (overflow-hidden) so the zoom-in never causes
+  // horizontal overflow. Reduce-gated (this branch); no-JS leaves it at rest.
+  const capGrid = document.querySelector<HTMLElement>("[data-cap-zoom]");
+  if (capGrid) {
+    scroll(
+      animate(capGrid, { scale: [1.08, 1], opacity: [0.5, 1] }, { ease: "linear" }),
+      { target: capGrid, offset: ["start end", "start center"] },
+    );
+  }
 }
