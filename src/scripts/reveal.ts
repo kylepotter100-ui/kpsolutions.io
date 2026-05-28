@@ -110,77 +110,82 @@ function initPinnedPassage(): void {
   );
 }
 
-// "What we build" — left/right pinned scrollytelling (Darktrace-style). The
-// section pins; one service is active at a time (left name cross-fades via CSS),
-// and the active service's three sub-sections collapse upward in the right column
-// via transform: translateY + opacity ONLY — never max-height/height/margin, so
-// nothing reflows and the scroll stays smooth. Sub offsets are measured once (and
-// on resize / fonts ready) and cached, so per frame we only WRITE transform +
-// opacity, never read layout. Data-driven (count = number of [data-wwb-group]).
-// Desktop-only for now; the pin CSS is gated on data-wwb-active set here, so
-// reduced-motion/no-JS/mobile fall back to the static, fully-expanded list.
-const WWB_COLLAPSE = true;
+// "What we build" — content-height centred pinned scrollytelling, ported from
+// docs/references/what-we-build-collapse.html. The outer (data-wwb-outer) is pure
+// scroll distance: 60vh entry buffer + 180vh per service + 60vh exit buffer, so
+// the pin engages/releases fully clear of neighbours. The driver math matches the
+// reference exactly: remap past the buffers, a per-service entry HOLD (first 28%
+// fully visible → fresh start), then collapse the first nSub-1 subs (keep the last
+// visible) via transform: translateY on the track + per-sub opacity ONLY. Offsets
+// cached on init + resize + fonts.ready. Desktop-only; the pin CSS is gated on
+// data-wwb-active, so mobile / reduced-motion / no-JS keep the static list.
+const WWB_PER_VH = 180;
+const WWB_BUFFER_VH = 60;
+const WWB_HOLD = 0.28;
 function initWhatWeBuild(): void {
   const section = document.querySelector<HTMLElement>("[data-wwb]");
   if (!section) return;
   // Guards: bail BEFORE opting into the pin so the section keeps the static list.
-  if (!WWB_COLLAPSE) return;
   if (!window.matchMedia("(min-width: 769px)").matches) return;
+  const outer = section.querySelector<HTMLElement>("[data-wwb-outer]");
   const groups = Array.from(section.querySelectorAll<HTMLElement>("[data-wwb-group]"));
-  const wraps = groups.map((g) => g.querySelector<HTMLElement>("[data-wwb-subs]"));
-  const subsByGroup = groups.map((g) =>
-    Array.from(g.querySelectorAll<HTMLElement>("[data-wwb-sub]")),
-  );
   const N = groups.length;
-  if (N === 0) return;
+  if (!outer || N === 0) return;
 
   section.setAttribute("data-wwb-active", "");
 
-  // Cached layout: per group, the offsetTop of each sub plus the wrapper's total
-  // height. Re-measured only on resize / once fonts settle — never per frame.
-  let offsets: number[][] = [];
+  // Cached layout: per service, the offsetTop of each sub within its track. Never
+  // read per frame — only re-measured on resize / once fonts settle.
+  let metrics: { subs: HTMLElement[]; track: HTMLElement | null; offs: number[] }[] = [];
   const measure = () => {
-    offsets = subsByGroup.map((subs, gi) => {
-      const tops = subs.map((s) => s.offsetTop);
-      const last = subs[subs.length - 1];
-      tops.push(last ? last.offsetTop + last.offsetHeight : 0);
-      return tops;
+    metrics = groups.map((el) => {
+      const subs = Array.from(el.querySelectorAll<HTMLElement>("[data-wwb-sub]"));
+      return {
+        subs,
+        track: el.querySelector<HTMLElement>("[data-wwb-track]"),
+        offs: subs.map((s) => s.offsetTop),
+      };
     });
   };
   measure();
   window.addEventListener("resize", measure, { passive: true });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
 
-  const c01 = (n: number) => (n < 0 ? 0 : n > 1 ? 1 : n);
-  const eo = (t: number) => 1 - Math.pow(1 - t, 5); // easeOutQuint ≈ cubic-bezier(0.22,1,0.36,1)
+  const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
+  const eo = (t: number) => 1 - Math.pow(1 - t, 4); // easeOutQuart (matches reference)
+  const total = WWB_BUFFER_VH + N * WWB_PER_VH + WWB_BUFFER_VH;
+  const bufFrac = WWB_BUFFER_VH / total;
   let lastActive = -1;
 
+  // q = motion's progress over the outer (start start → end end) === the
+  // reference's -rect.top / (outerHeight - innerHeight).
   scroll(
-    (p: number) => {
-      const prog = c01(p) * N; // 0..N
+    (q: number) => {
+      const p = clamp01((q - bufFrac) / (1 - 2 * bufFrac)); // strip entry/exit buffers
+      const prog = p * N;
       const active = Math.min(N - 1, Math.floor(prog));
-      const w = prog - active; // within-act 0..1
+      const lpRaw = clamp01(prog - active);
+      // Entry hold: first HOLD fraction stays fully expanded, then collapse.
+      const lp = lpRaw < WWB_HOLD ? 0 : (lpRaw - WWB_HOLD) / (1 - WWB_HOLD);
 
       if (active !== lastActive) {
         for (let i = 0; i < N; i++) groups[i].classList.toggle("is-active", i === active);
         lastActive = active;
       }
 
-      const off = offsets[active];
-      const wrap = wraps[active];
-      const subs = subsByGroup[active];
-      const nSub = subs.length;
-      if (!off || !wrap || nSub === 0) return;
-
-      const cf = w * nSub; // collapsed-float 0..nSub
-      const idx = Math.min(nSub - 1, Math.floor(cf));
+      const m = metrics[active];
+      if (!m || !m.track || m.subs.length === 0) return;
+      const nSub = m.subs.length;
+      const collapsible = nSub - 1; // keep the LAST sub — never empty, never a lone title
+      const cf = lp * collapsible;
+      const idx = Math.min(collapsible - 1, Math.floor(cf));
       const frac = cf - idx;
-      const ty = -(off[idx] + eo(frac) * (off[idx + 1] - off[idx]));
-      wrap.style.transform = `translateY(${ty.toFixed(1)}px)`;
+      const ty = -(m.offs[idx] + eo(frac) * (m.offs[idx + 1] - m.offs[idx]));
+      m.track.style.transform = `translateY(${ty.toFixed(1)}px)`;
       for (let k = 0; k < nSub; k++) {
-        subs[k].style.opacity = (1 - eo(c01(cf - k))).toFixed(3);
+        m.subs[k].style.opacity = (k < collapsible ? 1 - eo(clamp01(cf - k)) : 1).toFixed(3);
       }
     },
-    { target: section, offset: ["start start", "end end"] },
+    { target: outer, offset: ["start start", "end end"] },
   );
 }

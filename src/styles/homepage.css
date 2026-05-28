@@ -326,112 +326,89 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   z-index: 3;
 }
 
-/* ── "What we build" — left/right pinned scrollytelling ─────── */
+/* ── "What we build" — content-height centred pinned scrollytelling ── */
 /* Base (no-JS / crawler / mobile / reduced-motion): a static interleaved list —
-   section heading + hairline, then each service (name + its three sub-sections)
-   fully expanded in normal flow with hairline dividers. The pinned two-column
-   stage is layered only when reveal.ts adds [data-wwb-active] on desktop. */
+   heading + hairline, then each service (name then its three sub-sections) fully
+   expanded in normal flow. The content-height centred pin + collapse choreography
+   is layered only when reveal.ts adds [data-wwb-active] on desktop. */
 .wwb { position: relative; background: var(--bone-50); color: var(--ox-900); }
-.wwb__stage { padding-block: clamp(96px, 9vw, 140px); }
-.wwb__header {
-  margin-bottom: clamp(32px, 4vw, 56px);
-  padding-bottom: clamp(20px, 2.4vw, 32px);
-  border-bottom: 1px solid oklch(22% 0.06 22 / 0.14);
-}
-.wwb__heading { margin: 0; }
-.wwb-service { padding-block: clamp(28px, 3vw, 44px); border-top: 1px solid oklch(22% 0.06 22 / 0.14); }
-.wwb-service:first-of-type { border-top: none; padding-top: 0; }
-.wwb-service:last-child { border-bottom: 1px solid oklch(22% 0.06 22 / 0.14); }
+.wwb__inner { padding-block: clamp(96px, 9vw, 140px); }
+.wwb__heading { margin: 0 0 clamp(18px, 2vh, 28px); }
+.wwb__rule { height: 1px; background: oklch(22% 0.06 22 / 0.16); margin-bottom: clamp(36px, 5vw, 64px); }
+.wwb-service { margin-bottom: clamp(44px, 6vw, 80px); }
+.wwb-service:last-child { margin-bottom: 0; }
 .wwb-service__name {
-  font-size: clamp(1.75rem, 1.15rem + 2.1vw, 2.875rem);
+  font-size: clamp(1.6rem, 1.1rem + 1.8vw, 2.4rem);
   font-weight: 500;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.01em;
   line-height: 1.05;
   color: var(--ox-900);
-  margin: 0 0 clamp(20px, 2.4vw, 32px);
+  margin: 0 0 clamp(20px, 2.4vw, 30px);
 }
 .wwb-service__name .display-italic { color: var(--ochre-700); }
-.wwb-service__subs-inner { display: flex; flex-direction: column; gap: clamp(22px, 2.6vw, 34px); }
-.wwb-sub { max-width: 72ch; }
+.wwb-sub { margin-bottom: clamp(22px, 2.6vw, 30px); }
+.wwb-sub:last-child { margin-bottom: 0; }
 .wwb-sub__label {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
-  letter-spacing: 0.085em;
   color: var(--ochre-700);
-  margin: 0 0 10px;
+  margin: 0 0 9px;
 }
 .wwb-sub__body {
   margin: 0;
-  font-size: clamp(1rem, 0.92rem + 0.3vw, 1.125rem);
-  line-height: 1.55;
+  font-size: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
+  line-height: 1.5;
+  max-width: 46ch;
   color: var(--ox-900);
 }
 
-/* JS desktop: pin a two-column stage, top-aligned under a persistent header layer
-   (heading + hairline). Service articles overlay in one grid cell (grid-area 1/1)
-   so only the active one shows (opacity cross-fade). Left = the service name;
-   right = its three subs in a fixed clip box, whose inner the driver collapses
-   upward with transform: translateY + opacity ONLY (no layout props, no reflow) —
-   subs vanish at the hairline. Scroll height scales with --wwb-acts. */
+/* JS desktop: a CONTENT-HEIGHT pin centred in the viewport (top:50% + translateY,
+   own bone bg + z-index so nothing overlays it — no empty 100vh frame). The outer
+   is pure scroll distance: 2*60vh buffers + 180vh per service (slow + deliberate).
+   Services overlay (absolute inset:0) with one active (opacity cross-fade); the
+   active service's track collapses upward via transform + per-sub opacity (driver).
+   STAGE/SUBS height is fixed to fit the longest service's three subs (tune as one
+   value). Keep buffer/per constants in sync with reveal.ts (60 / 180). */
 @media (min-width: 769px) {
-  html.js-reveal .wwb[data-wwb-active] .wwb__outer { height: calc(var(--wwb-acts, 4) * 100vh); }
+  html.js-reveal .wwb[data-wwb-active] .wwb__outer { height: calc((120 + var(--wwb-acts, 4) * 180) * 1vh); }
   html.js-reveal .wwb[data-wwb-active] .wwb__pin {
     position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow: hidden;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    background: var(--bone-50);
   }
-  html.js-reveal .wwb[data-wwb-active] .wwb__stage {
-    position: relative;
-    height: 100vh;
-    padding-block: 0;
-    display: grid;
-    grid-template: minmax(0, 1fr) / minmax(0, 1fr);
-  }
-  /* Persistent header layer — heading + hairline, fixed at top, clears the nav. */
-  html.js-reveal .wwb[data-wwb-active] .wwb__header {
-    position: absolute;
-    top: clamp(80px, 12vh, 120px);
-    left: 0;
-    right: 0;
-    z-index: 3;
-    margin: 0;
-    padding-bottom: clamp(16px, 1.8vh, 26px);
-  }
-  /* Articles overlay in one cell, top-aligned just beneath the hairline. */
+  html.js-reveal .wwb[data-wwb-active] .wwb__inner { padding-block: clamp(24px, 4vh, 48px); }
+  html.js-reveal .wwb[data-wwb-active] .wwb__heading { margin-bottom: clamp(14px, 1.8vh, 20px); }
+  html.js-reveal .wwb[data-wwb-active] .wwb__rule { margin-bottom: clamp(26px, 3.6vh, 44px); }
+  html.js-reveal .wwb[data-wwb-active] .wwb__stage { position: relative; height: 640px; }
   html.js-reveal .wwb[data-wwb-active] .wwb-service {
-    grid-area: 1 / 1;
+    position: absolute;
+    inset: 0;
     display: grid;
-    grid-template-columns: 40% 60%;
-    gap: clamp(32px, 5vw, 88px);
-    align-items: start;
-    padding-top: clamp(172px, 23vh, 224px);
-    padding-bottom: 0;
-    border: none;
+    grid-template-columns: 38% 62%;
+    gap: clamp(24px, 4vw, 56px);
+    align-items: start; /* left name top == right first-sub top */
+    margin: 0;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 350ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: opacity 380ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   html.js-reveal .wwb[data-wwb-active] .wwb-service.is-active {
     opacity: 1;
     pointer-events: auto;
   }
   html.js-reveal .wwb[data-wwb-active] .wwb-service__name { margin: 0; }
-  /* Clip box: top edge at the hairline; subs rising past it vanish. Height is the
-     content's own (3 subs) so nothing bottom-clips; breathing room is the empty
-     stage below the top-aligned content. */
-  html.js-reveal .wwb[data-wwb-active] .wwb-service__subs {
+  /* Clip box matches the stage height; subs rising past its top vanish at the rule. */
+  html.js-reveal .wwb[data-wwb-active] .wwb-subs {
     position: relative;
+    height: 640px;
     overflow: hidden;
   }
-  /* The translating element (driver writes translateY here); subs fade per-sub. */
-  html.js-reveal .wwb[data-wwb-active] .wwb-service__subs-inner {
-    position: relative;
-    gap: clamp(16px, 2vw, 28px);
-    will-change: transform;
-  }
-  html.js-reveal .wwb[data-wwb-active] .wwb-sub { max-width: none; will-change: opacity; }
+  html.js-reveal .wwb[data-wwb-active] .wwb-subs__track { position: relative; will-change: transform; }
+  html.js-reveal .wwb[data-wwb-active] .wwb-sub { margin-bottom: 30px; will-change: opacity; }
 }
 
 /* ── Process callout — dark inverted moment ────────────────── */
