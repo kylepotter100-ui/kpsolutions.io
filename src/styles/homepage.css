@@ -368,17 +368,19 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
 }
 
 /* JS desktop + collapsing enabled: each group's outer is the pinned scroll range
-   (one group of two services per pin); the pin clips the overflow and the content
-   reflows upward as subs collapse. Gated on [data-wwb-active] so every fallback
-   path keeps the static list above. */
-html.js-reveal .wwb[data-wwb-active] .wwb__outer { height: 220vh; }
+   (one group of two services per pin). Successive groups overlap by ~a pin's
+   worth (negative margin) so the next group locks in right as the previous one
+   finishes collapsing, and the pin carries an opaque background so the incoming
+   group cleanly covers the outgoing one's empty tail — no big gap between groups.
+   Gated on [data-wwb-active] so every fallback path keeps the static list above. */
+html.js-reveal .wwb[data-wwb-active] .wwb__outer { height: 190vh; }
+html.js-reveal .wwb[data-wwb-active] .wwb__outer + .wwb__outer { margin-top: -85vh; }
 html.js-reveal .wwb[data-wwb-active] .wwb__pin {
   position: sticky;
   top: 0;
   height: 100vh;
   overflow: hidden;
-  -webkit-mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+  background: var(--bone-50);
 }
 html.js-reveal .wwb[data-wwb-active] .wwb__content {
   height: auto;
