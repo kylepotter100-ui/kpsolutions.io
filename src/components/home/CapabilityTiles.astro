@@ -1,71 +1,13 @@
 ---
 // "What we build" — natural-reflow scrollytelling. The section pins for the
-// scroll duration; all nine sub-sections start expanded in normal document
-// flow, then collapse one at a time (top to bottom) as you scroll, letting the
-// content below reflow upward to fill the space. By the end only the three
-// service names remain. Driven by reveal.ts initWhatWeBuild (desktop only).
+// scroll duration; every sub-section starts expanded in normal document flow,
+// then collapses one at a time (top to bottom) as you scroll, letting the
+// content below reflow upward to fill the space. By the end only the service
+// names remain. Driven by reveal.ts initWhatWeBuild (desktop only, count-driven).
 // Mobile / reduced-motion / no-JS / WWB_COLLAPSE=false render every sub-section
-// static and fully expanded with no pinning or clipping. ids stay in lockstep
-// with capabilities.ts for the Service JSON-LD.
-const services = [
-  {
-    id: "bespoke",
-    lead: "Bespoke",
-    accent: "software",
-    subs: [
-      {
-        label: "The Challenge",
-        body: "Off-the-shelf SaaS forces you to bend your operations to fit its assumptions. Critical workflows live in spreadsheets, internal tools nobody documented, and tabs the team has to remember to keep open.",
-      },
-      {
-        label: "What We Offer",
-        body: "Custom platforms, internal tools, and integrations built around how your business actually works. Full ownership of the source code. Built on your data model, not a template.",
-      },
-      {
-        label: "The Outcome",
-        body: "Software that does exactly what your operation needs, without paying per-seat licenses for features you'll never use. When you want to change something, you can — because you own it.",
-      },
-    ],
-  },
-  {
-    id: "aeo",
-    lead: "AI-visible",
-    accent: "web presence",
-    subs: [
-      {
-        label: "The Challenge",
-        body: "Traditional SEO targets Google search. But increasingly, prospects ask ChatGPT, Claude, or Perplexity to recommend services. If your site isn't engineered for AI crawlers, you're invisible to that traffic.",
-      },
-      {
-        label: "What We Offer",
-        body: "Marketing sites built with JSON-LD schema, llms.txt manifests, direct-answer content blocks, and structured data designed specifically for LLM citation. The technical SEO of 2026, not 2018.",
-      },
-      {
-        label: "The Outcome",
-        body: "A web presence that gets cited by AI search engines when prospects ask about services in your space. New traffic from channels your competitors aren't optimized for yet.",
-      },
-    ],
-  },
-  {
-    id: "ai-ops",
-    lead: "AI built into your",
-    accent: "operations",
-    subs: [
-      {
-        label: "The Challenge",
-        body: "AI tools are useful but most teams use them as a sticker on a homepage or a chat sidebar. The real value is AI doing actual work inside your operations — triaging support, drafting proposals, summarizing meetings.",
-      },
-      {
-        label: "What We Offer",
-        body: "AI integrated directly into your workflows using the Anthropic API. Custom prompts, tool use, structured outputs — not generic chatbots. Built for the specific operational problems you have.",
-      },
-      {
-        label: "The Outcome",
-        body: "Hours of repetitive work absorbed by AI that knows your business context. Your team focuses on judgment calls, not data entry.",
-      },
-    ],
-  },
-];
+// static and fully expanded with no pinning or clipping. Copy + ids come from
+// capabilities.ts, the single source shared with the Service JSON-LD.
+import { capabilities } from "../../lib/capabilities";
 ---
 
 <section id="capabilities" class="wwb" data-wwb aria-labelledby="wwb-heading">
@@ -74,7 +16,7 @@ const services = [
       <div class="wwb__content shell">
         <h2 id="wwb-heading" class="section-heading wwb__heading">What we build.</h2>
         {
-          services.map((s) => (
+          capabilities.map((s) => (
             <article class="wwb-service reveal">
               <h3 class="wwb-service__name">
                 {s.lead} <span class="display-italic">{s.accent}</span>.

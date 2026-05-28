@@ -144,7 +144,7 @@ html.js-reveal .reveal-hero {
 /* ── Pinned passage (Apple-style manifesto) ────────────────── */
 .pinned {
   position: relative;
-  height: 162vh;
+  height: 120vh;
   background: radial-gradient(70% 55% at 50% 50%, oklch(97% 0.012 55) 0%, var(--bone-0) 70%);
 }
 /* Sticky 100vh pane holds the passage centered in the viewport while the taller
@@ -188,7 +188,7 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   .pinned-content { position: static; min-height: 0; padding: clamp(58px, 8.4vw, 96px) 32px clamp(48px, 7vw, 80px); }
 }
 @media (max-width: 768px) {
-  .pinned { height: 135vh; }
+  .pinned { height: 130vh; }
   .pinned-passage {
     font-size: clamp(1.125rem, 1rem + 1vw, 1.5rem);
     padding-inline: clamp(20px, 8vw, 40px);
@@ -367,7 +367,7 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
 /* JS desktop + collapsing enabled: pin the section and clip the overflow; the
    content flows from the top and reflows upward as subs collapse. Gated on
    [data-wwb-active] so every fallback path keeps the static list above. */
-html.js-reveal .wwb[data-wwb-active] .wwb__outer { height: 340vh; }
+html.js-reveal .wwb[data-wwb-active] .wwb__outer { height: 388vh; }
 html.js-reveal .wwb[data-wwb-active] .wwb__pin {
   position: sticky;
   top: 0;

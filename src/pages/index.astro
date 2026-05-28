@@ -25,9 +25,9 @@ const schemas: JsonLdSchema[] = [
   webSiteSchema(),
   ...capabilities.map((c) =>
     serviceSchema({
-      name: c.label,
-      description: c.copy,
-      url: new URL(c.href, SITE).href,
+      name: `${c.lead} ${c.accent}`,
+      description: c.subs[1].body,
+      url: new URL(`/build#${c.id}`, SITE).href,
     }),
   ),
 ];
