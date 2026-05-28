@@ -1,36 +1,49 @@
 ---
-// "What we build" — natural-reflow scrollytelling. The section pins for the
-// scroll duration; every sub-section starts expanded in normal document flow,
-// then collapses one at a time (top to bottom) as you scroll, letting the
-// content below reflow upward to fill the space. By the end only the service
-// names remain. Driven by reveal.ts initWhatWeBuild (desktop only, count-driven).
-// Mobile / reduced-motion / no-JS / WWB_COLLAPSE=false render every sub-section
-// static and fully expanded with no pinning or clipping. Copy + ids come from
+// "What we build" — paired pinned scrollytelling. Services are chunked into
+// groups of two; each group is its own pinned block that runs the collapse-from-
+// top mechanic (every sub starts expanded, then collapses one at a time as you
+// scroll, names stacking). Once a group's two services have collapsed, its pin
+// releases and the page scrolls on to the next group's pin — so any number of
+// services stays readable two-at-a-time instead of overflowing one viewport.
+// Driven by reveal.ts initWhatWeBuild (desktop only for now). Reduced-motion /
+// no-JS render every service static and fully expanded. Copy + ids come from
 // capabilities.ts, the single source shared with the Service JSON-LD.
 import { capabilities } from "../../lib/capabilities";
+
+const GROUP_SIZE = 2;
+const groups: (typeof capabilities)[] = [];
+for (let i = 0; i < capabilities.length; i += GROUP_SIZE) {
+  groups.push(capabilities.slice(i, i + GROUP_SIZE));
+}
 ---
 
 <section id="capabilities" class="wwb" data-wwb aria-labelledby="wwb-heading">
-  <div class="wwb__outer">
-    <div class="wwb__pin">
-      <div class="wwb__content shell">
-        <h2 id="wwb-heading" class="section-heading wwb__heading">What we build.</h2>
-        {
-          capabilities.map((s) => (
-            <article class="wwb-service reveal">
-              <h3 class="wwb-service__name">
-                {s.lead} <span class="display-italic">{s.accent}</span>.
-              </h3>
-              {s.subs.map((sub) => (
-                <div class="wwb-sub" data-wwb-sub>
-                  <h4 class="wwb-sub__label">{sub.label}</h4>
-                  <p class="wwb-sub__body">{sub.body}</p>
-                </div>
-              ))}
-            </article>
-          ))
-        }
+  {
+    groups.map((group, gi) => (
+      <div class="wwb__outer" data-wwb-group>
+        <div class="wwb__pin">
+          <div class="wwb__content shell">
+            {gi === 0 && (
+              <h2 id="wwb-heading" class="section-heading wwb__heading">
+                What we build.
+              </h2>
+            )}
+            {group.map((s) => (
+              <article class="wwb-service reveal">
+                <h3 class="wwb-service__name">
+                  {s.lead} <span class="display-italic">{s.accent}</span>.
+                </h3>
+                {s.subs.map((sub) => (
+                  <div class="wwb-sub" data-wwb-sub>
+                    <h4 class="wwb-sub__label">{sub.label}</h4>
+                    <p class="wwb-sub__body">{sub.body}</p>
+                  </div>
+                ))}
+              </article>
+            ))}
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
+    ))
+  }
 </section>

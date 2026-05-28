@@ -144,19 +144,21 @@ html.js-reveal .reveal-hero {
 /* ── Pinned passage (Apple-style manifesto) ────────────────── */
 .pinned {
   position: relative;
-  height: 110vh;
-  background: radial-gradient(70% 55% at 50% 42%, oklch(97% 0.012 55) 0%, var(--bone-0) 70%);
+  height: 200vh;
+  background: radial-gradient(70% 55% at 50% 50%, oklch(97% 0.012 55) 0%, var(--bone-0) 70%);
 }
-/* Content-sized sticky band held in the upper-centre of the viewport. No 100vh
-   pane (which left a near-empty bone screen and only ~20vh to drive the bolding)
-   and no transform (which painted outside the section over the hero). With the
-   pane gone the band holds across most of the section, so the bolding is slower. */
+/* Sticky 100vh pane holds the passage dead-centre in the viewport. The section
+   is 200vh = one screen pinned + ~100vh of scroll travel, so the text stays put
+   while the word-bolding plays out slowly. top:0 + no transform keeps the box
+   confined to its section (no bleed over the hero/marquee). */
 .pinned-content {
   position: sticky;
-  top: clamp(112px, 22vh, 240px);
+  top: 0;
+  min-height: 100vh;
   display: flex;
+  align-items: center;
   justify-content: center;
-  padding: 0 32px;
+  padding: clamp(48px, 8vh, 96px) 32px;
 }
 .pinned-passage {
   font-family: var(--font-sans);
@@ -184,11 +186,11 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
 @media (prefers-reduced-motion: reduce) {
   html.js-reveal .pinned-passage .activate { color: var(--ox-500); opacity: 1; }
   .pinned { height: auto; }
-  .pinned-content { position: static; top: auto; padding: clamp(58px, 8.4vw, 96px) 32px clamp(48px, 7vw, 80px); }
+  .pinned-content { position: static; min-height: 0; padding: clamp(58px, 8.4vw, 96px) 32px clamp(48px, 7vw, 80px); }
 }
 @media (max-width: 768px) {
-  .pinned { height: 120vh; }
-  .pinned-content { top: clamp(96px, 18vh, 180px); padding: 0 20px; }
+  .pinned { height: 180vh; }
+  .pinned-content { padding: clamp(40px, 8vh, 72px) 20px; }
   .pinned-passage {
     font-size: clamp(1.25rem, 1.05rem + 1.2vw, 1.625rem);
     padding-inline: clamp(20px, 8vw, 40px);
@@ -324,14 +326,16 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   z-index: 3;
 }
 
-/* ── "What we build" — natural-reflow collapse scrollytelling ── */
+/* ── "What we build" — paired collapse scrollytelling ───────── */
 /* Base (no-JS / crawler / mobile / reduced-motion / WWB_COLLAPSE=false): a
-   static vertical list — section heading, then three services, each with its
-   name + three sub-sections (label + body), fully expanded in normal flow. The
-   pinned collapse choreography is layered only when reveal.ts adds
-   [data-wwb-active] (desktop, 9 subs, collapsing enabled). */
+   static vertical list — heading then every service (across both groups), each
+   with its name + three sub-sections, fully expanded in normal flow. Group divs
+   add no visual seam here (padding lives only at the very top/bottom). The pinned
+   collapse choreography is layered only when reveal.ts adds [data-wwb-active]. */
 .wwb { position: relative; background: var(--bone-50); color: var(--ox-900); }
-.wwb__content { padding-block: clamp(96px, 9vw, 140px); }
+.wwb__content { padding-block: 0; }
+.wwb__outer:first-of-type .wwb__content { padding-top: clamp(96px, 9vw, 140px); }
+.wwb__outer:last-of-type .wwb__content { padding-bottom: clamp(96px, 9vw, 140px); }
 .wwb__heading { margin-bottom: clamp(40px, 6vw, 72px); }
 
 .wwb-service { padding-block: clamp(28px, 3vw, 44px); border-top: 1px solid oklch(22% 0.06 22 / 0.14); }
@@ -363,10 +367,11 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   color: var(--ox-900);
 }
 
-/* JS desktop + collapsing enabled: pin the section and clip the overflow; the
-   content flows from the top and reflows upward as subs collapse. Gated on
-   [data-wwb-active] so every fallback path keeps the static list above. */
-html.js-reveal .wwb[data-wwb-active] .wwb__outer { height: 388vh; }
+/* JS desktop + collapsing enabled: each group's outer is the pinned scroll range
+   (one group of two services per pin); the pin clips the overflow and the content
+   reflows upward as subs collapse. Gated on [data-wwb-active] so every fallback
+   path keeps the static list above. */
+html.js-reveal .wwb[data-wwb-active] .wwb__outer { height: 220vh; }
 html.js-reveal .wwb[data-wwb-active] .wwb__pin {
   position: sticky;
   top: 0;
@@ -417,10 +422,6 @@ html.js-reveal .wwb[data-wwb-active] .wwb-sub[data-collapsed="true"] {
   opacity: 0;
   margin-top: 0;
   margin-bottom: 0;
-}
-/* Mobile: narrower column wraps sub bodies taller, so lift the expanded cap. */
-@media (max-width: 768px) {
-  html.js-reveal .wwb[data-wwb-active] .wwb-sub { max-height: 72vh; }
 }
 
 /* ── Process callout — dark inverted moment ────────────────── */
