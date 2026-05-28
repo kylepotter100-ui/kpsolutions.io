@@ -1,13 +1,12 @@
 ---
-// "What we build" — vertical stacked sticky scrollytelling. The section pins
-// for 450vh; the heading + the three service names stay anchored while one
-// service is expanded at a time. Within the active service, each sub-section
-// unit (label + body) translates upward and fades, physically scrolling up
-// behind the service header in reading order (Challenge -> Offer -> Outcome);
-// once all three have gone, that service collapses and the next expands.
-// Driven by reveal.ts initWhatWeBuild (desktop only). Mobile / reduced-motion /
-// no-JS render all three services static and fully expanded. ids stay in
-// lockstep with capabilities.ts for the Service JSON-LD.
+// "What we build" — natural-reflow scrollytelling. The section pins for the
+// scroll duration; all nine sub-sections start expanded in normal document
+// flow, then collapse one at a time (top to bottom) as you scroll, letting the
+// content below reflow upward to fill the space. By the end only the three
+// service names remain. Driven by reveal.ts initWhatWeBuild (desktop only).
+// Mobile / reduced-motion / no-JS / WWB_COLLAPSE=false render every sub-section
+// static and fully expanded with no pinning or clipping. ids stay in lockstep
+// with capabilities.ts for the Service JSON-LD.
 const services = [
   {
     id: "bespoke",
@@ -71,27 +70,21 @@ const services = [
 
 <section id="capabilities" class="wwb" data-wwb aria-labelledby="wwb-heading">
   <div class="wwb__outer">
-    <div class="wwb__inner shell">
-      <h2 id="wwb-heading" class="section-heading wwb__heading">What we build.</h2>
-      <div class="wwb__list">
+    <div class="wwb__pin">
+      <div class="wwb__content shell">
+        <h2 id="wwb-heading" class="section-heading wwb__heading">What we build.</h2>
         {
-          services.map((s, i) => (
-            <article class={i === 0 ? "wwb-service is-active" : "wwb-service"} data-wwb-service={i}>
-              <div class="wwb-service__header">
-                <h3 class="wwb-service__name">
-                  {s.lead} <span class="display-italic">{s.accent}</span>.
-                </h3>
-              </div>
-              <div class="wwb-service__subs">
-                <div class="wwb-service__track" data-wwb-track>
-                  {s.subs.map((sub) => (
-                    <div class="wwb-sub" data-wwb-unit>
-                      <h4 class="wwb-sub__label">{sub.label}</h4>
-                      <p class="wwb-sub__body">{sub.body}</p>
-                    </div>
-                  ))}
+          services.map((s) => (
+            <article class="wwb-service">
+              <h3 class="wwb-service__name">
+                {s.lead} <span class="display-italic">{s.accent}</span>.
+              </h3>
+              {s.subs.map((sub) => (
+                <div class="wwb-sub" data-wwb-sub>
+                  <h4 class="wwb-sub__label">{sub.label}</h4>
+                  <p class="wwb-sub__body">{sub.body}</p>
                 </div>
-              </div>
+              ))}
             </article>
           ))
         }

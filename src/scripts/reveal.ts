@@ -107,56 +107,39 @@ function initPinnedPassage(): void {
   );
 }
 
-// "What we build" vertical sticky scrollytelling: 3 services pinned across 450vh.
-// One service is expanded at a time; within it, each sub unit (label + body)
-// translates upward and fades — physically scrolling up behind the service's
-// opaque header in reading order (Challenge -> Offer -> Outcome). Once all three
-// have gone, that service collapses (CSS max-height) and the next expands.
-// Per-frame work is transform/opacity writes only (compositor-safe, no layout
-// reads). Desktop-only; mobile/reduced-motion render static via CSS.
-// Flip WWB_COLLAPSE to drop the per-unit translate/fade (escape hatch) while
-// keeping the service pinning + accordion expand/collapse.
+// "What we build" natural-reflow scrollytelling. The section pins for its scroll
+// duration; all nine sub-sections start expanded in normal document flow, then
+// collapse one at a time (top to bottom) as you scroll — each collapse animates
+// max-height/opacity/margin to 0 in CSS, so the content below reflows upward to
+// fill the gap. By the last state only the three service names remain. Per-phase
+// work is attribute writes on change only (<=10 total, no per-frame layout reads).
+// Desktop-only; the pin/clip CSS is gated on the data-wwb-active attribute set
+// here, so mobile/reduced-motion/no-JS and the WWB_COLLAPSE=false escape hatch
+// all fall back to the static, fully-expanded, unclipped list.
 const WWB_COLLAPSE = true;
 function initWhatWeBuild(): void {
   const section = document.querySelector<HTMLElement>("[data-wwb]");
   if (!section) return;
-  const services = Array.from(section.querySelectorAll<HTMLElement>("[data-wwb-service]"));
-  if (services.length !== 3) return;
+  const subs = Array.from(section.querySelectorAll<HTMLElement>("[data-wwb-sub]"));
+  // Escape hatch / guards: bail BEFORE opting into the pin/clip so the section
+  // keeps the static expanded layout (all content visible, normal scroll).
+  if (!WWB_COLLAPSE) return;
+  if (subs.length !== 9) return;
   if (!window.matchMedia("(min-width: 769px)").matches) return;
 
-  const tracks = services.map((s) => s.querySelector<HTMLElement>("[data-wwb-track]"));
-  const units = services.map((s) => Array.from(s.querySelectorAll<HTMLElement>("[data-wwb-unit]")));
-  // Overlapping exit windows keep the upward scroll continuous across the trio.
-  const bands: ReadonlyArray<readonly [number, number]> = [
-    [0, 0.42],
-    [0.29, 0.71],
-    [0.58, 1],
-  ];
+  section.setAttribute("data-wwb-active", "");
   const c01 = (n: number) => (n < 0 ? 0 : n > 1 ? 1 : n);
-  // easeOutQuint — matches the restrained easeOut bezier [0.22, 1, 0.36, 1].
-  const eo = (t: number) => 1 - Math.pow(1 - t, 5);
-
-  let activeIdx = -1;
+  let last = -1;
 
   scroll(
     (p: number) => {
-      const raw = c01(p) * 3;
-      const idx = Math.min(2, Math.floor(raw));
-      const local = raw - idx;
-
-      if (idx !== activeIdx) {
-        services.forEach((s, i) => s.classList.toggle("is-active", i === idx));
-        activeIdx = idx;
-      }
-
-      if (!WWB_COLLAPSE) return;
-
-      const track = tracks[idx];
-      if (track) track.style.transform = `translateY(${(eo(local) * -100).toFixed(2)}%)`;
-      const us = units[idx];
-      for (let i = 0; i < us.length; i++) {
-        const [a, b] = bands[i];
-        us[i].style.opacity = (1 - eo(c01((local - a) / (b - a)))).toFixed(3);
+      // 10 states across progress: state 0 = all visible (entry buffer);
+      // each later state collapses one more sub, ending with all 9 collapsed.
+      const n = Math.min(9, Math.floor(c01(p) * 10));
+      if (n === last) return;
+      last = n;
+      for (let i = 0; i < subs.length; i++) {
+        subs[i].setAttribute("data-collapsed", i < n ? "true" : "false");
       }
     },
     { target: section, offset: ["start start", "end end"] },

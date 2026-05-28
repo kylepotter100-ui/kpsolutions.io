@@ -144,7 +144,7 @@ html.js-reveal .reveal-hero {
 /* ── Pinned passage (Apple-style manifesto) ────────────────── */
 .pinned {
   position: relative;
-  height: 135vh;
+  height: 120vh;
   background: radial-gradient(70% 55% at 50% 50%, oklch(97% 0.012 55) 0%, var(--bone-0) 70%);
 }
 .pinned-content {
@@ -185,7 +185,7 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   .pinned-content { position: static; height: auto; padding: clamp(58px, 8.4vw, 96px) 32px clamp(48px, 7vw, 80px); }
 }
 @media (max-width: 768px) {
-  .pinned { height: 105vh; }
+  .pinned { height: 100vh; }
   .pinned-passage {
     font-size: clamp(1.125rem, 1rem + 1vw, 1.5rem);
     padding-inline: clamp(20px, 8vw, 40px);
@@ -322,32 +322,30 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   z-index: 3;
 }
 
-/* ── "What we build" — vertical stacked sticky scrollytelling ── */
-/* Base (no-JS / crawler / mobile / reduced-motion): a static vertical list —
-   section heading, then three services, each with its name + three sub-sections
-   (label + body), fully expanded. The pinned choreography (one service expanded
-   at a time; its sub units translating up + fading behind the service header)
-   is layered only under html.js-reveal on desktop. */
+/* ── "What we build" — natural-reflow collapse scrollytelling ── */
+/* Base (no-JS / crawler / mobile / reduced-motion / WWB_COLLAPSE=false): a
+   static vertical list — section heading, then three services, each with its
+   name + three sub-sections (label + body), fully expanded in normal flow. The
+   pinned collapse choreography is layered only when reveal.ts adds
+   [data-wwb-active] (desktop, 9 subs, collapsing enabled). */
 .wwb { position: relative; background: var(--bone-50); color: var(--ox-900); }
-.wwb__inner { padding-block: clamp(96px, 9vw, 140px); }
+.wwb__content { padding-block: clamp(96px, 9vw, 140px); }
 .wwb__heading { margin-bottom: clamp(40px, 6vw, 72px); }
 
 .wwb-service { padding-block: clamp(28px, 3vw, 44px); border-top: 1px solid oklch(22% 0.06 22 / 0.14); }
 .wwb-service:last-child { border-bottom: 1px solid oklch(22% 0.06 22 / 0.14); }
-.wwb-service__header { background: var(--bone-50); }
 .wwb-service__name {
   font-size: clamp(1.75rem, 1.15rem + 2.1vw, 2.875rem);
   font-weight: 500;
   letter-spacing: -0.03em;
   line-height: 1.05;
   color: var(--ox-900);
-  margin: 0;
+  margin: 0 0 clamp(20px, 2.4vw, 32px);
 }
 .wwb-service__name .display-italic { color: var(--ochre-700); }
 
-.wwb-service__subs { margin-top: clamp(20px, 2.4vw, 32px); }
-.wwb-service__track { display: flex; flex-direction: column; gap: clamp(22px, 2.6vw, 34px); }
 .wwb-sub { max-width: 72ch; }
+.wwb-sub + .wwb-sub { margin-top: clamp(22px, 2.6vw, 34px); }
 .wwb-sub__label {
   font-size: 12px;
   font-weight: 600;
@@ -363,90 +361,46 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   color: var(--ox-900);
 }
 
-/* JS desktop: pin the section, accordion the services, scroll each sub unit up
-   behind the active service's opaque header. */
-html.js-reveal .wwb__outer { height: 450vh; }
-html.js-reveal .wwb__inner {
+/* JS desktop + collapsing enabled: pin the section and clip the overflow; the
+   content flows from the top and reflows upward as subs collapse. Gated on
+   [data-wwb-active] so every fallback path keeps the static list above. */
+html.js-reveal .wwb[data-wwb-active] .wwb__outer { height: 340vh; }
+html.js-reveal .wwb[data-wwb-active] .wwb__pin {
   position: sticky;
   top: 0;
   height: 100vh;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+}
+html.js-reveal .wwb[data-wwb-active] .wwb__content {
+  height: auto;
   padding-block: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  overflow: hidden;
+  padding-top: clamp(80px, 12vh, 132px);
 }
-html.js-reveal .wwb__heading { margin-bottom: clamp(28px, 4vw, 56px); flex: none; }
+html.js-reveal .wwb[data-wwb-active] .wwb__heading { margin-bottom: clamp(28px, 4vw, 56px); }
 
-html.js-reveal .wwb-service { padding-block: 0; border-top: none; }
-html.js-reveal .wwb-service:last-child { border-bottom: none; }
-html.js-reveal .wwb-service + .wwb-service { margin-top: clamp(6px, 1vw, 14px); }
-html.js-reveal .wwb-service__header {
-  position: relative;
-  z-index: 2;
-  padding-block: clamp(8px, 1.2vw, 16px);
+/* In the pinned state services flow without rules; collapsed subs reflow away. */
+html.js-reveal .wwb[data-wwb-active] .wwb-service {
+  padding-block: 0;
+  border: none;
+  margin-top: clamp(20px, 2.4vw, 36px);
 }
-/* Dim non-active service names so the active one leads (color, not opacity). */
-html.js-reveal .wwb-service__name { transition: color 420ms var(--ease-out); }
-html.js-reveal .wwb-service:not(.is-active) .wwb-service__name { color: oklch(42% 0.052 32); }
-
-/* Collapsed services show their header only; the active one expands its subs. */
-html.js-reveal .wwb-service__subs {
-  position: relative;
-  z-index: 1;
+html.js-reveal .wwb[data-wwb-active] .wwb-service:first-of-type { margin-top: 0; }
+html.js-reveal .wwb[data-wwb-active] .wwb-sub {
   overflow: hidden;
+  max-height: 340px;
+  margin-top: clamp(20px, 2.4vw, 32px);
+  margin-bottom: 0;
+  transition: max-height 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 300ms cubic-bezier(0.22, 1, 0.36, 1),
+    margin 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+html.js-reveal .wwb[data-wwb-active] .wwb-sub[data-collapsed="true"] {
   max-height: 0;
   opacity: 0;
   margin-top: 0;
-  transition: max-height 540ms var(--ease-in-out), opacity 360ms var(--ease-in-out),
-    margin-top 540ms var(--ease-in-out);
-}
-html.js-reveal .wwb-service.is-active .wwb-service__subs {
-  max-height: 46vh;
-  opacity: 1;
-  margin-top: clamp(16px, 2vw, 28px);
-}
-/* The track is translated up (0 -> -100% of its own height) by JS; each unit's
-   opacity is driven per band — compositor-only, no per-frame layout reads. */
-html.js-reveal .wwb-service__track { will-change: transform; }
-
-/* Mobile + reduced-motion: revert to the static, fully expanded vertical list. */
-@media (max-width: 768px) {
-  html.js-reveal .wwb__outer { height: auto; }
-  html.js-reveal .wwb__inner {
-    position: static;
-    height: auto;
-    display: block;
-    overflow: visible;
-    padding-block: clamp(72px, 12vw, 110px);
-  }
-  html.js-reveal .wwb__heading { margin-bottom: clamp(32px, 8vw, 56px); }
-  html.js-reveal .wwb-service { padding-block: clamp(28px, 6vw, 40px); border-top: 1px solid oklch(22% 0.06 22 / 0.14); }
-  html.js-reveal .wwb-service:last-child { border-bottom: 1px solid oklch(22% 0.06 22 / 0.14); }
-  html.js-reveal .wwb-service + .wwb-service { margin-top: 0; }
-  html.js-reveal .wwb-service__header { background: none; padding-block: 0; }
-  html.js-reveal .wwb-service__subs { max-height: none; opacity: 1; overflow: visible; margin-top: clamp(22px, 6vw, 30px); }
-  html.js-reveal .wwb-service__track { transform: none !important; }
-  html.js-reveal .wwb-sub { opacity: 1 !important; }
-  html.js-reveal .wwb-service:not(.is-active) .wwb-service__name { color: var(--ox-900); }
-}
-@media (prefers-reduced-motion: reduce) {
-  html.js-reveal .wwb__outer { height: auto; }
-  html.js-reveal .wwb__inner {
-    position: static;
-    height: auto;
-    display: block;
-    overflow: visible;
-    padding-block: clamp(96px, 9vw, 140px);
-  }
-  html.js-reveal .wwb-service { padding-block: clamp(28px, 3vw, 44px); border-top: 1px solid oklch(22% 0.06 22 / 0.14); }
-  html.js-reveal .wwb-service:last-child { border-bottom: 1px solid oklch(22% 0.06 22 / 0.14); }
-  html.js-reveal .wwb-service + .wwb-service { margin-top: 0; }
-  html.js-reveal .wwb-service__header { background: none; padding-block: 0; }
-  html.js-reveal .wwb-service__subs { max-height: none; opacity: 1; overflow: visible; margin-top: clamp(20px, 2vw, 28px); }
-  html.js-reveal .wwb-service__track { transform: none !important; }
-  html.js-reveal .wwb-sub { opacity: 1 !important; }
-  html.js-reveal .wwb-service:not(.is-active) .wwb-service__name { color: var(--ox-900); }
+  margin-bottom: 0;
 }
 
 /* ── Process callout — dark inverted moment ────────────────── */
@@ -483,14 +437,14 @@ html.js-reveal .wwb-service__track { will-change: transform; }
 .process-callout--dark .link-arrow { color: var(--bone-0); }
 .process-callout--dark .link-arrow:hover { color: var(--ochre-300); }
 
-/* ── Who we work with — card grid (cream) ──────────────────── */
-.who { background: var(--bone-50); color: var(--ox-900); padding: clamp(96px, 9vw, 140px) 0; }
-.who__heading { color: var(--ox-900); margin-bottom: clamp(40px, 6vw, 72px); }
+/* ── Who we work with — light cards on a dark section ──────── */
+.who { background: var(--ox-900); color: var(--bone-0); padding: clamp(96px, 9vw, 140px) 0; }
+.who__heading { color: var(--bone-0); margin-bottom: clamp(40px, 6vw, 72px); }
 .who-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .who-card {
   position: relative;
   background: var(--bone-0);
-  border: 1px solid oklch(22% 0.060 22 / 0.15);
+  border: 1px solid oklch(96% 0.012 60 / 0.10);
   padding: 48px;
   overflow: hidden;
   transition: border-color 200ms var(--ease-out), transform 200ms var(--ease-out);
