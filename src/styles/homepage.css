@@ -375,8 +375,11 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   html.js-reveal .wwb[data-wwb-active] .wwb__outer { height: calc((120 + var(--wwb-acts, 4) * 180) * 1vh); }
   html.js-reveal .wwb[data-wwb-active] .wwb__pin {
     position: sticky;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     z-index: 2;
     background: var(--bone-50);
   }
