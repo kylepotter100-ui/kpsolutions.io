@@ -1,12 +1,15 @@
 ---
 // "What we build" — left/right pinned scrollytelling (Darktrace-style). Each
-// service is one <article> (name + its three subs together), so the same markup
-// is a clean interleaved static list in fallback AND an overlaid two-column stage
-// under JS. On desktop the section pins: the left column shows the active service
-// name (cross-fades on change) and the right column's three sub-sections collapse
-// upward via transform + opacity only (driven by reveal.ts initWhatWeBuild). The
-// service count drives the scroll height via --wwb-acts. Mobile / reduced-motion /
-// no-JS render the static expanded list. Copy + ids come from capabilities.ts.
+// service is one <article> (name + its three subs), so the same markup is a clean
+// interleaved static list in fallback AND an overlaid two-column stage under JS.
+// A persistent header layer (section heading + hairline) sits at the top of the
+// stage and does NOT swap. On desktop the section pins: the active service's name
+// (left) cross-fades; its three subs (right) collapse upward and vanish at the
+// hairline. The right column is a fixed clip box (.wwb-service__subs) wrapping a
+// translating inner (.wwb-service__subs-inner = [data-wwb-subs]) which the driver
+// moves with transform: translateY + per-sub opacity ONLY (reveal.ts). The count
+// drives the scroll height via --wwb-acts. Mobile / reduced-motion / no-JS render
+// the static expanded list. Copy + ids come from capabilities.ts.
 import { capabilities } from "../../lib/capabilities";
 ---
 
@@ -14,7 +17,9 @@ import { capabilities } from "../../lib/capabilities";
   <div class="wwb__outer" style={`--wwb-acts:${capabilities.length}`}>
     <div class="wwb__pin">
       <div class="wwb__stage shell">
-        <h2 id="wwb-heading" class="wwb__eyebrow">What we build.</h2>
+        <div class="wwb__header">
+          <h2 id="wwb-heading" class="section-heading wwb__heading">What we build.</h2>
+        </div>
         {
           capabilities.map((s, i) => (
             <article class={i === 0 ? "wwb-service is-active" : "wwb-service"} data-wwb-group>
@@ -23,13 +28,15 @@ import { capabilities } from "../../lib/capabilities";
                   {s.lead} <span class="display-italic">{s.accent}</span>.
                 </h3>
               </div>
-              <div class="wwb-service__subs" data-wwb-subs>
-                {s.subs.map((sub) => (
-                  <div class="wwb-sub" data-wwb-sub>
-                    <h4 class="wwb-sub__label">{sub.label}</h4>
-                    <p class="wwb-sub__body">{sub.body}</p>
-                  </div>
-                ))}
+              <div class="wwb-service__subs">
+                <div class="wwb-service__subs-inner" data-wwb-subs>
+                  {s.subs.map((sub) => (
+                    <div class="wwb-sub" data-wwb-sub>
+                      <h4 class="wwb-sub__label">{sub.label}</h4>
+                      <p class="wwb-sub__body">{sub.body}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </article>
           ))

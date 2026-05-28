@@ -144,21 +144,21 @@ html.js-reveal .reveal-hero {
 /* ── Pinned passage (Apple-style manifesto) ────────────────── */
 .pinned {
   position: relative;
-  height: 200vh;
-  background: radial-gradient(70% 55% at 50% 50%, oklch(97% 0.012 55) 0%, var(--bone-0) 70%);
+  height: 160vh;
+  background: radial-gradient(70% 55% at 50% 40%, oklch(97% 0.012 55) 0%, var(--bone-0) 70%);
 }
-/* Sticky 100vh pane holds the passage dead-centre in the viewport. The section
-   is 200vh = one screen pinned + ~100vh of scroll travel, so the text stays put
-   while the word-bolding plays out slowly. top:0 + no transform keeps the box
-   confined to its section (no bleed over the hero/marquee). */
+/* Sticky 100vh pane, top-aligned (not dead-centre) so the short passage sits in
+   the upper portion of the viewport rather than floating in an empty container.
+   The text stays put while the word-bolding plays out over the scroll. top:0 +
+   no transform keeps the box confined to its section (no bleed over the hero). */
 .pinned-content {
   position: sticky;
   top: 0;
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: clamp(48px, 8vh, 96px) 32px;
+  padding: clamp(120px, 22vh, 224px) 32px 0;
 }
 .pinned-passage {
   font-family: var(--font-sans);
@@ -189,8 +189,8 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   .pinned-content { position: static; min-height: 0; padding: clamp(58px, 8.4vw, 96px) 32px clamp(48px, 7vw, 80px); }
 }
 @media (max-width: 768px) {
-  .pinned { height: 180vh; }
-  .pinned-content { padding: clamp(40px, 8vh, 72px) 20px; }
+  .pinned { height: 150vh; }
+  .pinned-content { padding: clamp(96px, 18vh, 168px) 20px 0; }
   .pinned-passage {
     font-size: clamp(1.25rem, 1.05rem + 1.2vw, 1.625rem);
     padding-inline: clamp(20px, 8vw, 40px);
@@ -328,20 +328,19 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
 
 /* ── "What we build" — left/right pinned scrollytelling ─────── */
 /* Base (no-JS / crawler / mobile / reduced-motion): a static interleaved list —
-   eyebrow heading, then each service (name + its three sub-sections) fully
-   expanded in normal flow with hairline dividers. The pinned two-column stage is
-   layered only when reveal.ts adds [data-wwb-active] on desktop. */
+   section heading + hairline, then each service (name + its three sub-sections)
+   fully expanded in normal flow with hairline dividers. The pinned two-column
+   stage is layered only when reveal.ts adds [data-wwb-active] on desktop. */
 .wwb { position: relative; background: var(--bone-50); color: var(--ox-900); }
 .wwb__stage { padding-block: clamp(96px, 9vw, 140px); }
-.wwb__eyebrow {
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--ochre-700);
-  margin: 0 0 clamp(36px, 5vw, 64px);
+.wwb__header {
+  margin-bottom: clamp(32px, 4vw, 56px);
+  padding-bottom: clamp(20px, 2.4vw, 32px);
+  border-bottom: 1px solid oklch(22% 0.06 22 / 0.14);
 }
+.wwb__heading { margin: 0; }
 .wwb-service { padding-block: clamp(28px, 3vw, 44px); border-top: 1px solid oklch(22% 0.06 22 / 0.14); }
+.wwb-service:first-of-type { border-top: none; padding-top: 0; }
 .wwb-service:last-child { border-bottom: 1px solid oklch(22% 0.06 22 / 0.14); }
 .wwb-service__name {
   font-size: clamp(1.75rem, 1.15rem + 2.1vw, 2.875rem);
@@ -352,7 +351,7 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   margin: 0 0 clamp(20px, 2.4vw, 32px);
 }
 .wwb-service__name .display-italic { color: var(--ochre-700); }
-.wwb-service__subs { display: flex; flex-direction: column; gap: clamp(22px, 2.6vw, 34px); }
+.wwb-service__subs-inner { display: flex; flex-direction: column; gap: clamp(22px, 2.6vw, 34px); }
 .wwb-sub { max-width: 72ch; }
 .wwb-sub__label {
   font-size: 12px;
@@ -369,13 +368,14 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   color: var(--ox-900);
 }
 
-/* JS desktop: pin a two-column stage. Service articles overlay in one grid cell
-   (grid-area 1/1) so only the active one shows (opacity cross-fade). Left column =
-   the service name (fixed); right column = its three subs, which the driver
-   collapses upward with transform: translateY + opacity ONLY — no layout props,
-   so nothing reflows. Scroll height scales with the service count via --wwb-acts. */
+/* JS desktop: pin a two-column stage, top-aligned under a persistent header layer
+   (heading + hairline). Service articles overlay in one grid cell (grid-area 1/1)
+   so only the active one shows (opacity cross-fade). Left = the service name;
+   right = its three subs in a fixed clip box, whose inner the driver collapses
+   upward with transform: translateY + opacity ONLY (no layout props, no reflow) —
+   subs vanish at the hairline. Scroll height scales with --wwb-acts. */
 @media (min-width: 769px) {
-  html.js-reveal .wwb[data-wwb-active] .wwb__outer { height: calc(var(--wwb-acts, 4) * 120vh); }
+  html.js-reveal .wwb[data-wwb-active] .wwb__outer { height: calc(var(--wwb-acts, 4) * 100vh); }
   html.js-reveal .wwb[data-wwb-active] .wwb__pin {
     position: sticky;
     top: 0;
@@ -383,25 +383,31 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
     overflow: hidden;
   }
   html.js-reveal .wwb[data-wwb-active] .wwb__stage {
+    position: relative;
     height: 100vh;
     padding-block: 0;
     display: grid;
     grid-template: minmax(0, 1fr) / minmax(0, 1fr);
   }
-  html.js-reveal .wwb[data-wwb-active] .wwb__eyebrow {
-    grid-area: 1 / 1;
-    align-self: start;
+  /* Persistent header layer — heading + hairline, fixed at top, clears the nav. */
+  html.js-reveal .wwb[data-wwb-active] .wwb__header {
+    position: absolute;
+    top: clamp(80px, 12vh, 120px);
+    left: 0;
+    right: 0;
     z-index: 3;
     margin: 0;
-    padding-top: clamp(88px, 12vh, 140px);
+    padding-bottom: clamp(16px, 1.8vh, 26px);
   }
+  /* Articles overlay in one cell, top-aligned just beneath the hairline. */
   html.js-reveal .wwb[data-wwb-active] .wwb-service {
     grid-area: 1 / 1;
     display: grid;
     grid-template-columns: 40% 60%;
     gap: clamp(32px, 5vw, 88px);
-    align-items: center;
-    padding-top: clamp(120px, 16vh, 184px);
+    align-items: start;
+    padding-top: clamp(172px, 23vh, 224px);
+    padding-bottom: 0;
     border: none;
     opacity: 0;
     pointer-events: none;
@@ -412,9 +418,17 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
     pointer-events: auto;
   }
   html.js-reveal .wwb[data-wwb-active] .wwb-service__name { margin: 0; }
+  /* Clip box: top edge at the hairline; subs rising past it vanish. Height is the
+     content's own (3 subs) so nothing bottom-clips; breathing room is the empty
+     stage below the top-aligned content. */
   html.js-reveal .wwb[data-wwb-active] .wwb-service__subs {
     position: relative;
-    gap: clamp(24px, 3vw, 40px);
+    overflow: hidden;
+  }
+  /* The translating element (driver writes translateY here); subs fade per-sub. */
+  html.js-reveal .wwb[data-wwb-active] .wwb-service__subs-inner {
+    position: relative;
+    gap: clamp(16px, 2vw, 28px);
     will-change: transform;
   }
   html.js-reveal .wwb[data-wwb-active] .wwb-sub { max-width: none; will-change: opacity; }
