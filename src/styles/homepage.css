@@ -144,17 +144,20 @@ html.js-reveal .reveal-hero {
 /* ── Pinned passage (Apple-style manifesto) ────────────────── */
 .pinned {
   position: relative;
-  height: 120vh;
+  height: 162vh;
   background: radial-gradient(70% 55% at 50% 50%, oklch(97% 0.012 55) 0%, var(--bone-0) 70%);
 }
+/* Sticky 100vh pane holds the passage centered in the viewport while the taller
+   section scrolls, so the word-bolding plays out in place. top:0 + no transform
+   keeps the box confined to its containing block (no bleed up over the hero). */
 .pinned-content {
   position: sticky;
   top: 0;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 32px;
+  padding: clamp(48px, 8vh, 96px) 32px;
 }
 .pinned-passage {
   font-family: var(--font-sans);
@@ -182,16 +185,16 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
 @media (prefers-reduced-motion: reduce) {
   html.js-reveal .pinned-passage .activate { color: var(--ox-500); opacity: 1; }
   .pinned { height: auto; }
-  .pinned-content { position: static; height: auto; padding: clamp(58px, 8.4vw, 96px) 32px clamp(48px, 7vw, 80px); }
+  .pinned-content { position: static; min-height: 0; padding: clamp(58px, 8.4vw, 96px) 32px clamp(48px, 7vw, 80px); }
 }
 @media (max-width: 768px) {
-  .pinned { height: 100vh; }
+  .pinned { height: 135vh; }
   .pinned-passage {
     font-size: clamp(1.125rem, 1rem + 1vw, 1.5rem);
     padding-inline: clamp(20px, 8vw, 40px);
     max-width: 40ch;
   }
-  .pinned-content { padding: 0 20px; }
+  .pinned-content { padding: clamp(40px, 8vh, 72px) 20px; }
 }
 
 /* ── Marquee strip ─────────────────────────────────────────── */
@@ -380,13 +383,27 @@ html.js-reveal .wwb[data-wwb-active] .wwb__content {
 }
 html.js-reveal .wwb[data-wwb-active] .wwb__heading { margin-bottom: clamp(28px, 4vw, 56px); }
 
-/* In the pinned state services flow without rules; collapsed subs reflow away. */
+/* In the pinned state services flow with a hairline divide; collapsed subs
+   reflow away. opacity/transform reset keeps the .reveal (mobile fade-up) from
+   touching the desktop choreography. */
 html.js-reveal .wwb[data-wwb-active] .wwb-service {
   padding-block: 0;
+  padding-top: clamp(22px, 2.6vw, 38px);
   border: none;
-  margin-top: clamp(20px, 2.4vw, 36px);
+  border-top: 1px solid oklch(22% 0.06 22 / 0.14);
+  margin-top: clamp(22px, 2.6vw, 38px);
+  opacity: 1;
+  transform: none;
 }
-html.js-reveal .wwb[data-wwb-active] .wwb-service:first-of-type { margin-top: 0; }
+html.js-reveal .wwb[data-wwb-active] .wwb-service:first-of-type {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+html.js-reveal .wwb[data-wwb-active] .wwb-service:last-of-type {
+  border-bottom: 1px solid oklch(22% 0.06 22 / 0.14);
+  padding-bottom: clamp(22px, 2.6vw, 38px);
+}
 html.js-reveal .wwb[data-wwb-active] .wwb-sub {
   overflow: hidden;
   max-height: 340px;

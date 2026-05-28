@@ -103,6 +103,9 @@ function initPinnedPassage(): void {
         spans[i].classList.toggle("is-active", progress >= thresholds[i]);
       }
     },
+    // Section is taller than the viewport again, so edge offsets map progress
+    // 0->1 across the full sticky-pinned hold (start start = pin begins,
+    // end end = pin releases).
     { target: section, offset: ["start start", "end end"] },
   );
 }
