@@ -145,14 +145,15 @@ html.js-reveal .reveal-hero {
 .pinned {
   position: relative;
   height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: radial-gradient(70% 55% at 50% 50%, oklch(97% 0.012 55) 0%, var(--bone-0) 70%);
 }
-/* Content-sized sticky block centered in the viewport (top:50% + translateY),
-   not a 100vh box around short text — that box was the source of the dead space. */
+/* Content-sized block centered within the section's own area. No sticky/transform:
+   sticky top:50% + translateY paints the block outside its containing block, which
+   let the passage bleed up over the hero. Flex-centering keeps it inside the panel. */
 .pinned-content {
-  position: sticky;
-  top: 50%;
-  transform: translateY(-50%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -184,7 +185,7 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
 @media (prefers-reduced-motion: reduce) {
   html.js-reveal .pinned-passage .activate { color: var(--ox-500); opacity: 1; }
   .pinned { height: auto; }
-  .pinned-content { position: static; transform: none; padding: clamp(58px, 8.4vw, 96px) 32px clamp(48px, 7vw, 80px); }
+  .pinned-content { padding: clamp(58px, 8.4vw, 96px) 32px clamp(48px, 7vw, 80px); }
 }
 @media (max-width: 768px) {
   .pinned { height: 60vh; }
@@ -398,6 +399,10 @@ html.js-reveal .wwb[data-wwb-active] .wwb-service:first-of-type {
   margin-top: 0;
   padding-top: 0;
   border-top: none;
+}
+html.js-reveal .wwb[data-wwb-active] .wwb-service:last-of-type {
+  border-bottom: 1px solid oklch(22% 0.06 22 / 0.14);
+  padding-bottom: clamp(22px, 2.6vw, 38px);
 }
 html.js-reveal .wwb[data-wwb-active] .wwb-sub {
   overflow: hidden;
