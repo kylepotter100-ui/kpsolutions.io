@@ -110,46 +110,77 @@ function initPinnedPassage(): void {
   );
 }
 
-// "What we build" paired pinned scrollytelling. Services are chunked into groups
-// of two (data-wwb-group); each group pins independently and runs the collapse-
-// from-top mechanic over its own scroll range: every sub starts expanded, then
-// collapses one at a time (top to bottom) via the [data-collapsed] max-height
-// transition, names stacking. Once a group's subs are collapsed its pin releases
-// and the page scrolls on to the next group's pin. Per-phase work is attribute
-// writes on change only. Desktop-only for now (mobile handled later); the pin CSS
-// is gated on data-wwb-active set here, so reduced-motion/no-JS and the
-// WWB_COLLAPSE=false escape hatch fall back to the static, fully-expanded list.
+// "What we build" — left/right pinned scrollytelling (Darktrace-style). The
+// section pins; one service is active at a time (left name cross-fades via CSS),
+// and the active service's three sub-sections collapse upward in the right column
+// via transform: translateY + opacity ONLY — never max-height/height/margin, so
+// nothing reflows and the scroll stays smooth. Sub offsets are measured once (and
+// on resize / fonts ready) and cached, so per frame we only WRITE transform +
+// opacity, never read layout. Data-driven (count = number of [data-wwb-group]).
+// Desktop-only for now; the pin CSS is gated on data-wwb-active set here, so
+// reduced-motion/no-JS/mobile fall back to the static, fully-expanded list.
 const WWB_COLLAPSE = true;
 function initWhatWeBuild(): void {
   const section = document.querySelector<HTMLElement>("[data-wwb]");
   if (!section) return;
-  // Escape hatch / guards: bail BEFORE opting into the pin so the section keeps
-  // the static expanded layout (all content visible, normal scroll).
+  // Guards: bail BEFORE opting into the pin so the section keeps the static list.
   if (!WWB_COLLAPSE) return;
   if (!window.matchMedia("(min-width: 769px)").matches) return;
   const groups = Array.from(section.querySelectorAll<HTMLElement>("[data-wwb-group]"));
-  if (groups.length === 0) return;
+  const wraps = groups.map((g) => g.querySelector<HTMLElement>("[data-wwb-subs]"));
+  const subsByGroup = groups.map((g) =>
+    Array.from(g.querySelectorAll<HTMLElement>("[data-wwb-sub]")),
+  );
+  const N = groups.length;
+  if (N === 0) return;
 
   section.setAttribute("data-wwb-active", "");
-  const c01 = (n: number) => (n < 0 ? 0 : n > 1 ? 1 : n);
 
-  for (const group of groups) {
-    const subs = Array.from(group.querySelectorAll<HTMLElement>("[data-wwb-sub]"));
-    if (subs.length === 0) continue;
-    const total = subs.length;
-    let last = -1;
-    scroll(
-      (p: number) => {
-        // total + 1 states: state 0 = all expanded; each later state collapses
-        // one more sub from the top, ending with all collapsed to names.
-        const n = Math.min(total, Math.floor(c01(p) * (total + 1)));
-        if (n === last) return;
-        last = n;
-        for (let i = 0; i < subs.length; i++) {
-          subs[i].setAttribute("data-collapsed", i < n ? "true" : "false");
-        }
-      },
-      { target: group, offset: ["start start", "end end"] },
-    );
-  }
+  // Cached layout: per group, the offsetTop of each sub plus the wrapper's total
+  // height. Re-measured only on resize / once fonts settle — never per frame.
+  let offsets: number[][] = [];
+  const measure = () => {
+    offsets = subsByGroup.map((subs, gi) => {
+      const tops = subs.map((s) => s.offsetTop);
+      const last = subs[subs.length - 1];
+      tops.push(last ? last.offsetTop + last.offsetHeight : 0);
+      return tops;
+    });
+  };
+  measure();
+  window.addEventListener("resize", measure, { passive: true });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+
+  const c01 = (n: number) => (n < 0 ? 0 : n > 1 ? 1 : n);
+  const eo = (t: number) => 1 - Math.pow(1 - t, 5); // easeOutQuint ≈ cubic-bezier(0.22,1,0.36,1)
+  let lastActive = -1;
+
+  scroll(
+    (p: number) => {
+      const prog = c01(p) * N; // 0..N
+      const active = Math.min(N - 1, Math.floor(prog));
+      const w = prog - active; // within-act 0..1
+
+      if (active !== lastActive) {
+        for (let i = 0; i < N; i++) groups[i].classList.toggle("is-active", i === active);
+        lastActive = active;
+      }
+
+      const off = offsets[active];
+      const wrap = wraps[active];
+      const subs = subsByGroup[active];
+      const nSub = subs.length;
+      if (!off || !wrap || nSub === 0) return;
+
+      const cf = w * nSub; // collapsed-float 0..nSub
+      const idx = Math.min(nSub - 1, Math.floor(cf));
+      const frac = cf - idx;
+      const ty = -(off[idx] + eo(frac) * (off[idx + 1] - off[idx]));
+      wrap.style.transform = `translateY(${ty.toFixed(1)}px)`;
+      for (let k = 0; k < nSub; k++) {
+        subs[k].style.opacity = (1 - eo(c01(cf - k))).toFixed(3);
+      }
+    },
+    { target: section, offset: ["start start", "end end"] },
+  );
 }

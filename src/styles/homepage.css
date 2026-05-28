@@ -326,18 +326,21 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   z-index: 3;
 }
 
-/* ── "What we build" — paired collapse scrollytelling ───────── */
-/* Base (no-JS / crawler / mobile / reduced-motion / WWB_COLLAPSE=false): a
-   static vertical list — heading then every service (across both groups), each
-   with its name + three sub-sections, fully expanded in normal flow. Group divs
-   add no visual seam here (padding lives only at the very top/bottom). The pinned
-   collapse choreography is layered only when reveal.ts adds [data-wwb-active]. */
+/* ── "What we build" — left/right pinned scrollytelling ─────── */
+/* Base (no-JS / crawler / mobile / reduced-motion): a static interleaved list —
+   eyebrow heading, then each service (name + its three sub-sections) fully
+   expanded in normal flow with hairline dividers. The pinned two-column stage is
+   layered only when reveal.ts adds [data-wwb-active] on desktop. */
 .wwb { position: relative; background: var(--bone-50); color: var(--ox-900); }
-.wwb__content { padding-block: 0; }
-.wwb__outer:first-of-type .wwb__content { padding-top: clamp(96px, 9vw, 140px); }
-.wwb__outer:last-of-type .wwb__content { padding-bottom: clamp(96px, 9vw, 140px); }
-.wwb__heading { margin-bottom: clamp(40px, 6vw, 72px); }
-
+.wwb__stage { padding-block: clamp(96px, 9vw, 140px); }
+.wwb__eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ochre-700);
+  margin: 0 0 clamp(36px, 5vw, 64px);
+}
 .wwb-service { padding-block: clamp(28px, 3vw, 44px); border-top: 1px solid oklch(22% 0.06 22 / 0.14); }
 .wwb-service:last-child { border-bottom: 1px solid oklch(22% 0.06 22 / 0.14); }
 .wwb-service__name {
@@ -349,9 +352,8 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   margin: 0 0 clamp(20px, 2.4vw, 32px);
 }
 .wwb-service__name .display-italic { color: var(--ochre-700); }
-
+.wwb-service__subs { display: flex; flex-direction: column; gap: clamp(22px, 2.6vw, 34px); }
 .wwb-sub { max-width: 72ch; }
-.wwb-sub + .wwb-sub { margin-top: clamp(22px, 2.6vw, 34px); }
 .wwb-sub__label {
   font-size: 12px;
   font-weight: 600;
@@ -367,63 +369,55 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   color: var(--ox-900);
 }
 
-/* JS desktop + collapsing enabled: each group's outer is the pinned scroll range
-   (one group of two services per pin). Successive groups overlap by ~a pin's
-   worth (negative margin) so the next group locks in right as the previous one
-   finishes collapsing, and the pin carries an opaque background so the incoming
-   group cleanly covers the outgoing one's empty tail — no big gap between groups.
-   Gated on [data-wwb-active] so every fallback path keeps the static list above. */
-html.js-reveal .wwb[data-wwb-active] .wwb__outer { height: 190vh; }
-html.js-reveal .wwb[data-wwb-active] .wwb__outer + .wwb__outer { margin-top: -85vh; }
-html.js-reveal .wwb[data-wwb-active] .wwb__pin {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  overflow: hidden;
-  background: var(--bone-50);
-}
-html.js-reveal .wwb[data-wwb-active] .wwb__content {
-  height: auto;
-  padding-block: 0;
-  padding-top: clamp(80px, 12vh, 132px);
-}
-html.js-reveal .wwb[data-wwb-active] .wwb__heading { margin-bottom: clamp(28px, 4vw, 56px); }
-
-/* In the pinned state services flow with a hairline divide; collapsed subs
-   reflow away. opacity/transform reset keeps the .reveal (mobile fade-up) from
-   touching the desktop choreography. */
-html.js-reveal .wwb[data-wwb-active] .wwb-service {
-  padding-block: 0;
-  padding-top: clamp(22px, 2.6vw, 38px);
-  border: none;
-  border-top: 1px solid oklch(22% 0.06 22 / 0.14);
-  margin-top: clamp(22px, 2.6vw, 38px);
-  opacity: 1;
-  transform: none;
-}
-html.js-reveal .wwb[data-wwb-active] .wwb-service:first-of-type {
-  margin-top: 0;
-  padding-top: 0;
-  border-top: none;
-}
-html.js-reveal .wwb[data-wwb-active] .wwb-service:last-of-type {
-  border-bottom: 1px solid oklch(22% 0.06 22 / 0.14);
-  padding-bottom: clamp(22px, 2.6vw, 38px);
-}
-html.js-reveal .wwb[data-wwb-active] .wwb-sub {
-  overflow: hidden;
-  max-height: 340px;
-  margin-top: clamp(20px, 2.4vw, 32px);
-  margin-bottom: 0;
-  transition: max-height 400ms cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 300ms cubic-bezier(0.22, 1, 0.36, 1),
-    margin 400ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-html.js-reveal .wwb[data-wwb-active] .wwb-sub[data-collapsed="true"] {
-  max-height: 0;
-  opacity: 0;
-  margin-top: 0;
-  margin-bottom: 0;
+/* JS desktop: pin a two-column stage. Service articles overlay in one grid cell
+   (grid-area 1/1) so only the active one shows (opacity cross-fade). Left column =
+   the service name (fixed); right column = its three subs, which the driver
+   collapses upward with transform: translateY + opacity ONLY — no layout props,
+   so nothing reflows. Scroll height scales with the service count via --wwb-acts. */
+@media (min-width: 769px) {
+  html.js-reveal .wwb[data-wwb-active] .wwb__outer { height: calc(var(--wwb-acts, 4) * 120vh); }
+  html.js-reveal .wwb[data-wwb-active] .wwb__pin {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+  }
+  html.js-reveal .wwb[data-wwb-active] .wwb__stage {
+    height: 100vh;
+    padding-block: 0;
+    display: grid;
+    grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  }
+  html.js-reveal .wwb[data-wwb-active] .wwb__eyebrow {
+    grid-area: 1 / 1;
+    align-self: start;
+    z-index: 3;
+    margin: 0;
+    padding-top: clamp(88px, 12vh, 140px);
+  }
+  html.js-reveal .wwb[data-wwb-active] .wwb-service {
+    grid-area: 1 / 1;
+    display: grid;
+    grid-template-columns: 40% 60%;
+    gap: clamp(32px, 5vw, 88px);
+    align-items: center;
+    padding-top: clamp(120px, 16vh, 184px);
+    border: none;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 350ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  html.js-reveal .wwb[data-wwb-active] .wwb-service.is-active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  html.js-reveal .wwb[data-wwb-active] .wwb-service__name { margin: 0; }
+  html.js-reveal .wwb[data-wwb-active] .wwb-service__subs {
+    position: relative;
+    gap: clamp(24px, 3vw, 40px);
+    will-change: transform;
+  }
+  html.js-reveal .wwb[data-wwb-active] .wwb-sub { max-width: none; will-change: opacity; }
 }
 
 /* ── Process callout — dark inverted moment ────────────────── */
