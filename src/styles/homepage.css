@@ -144,16 +144,16 @@ html.js-reveal .reveal-hero {
 /* ── Pinned passage (Apple-style manifesto) ────────────────── */
 .pinned {
   position: relative;
-  height: 80vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  height: 180vh;
   background: radial-gradient(70% 55% at 50% 50%, oklch(97% 0.012 55) 0%, var(--bone-0) 70%);
 }
-/* Content-sized block centered within the section's own area. No sticky/transform:
-   sticky top:50% + translateY paints the block outside its containing block, which
-   let the passage bleed up over the hero. Flex-centering keeps it inside the panel. */
+/* Sticky 100vh pane holds the passage centered in the viewport while the taller
+   section scrolls, so the word-bolding plays out in place. top:0 + no transform
+   keeps the box confined to its containing block (no bleed up over the hero). */
 .pinned-content {
+  position: sticky;
+  top: 0;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -185,10 +185,10 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
 @media (prefers-reduced-motion: reduce) {
   html.js-reveal .pinned-passage .activate { color: var(--ox-500); opacity: 1; }
   .pinned { height: auto; }
-  .pinned-content { padding: clamp(58px, 8.4vw, 96px) 32px clamp(48px, 7vw, 80px); }
+  .pinned-content { position: static; min-height: 0; padding: clamp(58px, 8.4vw, 96px) 32px clamp(48px, 7vw, 80px); }
 }
 @media (max-width: 768px) {
-  .pinned { height: 60vh; }
+  .pinned { height: 150vh; }
   .pinned-passage {
     font-size: clamp(1.125rem, 1rem + 1vw, 1.5rem);
     padding-inline: clamp(20px, 8vw, 40px);
