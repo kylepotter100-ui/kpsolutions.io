@@ -103,10 +103,10 @@ function initPinnedPassage(): void {
         spans[i].classList.toggle("is-active", progress >= thresholds[i]);
       }
     },
-    // Center-crossing keeps progress monotonic 0->1 even though the section is
-    // now shorter than the viewport (start/end-edge offsets would invert), and
-    // tracks the window where the sticky passage sits centered.
-    { target: section, offset: ["start center", "end center"] },
+    // Section is taller than the viewport again, so edge offsets map progress
+    // 0->1 across the full sticky-pinned hold (start start = pin begins,
+    // end end = pin releases).
+    { target: section, offset: ["start start", "end end"] },
   );
 }
 
