@@ -144,25 +144,24 @@ html.js-reveal .reveal-hero {
 /* ── Pinned passage (Apple-style manifesto) ────────────────── */
 .pinned {
   position: relative;
-  height: 120vh;
-  background: radial-gradient(70% 55% at 50% 50%, oklch(97% 0.012 55) 0%, var(--bone-0) 70%);
+  height: 110vh;
+  background: radial-gradient(70% 55% at 50% 42%, oklch(97% 0.012 55) 0%, var(--bone-0) 70%);
 }
-/* Sticky 100vh pane holds the passage centered in the viewport while the taller
-   section scrolls, so the word-bolding plays out in place. top:0 + no transform
-   keeps the box confined to its containing block (no bleed up over the hero). */
+/* Content-sized sticky band held in the upper-centre of the viewport. No 100vh
+   pane (which left a near-empty bone screen and only ~20vh to drive the bolding)
+   and no transform (which painted outside the section over the hero). With the
+   pane gone the band holds across most of the section, so the bolding is slower. */
 .pinned-content {
   position: sticky;
-  top: 0;
-  min-height: 100vh;
+  top: clamp(112px, 22vh, 240px);
   display: flex;
-  align-items: center;
   justify-content: center;
-  padding: clamp(48px, 8vh, 96px) 32px;
+  padding: 0 32px;
 }
 .pinned-passage {
   font-family: var(--font-sans);
   font-weight: 400;
-  font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
+  font-size: clamp(1.625rem, 1.2rem + 1.9vw, 2.5rem);
   line-height: 1.4;
   letter-spacing: -0.018em;
   max-width: 75ch;
@@ -170,7 +169,7 @@ html.js-reveal .reveal-hero {
   text-align: center;
   text-wrap: pretty;
   color: var(--bone-400);
-  margin: 0;
+  margin: 0 auto;
 }
 /* Activating phrases: constant weight (no reflow → CLS-safe); reveal via color
    + opacity only. Default = activated (no-JS/crawler); js-reveal starts muted. */
@@ -185,16 +184,16 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
 @media (prefers-reduced-motion: reduce) {
   html.js-reveal .pinned-passage .activate { color: var(--ox-500); opacity: 1; }
   .pinned { height: auto; }
-  .pinned-content { position: static; min-height: 0; padding: clamp(58px, 8.4vw, 96px) 32px clamp(48px, 7vw, 80px); }
+  .pinned-content { position: static; top: auto; padding: clamp(58px, 8.4vw, 96px) 32px clamp(48px, 7vw, 80px); }
 }
 @media (max-width: 768px) {
-  .pinned { height: 130vh; }
+  .pinned { height: 120vh; }
+  .pinned-content { top: clamp(96px, 18vh, 180px); padding: 0 20px; }
   .pinned-passage {
-    font-size: clamp(1.125rem, 1rem + 1vw, 1.5rem);
+    font-size: clamp(1.25rem, 1.05rem + 1.2vw, 1.625rem);
     padding-inline: clamp(20px, 8vw, 40px);
     max-width: 40ch;
   }
-  .pinned-content { padding: clamp(40px, 8vh, 72px) 20px; }
 }
 
 /* ── Marquee strip ─────────────────────────────────────────── */
@@ -418,6 +417,10 @@ html.js-reveal .wwb[data-wwb-active] .wwb-sub[data-collapsed="true"] {
   opacity: 0;
   margin-top: 0;
   margin-bottom: 0;
+}
+/* Mobile: narrower column wraps sub bodies taller, so lift the expanded cap. */
+@media (max-width: 768px) {
+  html.js-reveal .wwb[data-wwb-active] .wwb-sub { max-height: 72vh; }
 }
 
 /* ── Process callout — dark inverted moment ────────────────── */

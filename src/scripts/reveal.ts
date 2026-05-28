@@ -110,41 +110,42 @@ function initPinnedPassage(): void {
   );
 }
 
-// "What we build" natural-reflow scrollytelling. The section pins for its scroll
-// duration; every sub-section starts expanded in normal document flow, then
-// collapses one at a time (top to bottom) as you scroll — each collapse animates
-// max-height/opacity/margin to 0 in CSS, so the content below reflows upward to
-// fill the gap. By the last state only the service names remain. The phase count
-// is data-driven (scales with however many [data-wwb-sub] units render). Per-phase
-// work is attribute writes on change only, no per-frame layout reads. Desktop-only;
-// the pin/clip CSS is gated on the data-wwb-active attribute set here, so
-// mobile/reduced-motion/no-JS and the WWB_COLLAPSE=false escape hatch all fall back
-// to the static, fully-expanded, unclipped list.
+// "What we build" pinned scrollytelling. The section pins while you scroll and
+// exactly one service is expanded at a time — the rest show only their name. As
+// you scroll the active service advances (0 -> last), each expand/collapse driven
+// by the [data-collapsed] max-height transition in CSS. One expanded service plus
+// the other names always fits a single viewport, so every service (including the
+// last) is fully shown during its turn, at any service count. Per-phase work is
+// attribute writes on change only, no per-frame layout reads. The pin CSS is gated
+// on the data-wwb-active attribute set here; reduced-motion/no-JS and the
+// WWB_COLLAPSE=false escape hatch fall back to the static, fully-expanded list.
 const WWB_COLLAPSE = true;
 function initWhatWeBuild(): void {
   const section = document.querySelector<HTMLElement>("[data-wwb]");
   if (!section) return;
-  const subs = Array.from(section.querySelectorAll<HTMLElement>("[data-wwb-sub]"));
-  // Escape hatch / guards: bail BEFORE opting into the pin/clip so the section
-  // keeps the static expanded layout (all content visible, normal scroll).
+  const serviceEls = Array.from(section.querySelectorAll<HTMLElement>(".wwb-service"));
+  // Escape hatch / guards: bail BEFORE opting into the pin so the section keeps
+  // the static expanded layout (all content visible, normal scroll).
   if (!WWB_COLLAPSE) return;
-  if (subs.length === 0) return;
-  if (!window.matchMedia("(min-width: 769px)").matches) return;
+  if (serviceEls.length === 0) return;
 
+  const groups = serviceEls.map((el) =>
+    Array.from(el.querySelectorAll<HTMLElement>("[data-wwb-sub]")),
+  );
   section.setAttribute("data-wwb-active", "");
-  const total = subs.length;
+  const count = groups.length;
   const c01 = (n: number) => (n < 0 ? 0 : n > 1 ? 1 : n);
   let last = -1;
 
   scroll(
     (p: number) => {
-      // total + 1 states across progress: state 0 = all visible (entry buffer);
-      // each later state collapses one more sub, ending with all collapsed.
-      const n = Math.min(total, Math.floor(c01(p) * (total + 1)));
-      if (n === last) return;
-      last = n;
-      for (let i = 0; i < subs.length; i++) {
-        subs[i].setAttribute("data-collapsed", i < n ? "true" : "false");
+      // Progress 0..1 maps to the active service index 0..count-1.
+      const active = Math.min(count - 1, Math.floor(c01(p) * count));
+      if (active === last) return;
+      last = active;
+      for (let i = 0; i < groups.length; i++) {
+        const collapsed = i !== active ? "true" : "false";
+        for (const sub of groups[i]) sub.setAttribute("data-collapsed", collapsed);
       }
     },
     { target: section, offset: ["start start", "end end"] },
