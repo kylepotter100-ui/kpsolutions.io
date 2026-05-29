@@ -179,10 +179,7 @@ function initWhatWeBuild(): void {
     });
   };
 
-  const apply = () => {
-    const rect = outer.getBoundingClientRect();
-    const scrollable = rect.height - window.innerHeight;
-    const q = scrollable > 0 ? clamp01(-rect.top / scrollable) : 0;
+  const apply = (q: number) => {
     const p = clamp01((q - WWB_BUF) / (1 - 2 * WWB_BUF)); // strip entry/exit buffers
     const prog = p * N;
     const active = Math.min(N - 1, Math.floor(prog));
@@ -212,27 +209,17 @@ function initWhatWeBuild(): void {
     }
   };
 
-  let ticking = false;
-  const onScroll = () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      ticking = false;
-      apply();
-    });
-  };
-  const remeasure = () => {
-    measure();
-    apply();
-  };
-
+  // Drive the collapse with motion's scroll() — the same API that animates the
+  // pinned passage / hero parallax on this page — over the 600vh outer. Motion
+  // owns scroll-source detection + rAF + progress (0..1 across the outer).
   measure();
-  apply();
-  window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", remeasure, { passive: true });
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(remeasure);
+  apply(0); // correct initial paint (service 0, fully expanded)
+  scroll((q: number) => apply(q), { target: outer, offset: ["start start", "end end"] });
+  // Heights depend on viewport size; re-measure on resize (motion re-fires apply).
+  window.addEventListener("resize", () => measure(), { passive: true });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => measure());
 
-  __wwbDriverRunning = true; // reached only if every guard passed + listeners bound
+  __wwbDriverRunning = true; // reached only if every guard passed + scroll() bound
 }
 
 // On-page diagnostic overlay, gated on ?debug so it never ships to real visitors.
