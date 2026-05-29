@@ -1,5 +1,14 @@
 import { inView, scroll, animate } from "motion";
 
+// Debug instrumentation (surfaced only via the ?debug overlay below). The error
+// listener is registered FIRST so it catches exceptions thrown by any init.
+let __wwbLastError = "none";
+let __wwbActive = -1;
+let __wwbDriverRunning = false;
+window.addEventListener("error", (e) => {
+  __wwbLastError = e.message ?? String((e as ErrorEvent).error ?? "error");
+});
+
 // js-reveal is set pre-paint by the inline script in BaseLayout's <head>;
 // re-assert here in case this module runs in a context without it.
 const root = document.documentElement;
@@ -168,6 +177,7 @@ function initWhatWeBuild(): void {
       // Entry hold: first HOLD fraction stays fully expanded, then collapse.
       const lp = lpRaw < WWB_HOLD ? 0 : (lpRaw - WWB_HOLD) / (1 - WWB_HOLD);
 
+      __wwbActive = active;
       if (active !== lastActive) {
         for (let i = 0; i < N; i++) groups[i].classList.toggle("is-active", i === active);
         lastActive = active;
@@ -188,4 +198,59 @@ function initWhatWeBuild(): void {
     },
     { target: outer, offset: ["start start", "end end"] },
   );
+
+  __wwbDriverRunning = true; // reached only if every guard passed + scroll() registered
 }
+
+// On-page diagnostic overlay, gated on ?debug so it never ships to real visitors.
+// Reads live runtime state for the "What we build" pin so it can be screenshotted
+// without DevTools. Called unconditionally (works in every motion branch).
+function initWwbDebug(): void {
+  if (!new URLSearchParams(location.search).has("debug")) return;
+
+  const strip = document.createElement("div");
+  strip.style.cssText =
+    "position:fixed;top:8px;right:8px;z-index:99999;background:rgba(10,6,6,0.86);" +
+    "color:#fff;font:11px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;" +
+    "padding:10px 12px;border-radius:6px;max-width:360px;white-space:pre;" +
+    "pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,0.4);";
+  document.body.appendChild(strip);
+
+  const shortSel = (el: Element): string => {
+    const cls = (el as HTMLElement).className?.toString().trim().split(/\s+/)[0];
+    return el.tagName.toLowerCase() + (cls ? "." + cls : "");
+  };
+  const overflowAncestor = (): string => {
+    let el: Element | null = document.querySelector(".wwb__pin");
+    while (el && el.parentElement && el !== document.documentElement) {
+      el = el.parentElement;
+      const cs = getComputedStyle(el);
+      if (![cs.overflow, cs.overflowX, cs.overflowY].every((v) => v === "visible")) {
+        return `${shortSel(el)} (${cs.overflowX}/${cs.overflowY})`;
+      }
+    }
+    return "none";
+  };
+
+  const render = () => {
+    const wwb = document.querySelector(".wwb");
+    const outer = document.querySelector(".wwb__outer");
+    const pin = document.querySelector(".wwb__pin");
+    strip.textContent =
+      "WWB DEBUG\n" +
+      `sticky support: ${CSS.supports("position", "sticky") ? "yes" : "no"}\n` +
+      `data-wwb-active: ${wwb?.hasAttribute("data-wwb-active") ? "set" : "missing"}\n` +
+      `.wwb__outer height: ${outer ? getComputedStyle(outer).height : "?"}\n` +
+      `.wwb__pin position: ${pin ? getComputedStyle(pin).position : "?"}\n` +
+      `services found: ${document.querySelectorAll("[data-wwb-group]").length}\n` +
+      `sub elements found: ${document.querySelectorAll("[data-wwb-sub]").length}\n` +
+      `active service: ${__wwbActive}\n` +
+      `driver running: ${__wwbDriverRunning ? "yes" : "no"}\n` +
+      `last JS error: ${__wwbLastError}\n` +
+      `matchMedia(>=769): ${window.matchMedia("(min-width: 769px)").matches}\n` +
+      `overflow ancestor: ${overflowAncestor()}`;
+    requestAnimationFrame(render);
+  };
+  requestAnimationFrame(render);
+}
+initWwbDebug();
