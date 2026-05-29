@@ -1,93 +1,43 @@
 ---
-// "What we build" — natural-reflow scrollytelling. The section pins for the
-// scroll duration; all nine sub-sections start expanded in normal document
-// flow, then collapse one at a time (top to bottom) as you scroll, letting the
-// content below reflow upward to fill the space. By the end only the three
-// service names remain. Driven by reveal.ts initWhatWeBuild (desktop only).
-// Mobile / reduced-motion / no-JS / WWB_COLLAPSE=false render every sub-section
-// static and fully expanded with no pinning or clipping. ids stay in lockstep
-// with capabilities.ts for the Service JSON-LD.
-const services = [
-  {
-    id: "bespoke",
-    lead: "Bespoke",
-    accent: "software",
-    subs: [
-      {
-        label: "The Challenge",
-        body: "Off-the-shelf SaaS forces you to bend your operations to fit its assumptions. Critical workflows live in spreadsheets, internal tools nobody documented, and tabs the team has to remember to keep open.",
-      },
-      {
-        label: "What We Offer",
-        body: "Custom platforms, internal tools, and integrations built around how your business actually works. Full ownership of the source code. Built on your data model, not a template.",
-      },
-      {
-        label: "The Outcome",
-        body: "Software that does exactly what your operation needs, without paying per-seat licenses for features you'll never use. When you want to change something, you can — because you own it.",
-      },
-    ],
-  },
-  {
-    id: "aeo",
-    lead: "AI-visible",
-    accent: "web presence",
-    subs: [
-      {
-        label: "The Challenge",
-        body: "Traditional SEO targets Google search. But increasingly, prospects ask ChatGPT, Claude, or Perplexity to recommend services. If your site isn't engineered for AI crawlers, you're invisible to that traffic.",
-      },
-      {
-        label: "What We Offer",
-        body: "Marketing sites built with JSON-LD schema, llms.txt manifests, direct-answer content blocks, and structured data designed specifically for LLM citation. The technical SEO of 2026, not 2018.",
-      },
-      {
-        label: "The Outcome",
-        body: "A web presence that gets cited by AI search engines when prospects ask about services in your space. New traffic from channels your competitors aren't optimized for yet.",
-      },
-    ],
-  },
-  {
-    id: "ai-ops",
-    lead: "AI built into your",
-    accent: "operations",
-    subs: [
-      {
-        label: "The Challenge",
-        body: "AI tools are useful but most teams use them as a sticker on a homepage or a chat sidebar. The real value is AI doing actual work inside your operations — triaging support, drafting proposals, summarizing meetings.",
-      },
-      {
-        label: "What We Offer",
-        body: "AI integrated directly into your workflows using the Anthropic API. Custom prompts, tool use, structured outputs — not generic chatbots. Built for the specific operational problems you have.",
-      },
-      {
-        label: "The Outcome",
-        body: "Hours of repetitive work absorbed by AI that knows your business context. Your team focuses on judgment calls, not data entry.",
-      },
-    ],
-  },
-];
+// "What we build" — pinned collapse scrollytelling. A persistent heading + hairline
+// sit at the top of a content-height card centred in the viewport. The active
+// service's name is fixed on the left; its three sub-sections (Challenge / Offer /
+// Outcome) stack on the right. As you scroll, sub 1 collapses upward, then sub 2,
+// leaving the Outcome; then the card cross-fades to the next service, fresh with
+// all three subs. Driven by reveal.ts initWhatWeBuild (desktop only): a raw scroll
+// listener writes transform (track translateY) + opacity (per sub) ONLY, with the
+// stage height measured from the real content and capped to the viewport. Mobile /
+// reduced-motion / no-JS render the static interleaved list. Copy from capabilities.ts.
+import { capabilities } from "../../lib/capabilities";
 ---
 
 <section id="capabilities" class="wwb" data-wwb aria-labelledby="wwb-heading">
-  <div class="wwb__outer">
+  <div class="wwb__outer" data-wwb-outer>
     <div class="wwb__pin">
-      <div class="wwb__content shell">
+      <div class="wwb__inner shell">
         <h2 id="wwb-heading" class="section-heading wwb__heading">What we build.</h2>
-        {
-          services.map((s) => (
-            <article class="wwb-service reveal">
-              <h3 class="wwb-service__name">
-                {s.lead} <span class="display-italic">{s.accent}</span>.
-              </h3>
-              {s.subs.map((sub) => (
-                <div class="wwb-sub" data-wwb-sub>
-                  <h4 class="wwb-sub__label">{sub.label}</h4>
-                  <p class="wwb-sub__body">{sub.body}</p>
+        <div class="wwb__rule" aria-hidden="true"></div>
+        <div class="wwb__stage" data-wwb-stage>
+          {
+            capabilities.map((s, i) => (
+              <article class={i === 0 ? "wwb-service is-active" : "wwb-service"} data-wwb-group>
+                <h3 class="wwb-service__name">
+                  {s.lead} <span class="display-italic">{s.accent}</span>.
+                </h3>
+                <div class="wwb-subs" data-wwb-subs>
+                  <div class="wwb-subs__track" data-wwb-track>
+                    {s.subs.map((sub) => (
+                      <div class="wwb-sub" data-wwb-sub>
+                        <h4 class="wwb-sub__label">{sub.label}</h4>
+                        <p class="wwb-sub__body">{sub.body}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              ))}
-            </article>
-          ))
-        }
+              </article>
+            ))
+          }
+        </div>
       </div>
     </div>
   </div>
