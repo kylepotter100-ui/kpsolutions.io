@@ -248,7 +248,7 @@ function initWhatWeBuild(): void {
 // On-page diagnostic overlay, gated on ?debug so it never ships to real visitors.
 // Reads live runtime state for the "What we build" pin so it can be screenshotted
 // without DevTools. Called unconditionally (works in every motion branch).
-const WWB_DEBUG_ALWAYS = true; // TEMP: show the overlay without ?debug while diagnosing
+const WWB_DEBUG_ALWAYS = false; // overlay is ?debug-gated only — never shown to real visitors
 function initWwbDebug(): void {
   if (!WWB_DEBUG_ALWAYS && !new URLSearchParams(location.search).has("debug")) return;
 
