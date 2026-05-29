@@ -113,8 +113,13 @@ function initPinnedPassage(): void {
 // they stay fixed (no drift). Services cross-fade, and the incoming one is reset to
 // fully-expanded before it shows, so there's no reload flash on swap. Reduced-motion
 // (handled upstream) keeps the static interleaved list.
-const WWB_PER_VH = 120; // scroll distance per service (×vh); shared by desktop + mobile
-const WWB_HOLD = 0.12; // fraction of each service held fully open before it collapses
+const WWB_PER_VH = 130; // scroll distance per service (×vh); shared by desktop + mobile
+// Two dwells per service: hold the fully-expanded service (all 3 subs incl. Challenge) at
+// the start, and the collapsed Outcome at the end, before the index advances — so neither
+// the next Challenge nor the Outcome is scrolled straight past. Collapse runs in the middle
+// window only. The denominator (1 - START - END) must stay positive.
+const WWB_HOLD_START = 0.18;
+const WWB_HOLD_END = 0.15;
 function initWhatWeBuild(): void {
   const section = document.querySelector<HTMLElement>("[data-wwb]");
   if (!section) return;
@@ -131,11 +136,13 @@ function initWhatWeBuild(): void {
   const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
   const eo = (t: number) => 1 - Math.pow(1 - t, 4); // easeOutQuart
 
-  // Per-service layout, re-measured on resize / fonts.ready. subH = each sub's natural
-  // box height (scrollHeight is parent-height-independent, so it's correct even while the
-  // services are absolutely positioned); nameH floors the stage so it never collapses
-  // shorter than the service name. Inline collapse styles are cleared before measuring.
-  type SvcMetric = { subs: HTMLElement[]; subH: number[]; nameH: number };
+  // Per-service layout, re-measured on resize / fonts.ready. subH = each sub's full border-
+  // box height (getBoundingClientRect includes the padding-bottom, so the stage sum and the
+  // collapse interpolation cover the whole box — a collapsed sub then leaves zero residual);
+  // padB = each sub's natural padding-bottom, animated to 0 alongside max-height. nameH
+  // floors the stage so it never collapses shorter than the service name. Inline collapse
+  // styles are cleared before measuring.
+  type SvcMetric = { subs: HTMLElement[]; subH: number[]; padB: number[]; nameH: number };
   let metrics: SvcMetric[] = [];
   let lastStageH = -1;
   const measure = () => {
@@ -145,12 +152,14 @@ function initWhatWeBuild(): void {
         s.style.maxHeight = "";
         s.style.opacity = "";
         s.style.overflow = "";
+        s.style.paddingBottom = "";
       });
       const name = el.querySelector<HTMLElement>(".wwb-service__name");
       return {
         subs,
-        subH: subs.map((s) => s.scrollHeight),
-        nameH: name ? name.scrollHeight : 0,
+        subH: subs.map((s) => s.getBoundingClientRect().height),
+        padB: subs.map((s) => parseFloat(getComputedStyle(s).paddingBottom) || 0),
+        nameH: name ? name.getBoundingClientRect().height : 0,
       };
     });
     lastStageH = -1; // force render() to re-apply the stage height after re-measure
@@ -172,6 +181,7 @@ function initWhatWeBuild(): void {
         sub.style.maxHeight = "";
         sub.style.opacity = "1";
         sub.style.overflow = "";
+        sub.style.paddingBottom = "";
         subsH += m.subH[k];
         continue;
       }
@@ -180,6 +190,9 @@ function initWhatWeBuild(): void {
       sub.style.overflow = "hidden";
       sub.style.maxHeight = `${h.toFixed(1)}px`;
       sub.style.opacity = (1 - p).toFixed(3);
+      // Animate the padding-bottom to 0 in lockstep, so a fully-collapsed sub leaves zero
+      // residual space and the surviving Outcome sits flush with the service-name top.
+      sub.style.paddingBottom = `${(m.padB[k] * (1 - p)).toFixed(1)}px`;
       subsH += h;
     }
     return subsH;
@@ -195,7 +208,15 @@ function initWhatWeBuild(): void {
     const prog = q * N;
     const active = Math.min(N - 1, Math.floor(prog));
     const lpRaw = clamp01(prog - active);
-    const lp = lpRaw < WWB_HOLD ? 0 : (lpRaw - WWB_HOLD) / (1 - WWB_HOLD);
+    // Piecewise: dwell expanded over [0, START], collapse across the middle window, dwell
+    // collapsed over [1 - END, 1]. Pure function of scroll position, so desktop and mobile
+    // share one clock and pace identically.
+    const lp =
+      lpRaw <= WWB_HOLD_START
+        ? 0
+        : lpRaw >= 1 - WWB_HOLD_END
+          ? 1
+          : (lpRaw - WWB_HOLD_START) / (1 - WWB_HOLD_START - WWB_HOLD_END);
 
     for (let i = 0; i < N; i++) {
       const m = metrics[i];
