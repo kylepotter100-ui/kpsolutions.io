@@ -19,14 +19,14 @@ import { capabilities } from "../../lib/capabilities";
       <div class="wwb__inner shell">
         <h2 id="wwb-heading" class="section-heading wwb__heading">What we build.</h2>
         <div class="wwb__rule" aria-hidden="true"></div>
-        <div class="wwb__stage">
+        <div class="wwb__stage" data-wwb-stage>
           {
             capabilities.map((s, i) => (
               <article class={i === 0 ? "wwb-service is-active" : "wwb-service"} data-wwb-group>
                 <h3 class="wwb-service__name">
                   {s.lead} <span class="display-italic">{s.accent}</span>.
                 </h3>
-                <div class="wwb-subs">
+                <div class="wwb-subs" data-wwb-subs>
                   <div class="wwb-subs__track" data-wwb-track>
                     {s.subs.map((sub) => (
                       <div class="wwb-sub" data-wwb-sub>

@@ -119,87 +119,126 @@ function initPinnedPassage(): void {
   );
 }
 
-// "What we build" — content-height centred pinned scrollytelling, ported from
-// docs/references/what-we-build-collapse.html. The outer (data-wwb-outer) is pure
-// scroll distance: 60vh entry buffer + 180vh per service + 60vh exit buffer, so
-// the pin engages/releases fully clear of neighbours. The driver math matches the
-// reference exactly: remap past the buffers, a per-service entry HOLD (first 28%
-// fully visible → fresh start), then collapse the first nSub-1 subs (keep the last
-// visible) via transform: translateY on the track + per-sub opacity ONLY. Offsets
-// cached on init + resize + fonts.ready. Desktop-only; the pin CSS is gated on
-// data-wwb-active, so mobile / reduced-motion / no-JS keep the static list.
-const WWB_PER_VH = 180;
-const WWB_BUFFER_VH = 60;
-const WWB_HOLD = 0.28;
+// "What we build" — content-height centred pinned scrollytelling, ported as
+// literally as possible from docs/references/what-we-build-collapse.html. To match
+// the proven reference exactly we use a RAW scroll listener (not motion's scroll)
+// and set the outer + stage heights in JS (not CSS calc), removing the two
+// Astro-specific unknowns. The stage height is MEASURED from the real content at
+// runtime — the tallest service's three subs — so all three fit with no clipping
+// and no wasted space (the old hardcoded 640px overflowed our long copy). Per
+// frame we only write transform (track translateY) + opacity (per sub). Offsets +
+// heights re-measured on resize / fonts.ready. Desktop-only; the pin CSS is gated
+// on data-wwb-active, so mobile / reduced-motion / no-JS keep the static list.
+const WWB_PER_VH = 150; // scroll distance per service (slow + deliberate)
+const WWB_BUFFER_VH = 50; // entry/exit hold so the pin engages/releases cleanly
+const WWB_HOLD = 0.28; // fraction of each service fully visible before collapse
 function initWhatWeBuild(): void {
   const section = document.querySelector<HTMLElement>("[data-wwb]");
   if (!section) return;
   // Guards: bail BEFORE opting into the pin so the section keeps the static list.
   if (!window.matchMedia("(min-width: 769px)").matches) return;
   const outer = section.querySelector<HTMLElement>("[data-wwb-outer]");
+  const stage = section.querySelector<HTMLElement>("[data-wwb-stage]");
   const groups = Array.from(section.querySelectorAll<HTMLElement>("[data-wwb-group]"));
   const N = groups.length;
-  if (!outer || N === 0) return;
+  if (!outer || !stage || N === 0) return;
 
   section.setAttribute("data-wwb-active", "");
-
-  // Cached layout: per service, the offsetTop of each sub within its track. Never
-  // read per frame — only re-measured on resize / once fonts settle.
-  let metrics: { subs: HTMLElement[]; track: HTMLElement | null; offs: number[] }[] = [];
-  const measure = () => {
-    metrics = groups.map((el) => {
-      const subs = Array.from(el.querySelectorAll<HTMLElement>("[data-wwb-sub]"));
-      return {
-        subs,
-        track: el.querySelector<HTMLElement>("[data-wwb-track]"),
-        offs: subs.map((s) => s.offsetTop),
-      };
-    });
-  };
-  measure();
-  window.addEventListener("resize", measure, { passive: true });
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
 
   const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
   const eo = (t: number) => 1 - Math.pow(1 - t, 4); // easeOutQuart (matches reference)
   const total = WWB_BUFFER_VH + N * WWB_PER_VH + WWB_BUFFER_VH;
   const bufFrac = WWB_BUFFER_VH / total;
-  let lastActive = -1;
 
-  // q = motion's progress over the outer (start start → end end) === the
-  // reference's -rect.top / (outerHeight - innerHeight).
-  scroll(
-    (q: number) => {
-      const p = clamp01((q - bufFrac) / (1 - 2 * bufFrac)); // strip entry/exit buffers
-      const prog = p * N;
-      const active = Math.min(N - 1, Math.floor(prog));
-      const lpRaw = clamp01(prog - active);
-      // Entry hold: first HOLD fraction stays fully expanded, then collapse.
-      const lp = lpRaw < WWB_HOLD ? 0 : (lpRaw - WWB_HOLD) / (1 - WWB_HOLD);
-
-      __wwbActive = active;
-      if (active !== lastActive) {
-        for (let i = 0; i < N; i++) groups[i].classList.toggle("is-active", i === active);
-        lastActive = active;
+  // Cached layout, re-measured on resize / fonts.ready. We size the stage + each
+  // clip box to the tallest service's natural subs height (capped so it never
+  // overflows the viewport), then record each sub's offsetTop for the collapse.
+  let metrics: { subs: HTMLElement[]; track: HTMLElement | null; offs: number[] }[] = [];
+  const measure = () => {
+    const wraps = groups.map((g) => g.querySelector<HTMLElement>("[data-wwb-subs]"));
+    // Release any imposed height so the tracks lay out at natural content height.
+    stage.style.height = "auto";
+    wraps.forEach((w) => {
+      if (w) {
+        w.style.height = "auto";
+        w.style.overflow = "visible";
       }
-
-      const m = metrics[active];
-      if (!m || !m.track || m.subs.length === 0) return;
-      const nSub = m.subs.length;
-      const collapsible = nSub - 1; // keep the LAST sub — never empty, never a lone title
-      const cf = lp * collapsible;
-      const idx = Math.min(collapsible - 1, Math.floor(cf));
-      const frac = cf - idx;
-      const ty = -(m.offs[idx] + eo(frac) * (m.offs[idx + 1] - m.offs[idx]));
-      m.track.style.transform = `translateY(${ty.toFixed(1)}px)`;
-      for (let k = 0; k < nSub; k++) {
-        m.subs[k].style.opacity = (k < collapsible ? 1 - eo(clamp01(cf - k)) : 1).toFixed(3);
+    });
+    let maxH = 0;
+    metrics = groups.map((el) => {
+      const subs = Array.from(el.querySelectorAll<HTMLElement>("[data-wwb-sub]"));
+      const track = el.querySelector<HTMLElement>("[data-wwb-track]");
+      if (track) maxH = Math.max(maxH, track.scrollHeight);
+      return { subs, track, offs: subs.map((s) => s.offsetTop) };
+    });
+    // Fit the tallest three-sub stack, but never exceed the viewport (reserve room
+    // for the heading, hairline and breathing space so the pin stays centred).
+    const cap = Math.max(300, window.innerHeight - 260);
+    const stageH = Math.min(maxH + 8, cap);
+    stage.style.height = `${stageH}px`;
+    wraps.forEach((w) => {
+      if (w) {
+        w.style.height = `${stageH}px`;
+        w.style.overflow = "hidden";
       }
-    },
-    { target: outer, offset: ["start start", "end end"] },
-  );
+    });
+    outer.style.height = `${total}vh`;
+  };
 
-  __wwbDriverRunning = true; // reached only if every guard passed + scroll() registered
+  const apply = () => {
+    const rect = outer.getBoundingClientRect();
+    const scrollable = rect.height - window.innerHeight;
+    const q = scrollable > 0 ? clamp01(-rect.top / scrollable) : 0;
+    const p = clamp01((q - bufFrac) / (1 - 2 * bufFrac)); // strip entry/exit buffers
+    const prog = p * N;
+    const active = Math.min(N - 1, Math.floor(prog));
+    const lpRaw = clamp01(prog - active);
+    // Entry hold: first HOLD fraction stays fully expanded, then collapse.
+    const lp = lpRaw < WWB_HOLD ? 0 : (lpRaw - WWB_HOLD) / (1 - WWB_HOLD);
+
+    __wwbActive = active;
+    for (let i = 0; i < N; i++) groups[i].classList.toggle("is-active", i === active);
+
+    const m = metrics[active];
+    if (!m || !m.track || m.subs.length === 0) return;
+    const nSub = m.subs.length;
+    const collapsible = nSub - 1; // keep the LAST sub — never empty, never a lone title
+    if (collapsible < 1) {
+      m.track.style.transform = "translateY(0px)";
+      m.subs.forEach((s) => (s.style.opacity = "1"));
+      return;
+    }
+    const cf = lp * collapsible;
+    const idx = Math.min(collapsible - 1, Math.floor(cf));
+    const frac = cf - idx;
+    const ty = -(m.offs[idx] + eo(frac) * (m.offs[idx + 1] - m.offs[idx]));
+    m.track.style.transform = `translateY(${ty.toFixed(1)}px)`;
+    for (let k = 0; k < nSub; k++) {
+      m.subs[k].style.opacity = (k < collapsible ? 1 - eo(clamp01(cf - k)) : 1).toFixed(3);
+    }
+  };
+
+  let ticking = false;
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      ticking = false;
+      apply();
+    });
+  };
+  const remeasure = () => {
+    measure();
+    apply();
+  };
+
+  measure();
+  apply();
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", remeasure, { passive: true });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(remeasure);
+
+  __wwbDriverRunning = true; // reached only if every guard passed + listeners bound
 }
 
 // On-page diagnostic overlay, gated on ?debug so it never ships to real visitors.
