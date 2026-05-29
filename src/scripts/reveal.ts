@@ -34,29 +34,10 @@ function safe(label: string, fn: () => void) {
   }
 }
 
-if (reduceMotion) {
-  document
-    .querySelectorAll<HTMLElement>(".reveal, .reveal-stagger")
-    .forEach((el) => el.classList.add("is-in"));
-} else {
-  // Scroll-in reveals — CSS transitions + nth-child delays do the animation.
-  inView(
-    ".reveal, .reveal-stagger",
-    (target) => {
-      const el = target instanceof Element ? target : (target as IntersectionObserverEntry).target;
-      el.classList.add("is-in");
-    },
-    { amount: 0.15 },
-  );
-
-  safe("initHeroOnLoad", initHeroOnLoad);
-  safe("initHeroParallax", initHeroParallax);
-  safe("initPinnedPassage", initPinnedPassage);
-  safe("initWhatWeBuild", initWhatWeBuild);
-}
-
-// Diagnostic overlay runs regardless of the above, in every motion branch.
-safe("initWwbDebug", initWwbDebug);
+// NOTE: the actual orchestration (the reduce-motion branch + safe(init…) calls)
+// lives at the BOTTOM of this module, after every function and const is declared.
+// Running it here would call inits before module-level consts like WWB_PER_VH /
+// WWB_HOLD are initialized → a temporal-dead-zone throw inside initWhatWeBuild.
 
 // Hero on-load: headline words stagger in, then subhead / principle / CTAs
 // cascade. ~1.2s total. Guarded by the headline's presence (shared script).
@@ -303,3 +284,31 @@ function initWwbDebug(): void {
   };
   requestAnimationFrame(render);
 }
+
+// ─── Orchestration (runs last, after all declarations above are initialized) ───
+// Kept at the bottom on purpose: function declarations are hoisted so these calls
+// resolve, but the inits read module-level consts (WWB_PER_VH, WWB_HOLD, …). Calling
+// them before those consts' declaration lines execute would throw a TDZ error.
+if (reduceMotion) {
+  document
+    .querySelectorAll<HTMLElement>(".reveal, .reveal-stagger")
+    .forEach((el) => el.classList.add("is-in"));
+} else {
+  // Scroll-in reveals — CSS transitions + nth-child delays do the animation.
+  inView(
+    ".reveal, .reveal-stagger",
+    (target) => {
+      const el = target instanceof Element ? target : (target as IntersectionObserverEntry).target;
+      el.classList.add("is-in");
+    },
+    { amount: 0.15 },
+  );
+
+  safe("initHeroOnLoad", initHeroOnLoad);
+  safe("initHeroParallax", initHeroParallax);
+  safe("initPinnedPassage", initPinnedPassage);
+  safe("initWhatWeBuild", initWhatWeBuild);
+}
+
+// Diagnostic overlay runs regardless of the above, in every motion branch.
+safe("initWwbDebug", initWwbDebug);
