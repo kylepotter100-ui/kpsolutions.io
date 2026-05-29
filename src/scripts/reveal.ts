@@ -133,6 +133,11 @@ function initWhatWeBuild(): void {
   // Guarantee the scroll distance in JS (don't rely on the CSS height resolving).
   outer.style.height = `${100 + N * WWB_PER_VH}vh`;
 
+  const NAV_CLEAR = 16; // min gap above the centred pin so it never tucks under the nav
+  const indexEl = section.querySelector<HTMLElement>("[data-wwb-index]");
+  let idxTimer: ReturnType<typeof setTimeout> | undefined;
+  let lastActive = -1;
+
   const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
   const eo = (t: number) => 1 - Math.pow(1 - t, 4); // easeOutQuart
 
@@ -144,7 +149,14 @@ function initWhatWeBuild(): void {
   // styles are cleared before measuring.
   type SvcMetric = { subs: HTMLElement[]; subH: number[]; padB: number[]; nameH: number };
   let metrics: SvcMetric[] = [];
-  let lastStageH = -1;
+  const pin = section.querySelector<HTMLElement>(".wwb__pin");
+  // Centre the fixed-height pin in the viewport — clamped so it never tucks under the nav,
+  // and degrading to near-top on short/mobile viewports where the content ~fills the screen.
+  const placePin = () => {
+    if (!pin) return;
+    const pinH = pin.getBoundingClientRect().height;
+    pin.style.top = `${Math.max(NAV_CLEAR, Math.round((window.innerHeight - pinH) / 2))}px`;
+  };
   const measure = () => {
     metrics = groups.map((el) => {
       const subs = Array.from(el.querySelectorAll<HTMLElement>("[data-wwb-sub]"));
@@ -162,7 +174,14 @@ function initWhatWeBuild(): void {
         nameH: name ? name.getBoundingClientRect().height : 0,
       };
     });
-    lastStageH = -1; // force render() to re-apply the stage height after re-measure
+    // Fixed stage = tallest entry-state across all services. A constant stage ⇒ constant pin
+    // height ⇒ the heading never drifts on a swap; the collapsed-state void is filled by the
+    // index numeral rather than reclaimed by resizing.
+    const fixedStage = Math.round(
+      metrics.reduce((mx, m) => Math.max(mx, m.nameH, m.subH.reduce((a, b) => a + b, 0)), 0),
+    );
+    stage.style.height = `${fixedStage}px`;
+    placePin();
   };
 
   // Collapse the earlier subs (keep the LAST one — the Outcome — always full). lp 0→1
@@ -226,14 +245,19 @@ function initWhatWeBuild(): void {
       if (m && i !== active) applyCollapse(m, 0);
     }
 
+    // Index numeral swaps at the crossfade midpoint (~190ms of the 380ms opacity fade), so
+    // it changes when the two services are evenly blended, not while the old one still shows.
+    if (active !== lastActive) {
+      lastActive = active;
+      clearTimeout(idxTimer);
+      idxTimer = setTimeout(() => {
+        if (indexEl) indexEl.textContent = String(active + 1).padStart(2, "0");
+      }, 190);
+    }
+
     const m = metrics[active];
     if (!m) return;
-    const subsH = applyCollapse(m, lp);
-    const stageH = Math.round(Math.max(m.nameH, subsH));
-    if (stageH !== lastStageH) {
-      lastStageH = stageH;
-      stage.style.height = `${stageH}px`;
-    }
+    applyCollapse(m, lp); // stage height is fixed; the collapse animates within it
   };
 
   let ticking = false;
@@ -260,6 +284,51 @@ function initWhatWeBuild(): void {
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measure(); render(); });
 }
 
+// Debug overlay — only when the URL contains `?debug`. Outlines the WWB pin and the passage
+// panel and prints their live heights / positions / margins so the geometry can be verified
+// on-device (heading top must stay constant across WWB swaps; passage inner margin ≈ outer).
+function initDebugOverlay(): void {
+  const pin = document.querySelector<HTMLElement>(".wwb__pin");
+  const heading = document.querySelector<HTMLElement>(".wwb__heading");
+  const stage = document.querySelector<HTMLElement>("[data-wwb-stage]");
+  const indexEl = document.querySelector<HTMLElement>("[data-wwb-index]");
+  const panel = document.querySelector<HTMLElement>(".pinned-content");
+  if (!pin && !panel) return;
+
+  const readout = document.createElement("div");
+  readout.setAttribute(
+    "style",
+    "position:fixed;left:8px;bottom:8px;z-index:9999;font:11px/1.45 ui-monospace,monospace;" +
+      "background:rgba(0,0,0,.82);color:#fff;padding:8px 10px;border-radius:6px;white-space:pre;" +
+      "pointer-events:none;max-width:48vw",
+  );
+  document.body.appendChild(readout);
+  if (pin) pin.style.outline = "1px solid #ee1133";
+  if (panel) panel.style.outline = "1px solid #11aadd";
+
+  const px = (n: number) => `${Math.round(n)}px`;
+  const update = () => {
+    const lines: string[] = [];
+    if (pin) {
+      const r = pin.getBoundingClientRect();
+      lines.push(`WWB pin   h=${px(r.height)} top=${px(r.top)} (vh=${px(window.innerHeight)})`);
+      if (stage) lines.push(`WWB stage h=${px(stage.getBoundingClientRect().height)}`);
+      if (heading) lines.push(`WWB headY ${px(heading.getBoundingClientRect().top)} idx=${indexEl?.textContent ?? "-"}`);
+    }
+    if (panel) {
+      const r = panel.getBoundingClientRect();
+      const txt = panel.querySelector<HTMLElement>(".pinned-passage");
+      const inner = txt ? (r.height - txt.getBoundingClientRect().height) / 2 : 0;
+      lines.push(`Passage   box h=${px(r.height)} top=${px(r.top)} innerMargin≈${px(inner)}`);
+    }
+    readout.textContent = lines.join("\n");
+  };
+  update();
+  window.addEventListener("scroll", update, { passive: true });
+  document.addEventListener("scroll", update, { passive: true, capture: true });
+  window.addEventListener("resize", update);
+}
+
 // ─── Orchestration (runs last, after all declarations above) ───
 if (reduceMotion) {
   document
@@ -280,4 +349,5 @@ if (reduceMotion) {
   safe("initHeroParallax", initHeroParallax);
   safe("initPinnedPassage", initPinnedPassage);
   safe("initWhatWeBuild", initWhatWeBuild);
+  if (location.search.includes("debug")) safe("initDebugOverlay", initDebugOverlay);
 }
