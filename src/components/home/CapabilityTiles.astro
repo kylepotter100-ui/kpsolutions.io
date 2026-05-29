@@ -1,13 +1,13 @@
 ---
 // "What we build" — pinned collapse scrollytelling. A persistent heading + hairline
-// sit at the top of a content-height card centred in the viewport. The active
-// service's name is fixed on the left; its three sub-sections (Challenge / Offer /
-// Outcome) stack on the right. As you scroll, sub 1 collapses upward, then sub 2,
-// leaving the Outcome; then the card cross-fades to the next service, fresh with
-// all three subs. Driven by reveal.ts initWhatWeBuild (desktop only): a raw scroll
-// listener writes transform (track translateY) + opacity (per sub) ONLY, with the
-// stage height measured from the real content and capped to the viewport. Mobile /
-// reduced-motion / no-JS render the static interleaved list. Copy from capabilities.ts.
+// sit at the top of a content-height card. The active service's name is fixed on the
+// left (stacked on top on mobile); its three sub-sections (Challenge / Offer / Outcome)
+// show on the right. As you scroll, the earlier subs collapse their height and fade so
+// the survivors flow up and the block shrinks from the bottom, leaving the Outcome; then
+// the card cross-fades to the next service, fresh with all three subs. Driven by
+// reveal.ts initWhatWeBuild (desktop + mobile, one shared scroll clock): per-sub
+// max-height + opacity, with the stage height set to hug the live content. Reduced-motion
+// / no-JS render the static interleaved list. Copy from capabilities.ts.
 import { capabilities } from "../../lib/capabilities";
 ---
 
