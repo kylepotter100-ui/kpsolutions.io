@@ -144,7 +144,7 @@ html.js-reveal .reveal-hero {
 /* ── Pinned passage (Apple-style manifesto) ────────────────── */
 .pinned {
   position: relative;
-  height: 160vh;
+  height: 130vh;
   background: radial-gradient(70% 55% at 50% 45%, oklch(97% 0.012 55) 0%, var(--bone-0) 70%);
 }
 /* Sticky pane centred in the viewport while the (taller) section scrolls past, so the
@@ -159,7 +159,7 @@ html.js-reveal .reveal-hero {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(58px, 8.4vw, 96px) 32px clamp(48px, 7vw, 80px);
+  padding: clamp(40px, 5vw, 64px) 32px clamp(40px, 5vw, 64px);
 }
 .pinned-passage {
   font-family: var(--font-sans);
@@ -191,9 +191,10 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   .pinned-content { position: static; min-height: 0; }
 }
 @media (max-width: 768px) {
-  /* Phones don't pin (avoids sticky jank): content-sized centred block. */
-  .pinned { height: auto; }
-  .pinned-content { position: static; min-height: 0; padding: clamp(40px, 8vw, 72px) 20px; }
+  /* Mobile pins too (same mechanic + pace as desktop); .pinned-content keeps the
+     base sticky / min-height:100vh / centred so the highlight scrubs identically. */
+  .pinned { height: 130vh; }
+  .pinned-content { padding: clamp(32px, 8vw, 56px) 20px; }
   .pinned-passage {
     font-size: clamp(1.25rem, 1.05rem + 1.2vw, 1.625rem);
     padding-inline: clamp(20px, 8vw, 40px);
