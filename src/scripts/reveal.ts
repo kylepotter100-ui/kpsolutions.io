@@ -104,22 +104,20 @@ function initPinnedPassage(): void {
   );
 }
 
-// "What we build" — pinned collapse scrollytelling. A plain window scroll listener
-// computes progress from the section's own viewport-relative position; the outer
-// height is forced in JS as a guarantee of scroll distance. As progress advances the
-// active service swaps and its three subs collapse upward (track translateY + per-sub
-// opacity ONLY; the last sub stays). The stage/clip box is measured from the active
-// service's content and capped to the viewport, then shrunk live so the framed card
-// ends just under the Outcome — i.e. the visible card is never taller than
-// heading→Outcome. Desktop-only; the pin CSS is gated on data-wwb-active, so mobile /
-// reduced-motion / no-JS keep the static interleaved list.
-const WWB_PER_VH = 150; // scroll distance per service (×vh); 4 services → ~700vh total (slower, controlled)
-const WWB_HOLD = 0.2; // fraction of each service fully visible before collapse begins
+// "What we build" — pinned scroll-collapse. Runs on BOTH desktop and mobile (one
+// shared clock, so the pace matches). Each service shows its three subs (Challenge /
+// Offer / Outcome) at rest; as the service scrolls, the earlier subs collapse their
+// HEIGHT and fade, so the survivors flow UP and the block shrinks from the bottom —
+// ending on the Outcome hugging the top. The stage height tracks the active service's
+// live content, so the frame hugs it; the heading + service name are top-anchored, so
+// they stay fixed (no drift). Services cross-fade, and the incoming one is reset to
+// fully-expanded before it shows, so there's no reload flash on swap. Reduced-motion
+// (handled upstream) keeps the static interleaved list.
+const WWB_PER_VH = 120; // scroll distance per service (×vh); shared by desktop + mobile
+const WWB_HOLD = 0.12; // fraction of each service held fully open before it collapses
 function initWhatWeBuild(): void {
   const section = document.querySelector<HTMLElement>("[data-wwb]");
   if (!section) return;
-  // Guard: desktop only — below this the static interleaved list is the right UX.
-  if (!window.matchMedia("(min-width: 769px)").matches) return;
   const outer = section.querySelector<HTMLElement>("[data-wwb-outer]");
   const stage = section.querySelector<HTMLElement>("[data-wwb-stage]");
   const groups = Array.from(section.querySelectorAll<HTMLElement>("[data-wwb-group]"));
@@ -131,41 +129,65 @@ function initWhatWeBuild(): void {
   outer.style.height = `${100 + N * WWB_PER_VH}vh`;
 
   const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
-  const eo = (t: number) => 1 - Math.pow(1 - t, 4); // easeOutQuart (matches reference)
+  const eo = (t: number) => 1 - Math.pow(1 - t, 4); // easeOutQuart
 
-  // Cached layout, re-measured on resize / fonts.ready. Each service sizes its OWN
-  // clip box to its OWN natural subs height (capped to the viewport); the stage is
-  // sized per active service in render() so it ends right after that service's last
-  // sub. Top-anchored pin → only the bottom edge moves, so no heading shift on swap.
-  let metrics: { subs: HTMLElement[]; track: HTMLElement | null; wrap: HTMLElement | null; offs: number[]; h: number; hCapped: number }[] = [];
-  let lastClipH = -1;
-  let lastActiveIdx = -1;
+  // Per-service layout, re-measured on resize / fonts.ready. subH = each sub's natural
+  // box height (scrollHeight is parent-height-independent, so it's correct even while the
+  // services are absolutely positioned); nameH floors the stage so it never collapses
+  // shorter than the service name. Inline collapse styles are cleared before measuring.
+  type SvcMetric = { subs: HTMLElement[]; subH: number[]; nameH: number };
+  let metrics: SvcMetric[] = [];
+  let lastStageH = -1;
   const measure = () => {
-    const wraps = groups.map((g) => g.querySelector<HTMLElement>("[data-wwb-subs]"));
-    stage.style.height = "auto";
-    wraps.forEach((w) => {
-      if (w) {
-        w.style.height = "auto";
-        w.style.overflow = "visible";
-      }
-    });
-    const cap = Math.max(300, window.innerHeight - 260);
-    metrics = groups.map((el, i) => {
+    metrics = groups.map((el) => {
       const subs = Array.from(el.querySelectorAll<HTMLElement>("[data-wwb-sub]"));
-      const track = el.querySelector<HTMLElement>("[data-wwb-track]");
-      const h = track ? track.scrollHeight : 0;
-      return { subs, track, wrap: wraps[i], offs: subs.map((s) => s.offsetTop), h, hCapped: Math.min(h + 16, cap) };
+      subs.forEach((s) => {
+        s.style.maxHeight = "";
+        s.style.opacity = "";
+        s.style.overflow = "";
+      });
+      const name = el.querySelector<HTMLElement>(".wwb-service__name");
+      return {
+        subs,
+        subH: subs.map((s) => s.scrollHeight),
+        nameH: name ? name.scrollHeight : 0,
+      };
     });
-    wraps.forEach((w) => {
-      if (w) w.style.overflow = "hidden";
-    });
-    lastClipH = -1; // force render() to re-apply the clip height after re-measure
+    lastStageH = -1; // force render() to re-apply the stage height after re-measure
   };
 
-  // Progress 0..1 from the outer's viewport-relative position (reference formula):
-  // when the outer top is at the viewport top, top=0 → 0; when its bottom reaches
-  // the viewport bottom, top=-span → 1. Viewport-relative, so it's correct no
-  // matter which element is the scroller.
+  // Collapse the earlier subs (keep the LAST one — the Outcome — always full). lp 0→1
+  // drives cf 0→collapsible; sub k collapses over its own unit slice. maxHeight → 0 lets
+  // the survivors flow up naturally (no transform, no clip mask). Returns the live total
+  // height of the subs column so the stage can hug it.
+  const applyCollapse = (m: SvcMetric, lp: number): number => {
+    const collapsible = m.subs.length - 1;
+    const cf = lp * Math.max(collapsible, 0);
+    let subsH = 0;
+    for (let k = 0; k < m.subs.length; k++) {
+      const sub = m.subs[k];
+      const local = k < collapsible ? clamp01(cf - k) : 0;
+      if (local <= 0) {
+        // not collapsing (survivor, or not reached yet): fully expanded
+        sub.style.maxHeight = "";
+        sub.style.opacity = "1";
+        sub.style.overflow = "";
+        subsH += m.subH[k];
+        continue;
+      }
+      const p = eo(local);
+      const h = m.subH[k] * (1 - p);
+      sub.style.overflow = "hidden";
+      sub.style.maxHeight = `${h.toFixed(1)}px`;
+      sub.style.opacity = (1 - p).toFixed(3);
+      subsH += h;
+    }
+    return subsH;
+  };
+
+  // Progress 0..1 from the outer's viewport-relative position (works whatever the real
+  // scroller is). prog splits into the active service index + its local 0..1 (lp), with
+  // a short hold before the collapse begins.
   const render = () => {
     const span = outer.offsetHeight - window.innerHeight;
     const top = outer.getBoundingClientRect().top;
@@ -175,43 +197,22 @@ function initWhatWeBuild(): void {
     const lpRaw = clamp01(prog - active);
     const lp = lpRaw < WWB_HOLD ? 0 : (lpRaw - WWB_HOLD) / (1 - WWB_HOLD);
 
-    for (let i = 0; i < N; i++) groups[i].classList.toggle("is-active", i === active);
-    if (active !== lastActiveIdx) {
-      lastActiveIdx = active;
-      lastClipH = -1; // force the newly-active service's clip box to be re-sized
+    for (let i = 0; i < N; i++) {
+      const m = metrics[i];
+      groups[i].classList.toggle("is-active", i === active);
+      // Non-active services reset to fully expanded, so the incoming one cross-fades in
+      // already-open (no reload flash); the active one collapses by its own progress.
+      if (m && i !== active) applyCollapse(m, 0);
     }
 
     const m = metrics[active];
-    if (!m || !m.track || m.subs.length === 0) return;
-    const collapsible = m.subs.length - 1; // keep the LAST sub — never empty
-    if (collapsible < 1) {
-      m.track.style.transform = "translateY(0px)";
-      m.subs.forEach((s) => (s.style.opacity = "1"));
-      setClip(m, m.hCapped);
-      return;
+    if (!m) return;
+    const subsH = applyCollapse(m, lp);
+    const stageH = Math.round(Math.max(m.nameH, subsH));
+    if (stageH !== lastStageH) {
+      lastStageH = stageH;
+      stage.style.height = `${stageH}px`;
     }
-    const cf = lp * collapsible;
-    const idx = Math.min(collapsible - 1, Math.floor(cf));
-    const ty = -(m.offs[idx] + eo(cf - idx) * (m.offs[idx + 1] - m.offs[idx]));
-    m.track.style.transform = `translateY(${ty.toFixed(1)}px)`;
-    for (let k = 0; k < m.subs.length; k++) {
-      m.subs[k].style.opacity = (k < collapsible ? 1 - eo(clamp01(cf - k)) : 1).toFixed(3);
-    }
-    // Shrink the clip box / stage to hug the still-visible content: as the track
-    // translates up by |ty|, the content bottom relative to the clip top is h+ty, so
-    // the frame ends right under the active sub (the Outcome when fully collapsed).
-    const lastSubH = m.h - m.offs[m.offs.length - 1];
-    setClip(m, Math.min(m.hCapped, Math.max(lastSubH, m.h + ty)));
-  };
-
-  // Apply the live clip height to the stage and the active service's clip box. The
-  // pin (height:auto) then hugs it, so the framed card cuts off just under the content.
-  const setClip = (m: (typeof metrics)[number], clipH: number) => {
-    const h = Math.round(clipH);
-    if (h === lastClipH) return;
-    lastClipH = h;
-    stage.style.height = `${h}px`;
-    if (m.wrap) m.wrap.style.height = `${h}px`;
   };
 
   let ticking = false;
