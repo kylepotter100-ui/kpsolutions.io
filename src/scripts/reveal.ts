@@ -279,13 +279,18 @@ function initWwbDebug(): void {
   const render = () => {
     const wwb = document.querySelector(".wwb");
     const outer = document.querySelector(".wwb__outer");
-    const pin = document.querySelector(".wwb__pin");
+    const pin = document.querySelector<HTMLElement>(".wwb__pin");
+    const inner = document.querySelector<HTMLElement>(".wwb__inner");
+    const psec = document.querySelector<HTMLElement>(".pinned");
+    const pcon = document.querySelector<HTMLElement>(".pinned-content");
     strip.textContent =
       "WWB DEBUG\n" +
       `sticky support: ${CSS.supports("position", "sticky") ? "yes" : "no"}\n` +
       `data-wwb-active: ${wwb?.hasAttribute("data-wwb-active") ? "set" : "missing"}\n` +
       `.wwb__outer height: ${outer ? getComputedStyle(outer).height : "?"}\n` +
       `.wwb__pin position: ${pin ? getComputedStyle(pin).position : "?"}\n` +
+      `.wwb__pin computed height: ${pin?.offsetHeight ?? "?"}px\n` +
+      `.wwb__inner content height: ${inner?.offsetHeight ?? "?"}px\n` +
       `services found: ${document.querySelectorAll("[data-wwb-group]").length}\n` +
       `sub elements found: ${document.querySelectorAll("[data-wwb-sub]").length}\n` +
       `active service: ${__wwbActive}\n` +
@@ -294,6 +299,9 @@ function initWwbDebug(): void {
       `driver running: ${__wwbDriverRunning ? "yes" : "no"}\n` +
       `last JS error: ${__wwbLastError}\n` +
       `matchMedia(>=769): ${window.matchMedia("(min-width: 769px)").matches}\n` +
+      `.pinned section height: ${psec?.offsetHeight ?? "?"}px\n` +
+      `.pinned-content height: ${pcon?.offsetHeight ?? "?"}px\n` +
+      `.pinned-content min-height: ${pcon ? getComputedStyle(pcon).minHeight : "?"}\n` +
       `overflow ancestor: ${overflowAncestor()}`;
     requestAnimationFrame(render);
   };

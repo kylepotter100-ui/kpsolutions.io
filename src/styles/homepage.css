@@ -144,7 +144,7 @@ html.js-reveal .reveal-hero {
 /* ── Pinned passage (Apple-style manifesto) ────────────────── */
 .pinned {
   position: relative;
-  height: 160vh;
+  height: 100vh;
   background: radial-gradient(70% 55% at 50% 40%, oklch(97% 0.012 55) 0%, var(--bone-0) 70%);
 }
 /* Sticky 100vh pane, top-aligned (not dead-centre) so the short passage sits in
@@ -387,7 +387,10 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
     z-index: 2;
     background: var(--bone-50);
   }
-  html.js-reveal .wwb[data-wwb-active] .wwb__inner { width: 100%; padding-block: clamp(64px, 12vh, 140px) clamp(24px, 4vh, 48px); }
+  /* Centre the content within the 100vh pin via a FIXED top reference (not per
+     service), so the empty space splits above/below instead of all-below while the
+     heading stays put on every service swap. 620px ≈ heading + rule + tallest stage. */
+  html.js-reveal .wwb[data-wwb-active] .wwb__inner { width: 100%; padding-block: max(56px, calc((100vh - 620px) / 2)) clamp(24px, 4vh, 48px); }
   html.js-reveal .wwb[data-wwb-active] .wwb__heading { margin-bottom: clamp(14px, 1.8vh, 20px); }
   html.js-reveal .wwb[data-wwb-active] .wwb__rule { margin-bottom: clamp(26px, 3.6vh, 44px); }
   html.js-reveal .wwb[data-wwb-active] .wwb__stage { position: relative; height: min(560px, 64vh); }
