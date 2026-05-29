@@ -80,29 +80,163 @@ function initHeroParallax(): void {
   }
 }
 
-// Pinned passage: phrases activate in reading order as the 200vh section is
-// scroll-pinned. CLS/INP-safe — toggles a class (color + opacity only), no
-// per-frame layout. Element-guarded so the shared script no-ops elsewhere.
+// Pinned passage: phrases activate in reading order as the section is scroll-pinned
+// (controlled ~160vh travel → a deliberate, slow reveal). CLS/INP-safe — toggles a
+// class (color + opacity only), no per-frame layout. The visible text block stays the
+// same size and dead-centre throughout. Element-guarded so the shared script no-ops
+// elsewhere. Mobile / reduced-motion drop the pin (CSS) and render every phrase active.
 function initPinnedPassage(): void {
   const section = document.querySelector<HTMLElement>("[data-pinned]");
   if (!section) return;
   const spans = Array.from(section.querySelectorAll<HTMLElement>(".activate"));
   if (!spans.length) return;
+  const thresholds = spans.map((s) => parseFloat(s.dataset.activateAt ?? "0"));
 
-  // Content-sized block: phrases activate once, in reading order, when the section
-  // enters the viewport — a gentle stagger, no scroll-pinning / height control.
-  inView(
-    section,
-    () => {
-      spans.forEach((span, i) => {
-        window.setTimeout(() => span.classList.add("is-active"), i * 160);
-      });
-      return undefined; // fire once (don't re-mute on leave)
+  // Section is taller than the viewport, so edge offsets map progress 0->1 across the
+  // full sticky-pinned hold (start start = pin begins, end end = pin releases).
+  scroll(
+    (progress: number) => {
+      for (let i = 0; i < spans.length; i++) {
+        spans[i].classList.toggle("is-active", progress >= thresholds[i]);
+      }
     },
-    { amount: 0.4 },
+    { target: section, offset: ["start start", "end end"] },
   );
 }
 
+// "What we build" — pinned collapse scrollytelling. A plain window scroll listener
+// computes progress from the section's own viewport-relative position; the outer
+// height is forced in JS as a guarantee of scroll distance. As progress advances the
+// active service swaps and its three subs collapse upward (track translateY + per-sub
+// opacity ONLY; the last sub stays). The stage/clip box is measured from the active
+// service's content and capped to the viewport, then shrunk live so the framed card
+// ends just under the Outcome — i.e. the visible card is never taller than
+// heading→Outcome. Desktop-only; the pin CSS is gated on data-wwb-active, so mobile /
+// reduced-motion / no-JS keep the static interleaved list.
+const WWB_PER_VH = 110; // scroll distance per service (×vh); 4 services → ~540vh total
+const WWB_HOLD = 0.2; // fraction of each service fully visible before collapse begins
+function initWhatWeBuild(): void {
+  const section = document.querySelector<HTMLElement>("[data-wwb]");
+  if (!section) return;
+  // Guard: desktop only — below this the static interleaved list is the right UX.
+  if (!window.matchMedia("(min-width: 769px)").matches) return;
+  const outer = section.querySelector<HTMLElement>("[data-wwb-outer]");
+  const stage = section.querySelector<HTMLElement>("[data-wwb-stage]");
+  const groups = Array.from(section.querySelectorAll<HTMLElement>("[data-wwb-group]"));
+  const N = groups.length;
+  if (!outer || !stage || N === 0) return;
+
+  section.setAttribute("data-wwb-active", "");
+  // Guarantee the scroll distance in JS (don't rely on the CSS height resolving).
+  outer.style.height = `${100 + N * WWB_PER_VH}vh`;
+
+  const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
+  const eo = (t: number) => 1 - Math.pow(1 - t, 4); // easeOutQuart (matches reference)
+
+  // Cached layout, re-measured on resize / fonts.ready. Each service sizes its OWN
+  // clip box to its OWN natural subs height (capped to the viewport); the stage is
+  // sized per active service in render() so it ends right after that service's last
+  // sub. Top-anchored pin → only the bottom edge moves, so no heading shift on swap.
+  let metrics: { subs: HTMLElement[]; track: HTMLElement | null; wrap: HTMLElement | null; offs: number[]; h: number; hCapped: number }[] = [];
+  let lastClipH = -1;
+  let lastActiveIdx = -1;
+  const measure = () => {
+    const wraps = groups.map((g) => g.querySelector<HTMLElement>("[data-wwb-subs]"));
+    stage.style.height = "auto";
+    wraps.forEach((w) => {
+      if (w) {
+        w.style.height = "auto";
+        w.style.overflow = "visible";
+      }
+    });
+    const cap = Math.max(300, window.innerHeight - 260);
+    metrics = groups.map((el, i) => {
+      const subs = Array.from(el.querySelectorAll<HTMLElement>("[data-wwb-sub]"));
+      const track = el.querySelector<HTMLElement>("[data-wwb-track]");
+      const h = track ? track.scrollHeight : 0;
+      return { subs, track, wrap: wraps[i], offs: subs.map((s) => s.offsetTop), h, hCapped: Math.min(h + 16, cap) };
+    });
+    wraps.forEach((w) => {
+      if (w) w.style.overflow = "hidden";
+    });
+    lastClipH = -1; // force render() to re-apply the clip height after re-measure
+  };
+
+  // Progress 0..1 from the outer's viewport-relative position (reference formula):
+  // when the outer top is at the viewport top, top=0 → 0; when its bottom reaches
+  // the viewport bottom, top=-span → 1. Viewport-relative, so it's correct no
+  // matter which element is the scroller.
+  const render = () => {
+    const span = outer.offsetHeight - window.innerHeight;
+    const top = outer.getBoundingClientRect().top;
+    const q = span > 0 ? clamp01(-top / span) : 0;
+    const prog = q * N;
+    const active = Math.min(N - 1, Math.floor(prog));
+    const lpRaw = clamp01(prog - active);
+    const lp = lpRaw < WWB_HOLD ? 0 : (lpRaw - WWB_HOLD) / (1 - WWB_HOLD);
+
+    for (let i = 0; i < N; i++) groups[i].classList.toggle("is-active", i === active);
+    if (active !== lastActiveIdx) {
+      lastActiveIdx = active;
+      lastClipH = -1; // force the newly-active service's clip box to be re-sized
+    }
+
+    const m = metrics[active];
+    if (!m || !m.track || m.subs.length === 0) return;
+    const collapsible = m.subs.length - 1; // keep the LAST sub — never empty
+    if (collapsible < 1) {
+      m.track.style.transform = "translateY(0px)";
+      m.subs.forEach((s) => (s.style.opacity = "1"));
+      setClip(m, m.hCapped);
+      return;
+    }
+    const cf = lp * collapsible;
+    const idx = Math.min(collapsible - 1, Math.floor(cf));
+    const ty = -(m.offs[idx] + eo(cf - idx) * (m.offs[idx + 1] - m.offs[idx]));
+    m.track.style.transform = `translateY(${ty.toFixed(1)}px)`;
+    for (let k = 0; k < m.subs.length; k++) {
+      m.subs[k].style.opacity = (k < collapsible ? 1 - eo(clamp01(cf - k)) : 1).toFixed(3);
+    }
+    // Shrink the clip box / stage to hug the still-visible content: as the track
+    // translates up by |ty|, the content bottom relative to the clip top is h+ty, so
+    // the frame ends right under the active sub (the Outcome when fully collapsed).
+    const lastSubH = m.h - m.offs[m.offs.length - 1];
+    setClip(m, Math.min(m.hCapped, Math.max(lastSubH, m.h + ty)));
+  };
+
+  // Apply the live clip height to the stage and the active service's clip box. The
+  // pin (height:auto) then hugs it, so the framed card cuts off just under the content.
+  const setClip = (m: (typeof metrics)[number], clipH: number) => {
+    const h = Math.round(clipH);
+    if (h === lastClipH) return;
+    lastClipH = h;
+    stage.style.height = `${h}px`;
+    if (m.wrap) m.wrap.style.height = `${h}px`;
+  };
+
+  let ticking = false;
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      ticking = false;
+      render();
+    });
+  };
+
+  measure();
+  render();
+  // Listen broadly: window covers document scroll; document capture-phase covers
+  // scroll on ANY ancestor/sub-container, so progress updates whatever the real
+  // scroller turns out to be.
+  window.addEventListener("scroll", onScroll, { passive: true });
+  document.addEventListener("scroll", onScroll, { passive: true, capture: true });
+  window.addEventListener("resize", () => {
+    measure();
+    render();
+  });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measure(); render(); });
+}
 
 // ─── Orchestration (runs last, after all declarations above) ───
 if (reduceMotion) {
@@ -123,4 +257,5 @@ if (reduceMotion) {
   safe("initHeroOnLoad", initHeroOnLoad);
   safe("initHeroParallax", initHeroParallax);
   safe("initPinnedPassage", initPinnedPassage);
+  safe("initWhatWeBuild", initWhatWeBuild);
 }
