@@ -144,22 +144,23 @@ html.js-reveal .reveal-hero {
 /* ── Pinned passage (Apple-style manifesto) ────────────────── */
 .pinned {
   position: relative;
-  height: 130vh;
-  background: radial-gradient(70% 55% at 50% 45%, oklch(97% 0.012 55) 0%, var(--bone-0) 70%);
+  height: 120vh;
+  background: var(--bone-50);
 }
-/* Sticky pane centred in the viewport while the (taller) section scrolls past, so the
-   passage holds dead-centre while the phrase-highlighting plays out over a controlled,
-   deliberate scroll. The text block keeps its content size; only the scroll distance
-   travelled through it changes. top:0 + no transform keeps the pin confined to its
-   section. Mobile / reduced-motion drop the pin (below) and render it content-sized. */
+/* The passage is a ~58vh gradient "spotlight" panel, viewport-centred (top:21vh + 58vh +
+   21vh = 100vh) on the flat section, while the taller section scrolls past to drive the
+   phrase highlight. min-height:58vh + flex-centre yields the ~96px framed margin around the
+   text. Mobile / reduced-motion drop the pin (below) and render it content-sized. */
 .pinned-content {
   position: sticky;
-  top: 0;
-  min-height: 100vh;
+  top: 21vh;
+  min-height: 58vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(40px, 5vw, 64px) 32px clamp(40px, 5vw, 64px);
+  padding: clamp(40px, 5vw, 64px) 32px;
+  background: radial-gradient(80% 70% at 50% 50%, oklch(97% 0.012 55) 0%, var(--bone-0) 75%);
+  border-radius: clamp(20px, 3vw, 32px);
 }
 .pinned-passage {
   font-family: var(--font-sans);
@@ -186,15 +187,16 @@ html.js-reveal .pinned-passage .activate { color: var(--bone-400); opacity: 0.5;
 html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opacity: 1; }
 @media (prefers-reduced-motion: reduce) {
   html.js-reveal .pinned-passage .activate { color: var(--ox-500); opacity: 1; }
-  /* No pin when motion is reduced: content-sized, every phrase already active. */
+  /* No pin when motion is reduced: the gradient panel sits content-sized in normal flow,
+     every phrase already active. */
   .pinned { height: auto; }
   .pinned-content { position: static; min-height: 0; }
 }
 @media (max-width: 768px) {
-  /* Mobile pins too (same mechanic + pace as desktop); .pinned-content keeps the
-     base sticky / min-height:100vh / centred so the highlight scrubs identically. */
-  .pinned { height: 130vh; }
-  .pinned-content { padding: clamp(32px, 8vw, 56px) 20px; }
+  /* Mobile pins too (same mechanic + pace as desktop): the panel stays a centred ~58vh
+     spotlight; smaller radius/padding so it sits comfortably near full width. */
+  .pinned { height: 120vh; }
+  .pinned-content { padding: clamp(28px, 7vw, 48px) 20px; border-radius: clamp(16px, 4vw, 24px); }
   .pinned-passage {
     font-size: clamp(1.25rem, 1.05rem + 1.2vw, 1.625rem);
     padding-inline: clamp(20px, 8vw, 40px);
@@ -375,27 +377,48 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
    JS to hug the live content. Services overlay (absolute inset:0) and cross-fade. The
    outer height is forced in JS (pure scroll distance). Mobile stacks the name above the
    subs (single column); reduced-motion keeps the static list (no js-reveal). */
+/* Compact, content-height pin centred in the viewport. Height hugs the fixed stage and the
+   sticky `top` is set in JS to (viewport − pinHeight)/2, so the card sits centred and the
+   heading holds a constant Y on every service swap (no drift). overflow:hidden clips the
+   index numeral and any collapsing overflow. */
 html.js-reveal .wwb[data-wwb-active] .wwb__pin {
   position: sticky;
-  top: 0;
-  min-height: 100vh;
+  top: 0; /* JS overrides with the centred offset; this is the no-JS-timing fallback */
   overflow: hidden;
   display: block;
   z-index: 2;
   background: var(--bone-50);
 }
-/* Top-anchored: heading → rule → stage stack from the top, so the heading sits at a
-   constant offset and never jumps on a service swap. */
 html.js-reveal .wwb[data-wwb-active] .wwb__inner {
   width: 100%;
-  padding-block: clamp(40px, 6vh, 72px) 0;
+  padding-block: clamp(16px, 3vh, 32px) 0;
 }
 html.js-reveal .wwb[data-wwb-active] .wwb__heading { margin-bottom: clamp(14px, 1.8vh, 20px); }
 html.js-reveal .wwb[data-wwb-active] .wwb__rule { margin-bottom: clamp(26px, 3.6vh, 44px); }
 html.js-reveal .wwb[data-wwb-active] .wwb__stage { position: relative; }
+/* Faint service-index numeral, anchored low-left in the fixed stage. It fills the space that
+   opens below the Outcome as the subs collapse, so the (geometrically unavoidable) void reads
+   as intentional structure. Decorative: aria-hidden, very low alpha, sits behind the opaque
+   service text, never affects contrast. JS sets the digits at the crossfade midpoint. */
+html.js-reveal .wwb[data-wwb-active] .wwb__index {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 0;
+  margin: 0;
+  font-family: var(--font-display, var(--font-sans));
+  font-size: clamp(140px, 24vh, 240px);
+  line-height: 0.8;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: color-mix(in oklch, var(--ox-900) 6%, transparent);
+  pointer-events: none;
+  user-select: none;
+}
 html.js-reveal .wwb[data-wwb-active] .wwb-service {
   position: absolute;
   inset: 0;
+  z-index: 1; /* opaque service text sits above the faint index numeral */
   display: grid;
   grid-template-columns: 38% 62%;
   gap: clamp(28px, 4vw, 64px);
@@ -436,6 +459,9 @@ html.js-reveal .wwb[data-wwb-active] .wwb-sub__body { max-width: 54ch; }
     --wwb-label-nudge: 0px; /* name stacks above the subs — no cap-height race */
   }
   html.js-reveal .wwb[data-wwb-active] .wwb-sub__body { max-width: none; }
+  /* Single-column on phones with content ≈ filling the viewport → no clear low-left slot
+     and little void, so the index numeral is dropped here. */
+  html.js-reveal .wwb[data-wwb-active] .wwb__index { display: none; }
 }
 
 /* ── Process callout — dark inverted moment ────────────────── */
