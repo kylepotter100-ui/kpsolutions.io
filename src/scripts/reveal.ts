@@ -113,7 +113,7 @@ function initPinnedPassage(): void {
 // ends just under the Outcome — i.e. the visible card is never taller than
 // heading→Outcome. Desktop-only; the pin CSS is gated on data-wwb-active, so mobile /
 // reduced-motion / no-JS keep the static interleaved list.
-const WWB_PER_VH = 110; // scroll distance per service (×vh); 4 services → ~540vh total
+const WWB_PER_VH = 150; // scroll distance per service (×vh); 4 services → ~700vh total (slower, controlled)
 const WWB_HOLD = 0.2; // fraction of each service fully visible before collapse begins
 function initWhatWeBuild(): void {
   const section = document.querySelector<HTMLElement>("[data-wwb]");
