@@ -384,9 +384,11 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   html.js-reveal .wwb[data-wwb-active] .wwb__pin {
     position: sticky;
     top: 0;
-    height: auto;
+    min-height: 100vh;
     overflow: hidden;
-    display: block;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     z-index: 2;
     background: var(--bone-50);
   }
