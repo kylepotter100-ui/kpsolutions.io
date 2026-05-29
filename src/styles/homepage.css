@@ -368,64 +368,66 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   color: var(--ox-900);
 }
 
-/* JS desktop: a content-height card centred in a 100vh sticky pin. The pin is a
-   COLUMN flex (justify-content:center vertically; default align-items:stretch keeps
-   the inner FULL WIDTH — a row flex would collapse it because the absolute services
-   contribute no intrinsic width) and clips with overflow:hidden so nothing can spill
-   into the next section. The outer (600vh) is pure scroll distance. Stage/subs get a
-   bounded fallback height here and JS overrides it with the measured content height
-   (capped to the viewport). Services overlay (absolute inset:0), one active (opacity
-   cross-fade); the active service's track collapses upward via transform + per-sub
-   opacity (driver). */
-@media (min-width: 769px) {
-  html.js-reveal .wwb[data-wwb-active] .wwb__outer { height: 600vh; }
-  /* The pin HUGS its content and sticks at the top, so the frame ends just below the
-     active service's Outcome (the clip box shrinks as the subs collapse — driven in
-     reveal.ts), with the heading top-anchored so it never jumps on a service swap. */
-  html.js-reveal .wwb[data-wwb-active] .wwb__pin {
-    position: sticky;
-    top: 0;
-    min-height: 100vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    z-index: 2;
-    background: var(--bone-50);
-  }
-  /* Top-anchored: heading → rule → stage stack directly, so the service name sits
-     right under "What we build." Modest top padding clears the nav; tight bottom. */
-  html.js-reveal .wwb[data-wwb-active] .wwb__inner {
-    width: 100%;
-    padding-block: clamp(48px, 7vh, 96px) clamp(24px, 4vh, 40px);
-  }
-  html.js-reveal .wwb[data-wwb-active] .wwb__heading { margin-bottom: clamp(14px, 1.8vh, 20px); }
-  html.js-reveal .wwb[data-wwb-active] .wwb__rule { margin-bottom: clamp(26px, 3.6vh, 44px); }
-  html.js-reveal .wwb[data-wwb-active] .wwb__stage { position: relative; height: min(520px, 62vh); }
+/* JS-on (all widths): a content-height card pinned in a 100vh sticky frame. The H2
+   heading and the service name are top-anchored, so they stay FIXED (no drift). The
+   subs collapse their own height on scroll (JS animates max-height / opacity), so the
+   survivors flow up and the block shrinks from the bottom; the stage height is set in
+   JS to hug the live content. Services overlay (absolute inset:0) and cross-fade. The
+   outer height is forced in JS (pure scroll distance). Mobile stacks the name above the
+   subs (single column); reduced-motion keeps the static list (no js-reveal). */
+html.js-reveal .wwb[data-wwb-active] .wwb__pin {
+  position: sticky;
+  top: 0;
+  min-height: 100vh;
+  overflow: hidden;
+  display: block;
+  z-index: 2;
+  background: var(--bone-50);
+}
+/* Top-anchored: heading → rule → stage stack from the top, so the heading sits at a
+   constant offset and never jumps on a service swap. */
+html.js-reveal .wwb[data-wwb-active] .wwb__inner {
+  width: 100%;
+  padding-block: clamp(40px, 6vh, 72px) 0;
+}
+html.js-reveal .wwb[data-wwb-active] .wwb__heading { margin-bottom: clamp(14px, 1.8vh, 20px); }
+html.js-reveal .wwb[data-wwb-active] .wwb__rule { margin-bottom: clamp(26px, 3.6vh, 44px); }
+html.js-reveal .wwb[data-wwb-active] .wwb__stage { position: relative; }
+html.js-reveal .wwb[data-wwb-active] .wwb-service {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 38% 62%;
+  gap: clamp(28px, 4vw, 64px);
+  align-items: start; /* name + first sub share the top edge; the name stays fixed */
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 380ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+html.js-reveal .wwb[data-wwb-active] .wwb-service.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+html.js-reveal .wwb[data-wwb-active] .wwb-service__name { margin: 0; }
+/* Each sub owns its spacing via padding-bottom (so it collapses with the box, not a
+   leftover margin); JS animates max-height + opacity to 0. Last sub (Outcome) has no
+   trailing space, so the collapsed block hugs it. */
+html.js-reveal .wwb[data-wwb-active] .wwb-sub {
+  margin: 0;
+  padding-bottom: clamp(20px, 2.4vw, 28px);
+  overflow: hidden;
+  will-change: max-height, opacity;
+}
+html.js-reveal .wwb[data-wwb-active] .wwb-sub:last-child { padding-bottom: 0; }
+html.js-reveal .wwb[data-wwb-active] .wwb-sub__body { max-width: 54ch; }
+@media (max-width: 768px) {
+  /* Phone: the name can't sit beside the subs — stack it on top, single column. */
   html.js-reveal .wwb[data-wwb-active] .wwb-service {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    grid-template-columns: 38% 62%;
-    gap: clamp(28px, 4vw, 64px);
-    align-items: start; /* left name top == right first-sub top */
-    margin: 0;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 380ms cubic-bezier(0.22, 1, 0.36, 1);
+    grid-template-columns: 1fr;
+    gap: clamp(8px, 3vw, 18px);
   }
-  html.js-reveal .wwb[data-wwb-active] .wwb-service.is-active {
-    opacity: 1;
-    pointer-events: auto;
-  }
-  html.js-reveal .wwb[data-wwb-active] .wwb-service__name { margin: 0; }
-  /* Clip box (height set in JS to match the stage); subs rising past its top vanish. */
-  html.js-reveal .wwb[data-wwb-active] .wwb-subs { position: relative; height: min(520px, 62vh); overflow: hidden; }
-  html.js-reveal .wwb[data-wwb-active] .wwb-subs__track { position: relative; will-change: transform; }
-  html.js-reveal .wwb[data-wwb-active] .wwb-sub { margin-bottom: 28px; will-change: opacity; }
-  html.js-reveal .wwb[data-wwb-active] .wwb-sub:last-child { margin-bottom: 0; }
-  /* Wider, more readable body measure in the now-correct full-width column. */
-  html.js-reveal .wwb[data-wwb-active] .wwb-sub__body { max-width: 54ch; }
+  html.js-reveal .wwb[data-wwb-active] .wwb-sub__body { max-width: none; }
 }
 
 /* ── Process callout — dark inverted moment ────────────────── */
