@@ -119,19 +119,16 @@ function initPinnedPassage(): void {
   );
 }
 
-// "What we build" — content-height centred pinned scrollytelling, ported as
-// literally as possible from docs/references/what-we-build-collapse.html. To match
-// the proven reference exactly we use a RAW scroll listener (not motion's scroll)
-// and set the outer + stage heights in JS (not CSS calc), removing the two
-// Astro-specific unknowns. The stage height is MEASURED from the real content at
-// runtime — the tallest service's three subs — so all three fit with no clipping
-// and no wasted space (the old hardcoded 640px overflowed our long copy). Per
-// frame we only write transform (track translateY) + opacity (per sub). Offsets +
-// heights re-measured on resize / fonts.ready. Desktop-only; the pin CSS is gated
-// on data-wwb-active, so mobile / reduced-motion / no-JS keep the static list.
-const WWB_PER_VH = 150; // scroll distance per service (slow + deliberate)
-const WWB_BUFFER_VH = 50; // entry/exit hold so the pin engages/releases cleanly
-const WWB_HOLD = 0.28; // fraction of each service fully visible before collapse
+// "What we build" — pinned collapse scrollytelling. A raw scroll listener (not
+// motion's scroll) drives it: progress comes from the outer's getBoundingClientRect
+// over the 600vh scroll distance (height lives in CSS). The stage height is MEASURED
+// from the real content at runtime — the tallest service's three subs — and capped
+// to the viewport, so all three fit with no clipping and no wasted space. Per frame
+// we write ONLY transform (track translateY) + opacity (per sub); offsets re-measured
+// on resize / fonts.ready. Desktop-only; the pin CSS is gated on data-wwb-active, so
+// mobile / reduced-motion / no-JS keep the static interleaved list.
+const WWB_BUF = 0.07; // entry/exit hold as a fraction of the outer scroll distance
+const WWB_HOLD = 0.28; // fraction of each service fully visible before collapse begins
 function initWhatWeBuild(): void {
   const section = document.querySelector<HTMLElement>("[data-wwb]");
   if (!section) return;
@@ -147,8 +144,6 @@ function initWhatWeBuild(): void {
 
   const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
   const eo = (t: number) => 1 - Math.pow(1 - t, 4); // easeOutQuart (matches reference)
-  const total = WWB_BUFFER_VH + N * WWB_PER_VH + WWB_BUFFER_VH;
-  const bufFrac = WWB_BUFFER_VH / total;
 
   // Cached layout, re-measured on resize / fonts.ready. We size the stage + each
   // clip box to the tallest service's natural subs height (capped so it never
@@ -182,14 +177,13 @@ function initWhatWeBuild(): void {
         w.style.overflow = "hidden";
       }
     });
-    outer.style.height = `${total}vh`;
   };
 
   const apply = () => {
     const rect = outer.getBoundingClientRect();
     const scrollable = rect.height - window.innerHeight;
     const q = scrollable > 0 ? clamp01(-rect.top / scrollable) : 0;
-    const p = clamp01((q - bufFrac) / (1 - 2 * bufFrac)); // strip entry/exit buffers
+    const p = clamp01((q - WWB_BUF) / (1 - 2 * WWB_BUF)); // strip entry/exit buffers
     const prog = p * N;
     const active = Math.min(N - 1, Math.floor(prog));
     const lpRaw = clamp01(prog - active);
