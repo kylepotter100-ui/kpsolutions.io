@@ -71,7 +71,7 @@
   position: relative;
   z-index: 2;
   width: 100%;
-  padding: 96px 32px;
+  padding: var(--section-py) 32px;
   display: flex;
   flex-direction: column;
   gap: 32px;
@@ -261,7 +261,7 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
 }
 .process-callout__muted { color: var(--bone-500); font-weight: 400; }
 /* ── Final CTA — full-bleed conviction moment ──────────────── */
-.closing-cta { padding: clamp(120px, 14vw, 180px) 0; }
+.closing-cta { padding: var(--section-py) 0; }
 .closing-cta--bright { background: var(--bone-50); color: var(--ox-900); }
 .closing-cta__inner { max-width: 880px; }
 .closing-cta__eyebrow {
@@ -336,7 +336,7 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
    expanded in normal flow. The content-height centred pin + collapse choreography
    is layered only when reveal.ts adds [data-wwb-active] on desktop. */
 .wwb { position: relative; background: var(--bone-50); color: var(--ox-900); }
-.wwb__inner { padding-block: clamp(96px, 9vw, 140px); }
+.wwb__inner { padding-block: var(--section-py); }
 .wwb__heading { margin: 0 0 clamp(18px, 2vh, 28px); }
 .wwb__rule { height: 1px; background: oklch(22% 0.06 22 / 0.16); margin-bottom: clamp(36px, 5vw, 64px); }
 .wwb-service { margin-bottom: clamp(44px, 6vw, 80px); }
@@ -410,6 +410,13 @@ html.js-reveal .wwb[data-wwb-active] .wwb-service.is-active {
   pointer-events: auto;
 }
 html.js-reveal .wwb[data-wwb-active] .wwb-service__name { margin: 0; }
+/* Optical alignment: the big service name (line-height 1.05) and the tiny uppercase first
+   label start their boxes at the same top, but the cap-heights differ. A small calibrated
+   nudge pulls the first label up to the name's cap-height. Exposed as a var for one-line
+   tuning; disabled on mobile where the name stacks above the subs (no cap-height race). */
+html.js-reveal .wwb[data-wwb-active] .wwb-service > [data-wwb-sub]:first-child .wwb-sub__label {
+  margin-top: var(--wwb-label-nudge, -2px);
+}
 /* Each sub owns its spacing via padding-bottom (so it collapses with the box, not a
    leftover margin); JS animates max-height + opacity to 0. Last sub (Outcome) has no
    trailing space, so the collapsed block hugs it. */
@@ -426,6 +433,7 @@ html.js-reveal .wwb[data-wwb-active] .wwb-sub__body { max-width: 54ch; }
   html.js-reveal .wwb[data-wwb-active] .wwb-service {
     grid-template-columns: 1fr;
     gap: clamp(8px, 3vw, 18px);
+    --wwb-label-nudge: 0px; /* name stacks above the subs — no cap-height race */
   }
   html.js-reveal .wwb[data-wwb-active] .wwb-sub__body { max-width: none; }
 }
@@ -465,8 +473,8 @@ html.js-reveal .wwb[data-wwb-active] .wwb-sub__body { max-width: 54ch; }
 .process-callout--dark .link-arrow:hover { color: var(--ochre-300); }
 
 /* ── Who we work with — light cards on a dark section ──────── */
-.who { background: var(--ox-900); color: var(--bone-0); padding: clamp(96px, 9vw, 140px) 0; }
-.who__heading { color: var(--bone-0); margin-bottom: clamp(40px, 6vw, 72px); }
+.who { background: var(--ox-900); color: var(--bone-0); padding: var(--section-py) 0; }
+.who__heading { color: var(--bone-0); margin-bottom: clamp(32px, 4vw, 52px); }
 .who-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .who-card {
   position: relative;
@@ -529,7 +537,7 @@ html.js-reveal .wwb[data-wwb-active] .wwb-sub__body { max-width: 54ch; }
 
 /* ── Mobile / narrow ───────────────────────────────────────── */
 @media (max-width: 960px) {
-  .hero-content { padding: 88px 32px; gap: 28px; }
+  .hero-content { padding: var(--section-py-tight) 32px; gap: 28px; }
   .hero-cta-row { flex-direction: column; align-items: flex-start; gap: 14px; }
   .who-grid { grid-template-columns: 1fr; }
   .who-card { padding: 32px; }

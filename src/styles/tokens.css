@@ -176,6 +176,11 @@
   --space-4: 1rem;     --space-5: 1.5rem;  --space-6: 2rem;     --space-7: 3rem;
   --space-8: 4rem;     --space-9: 6rem;    --space-10: 8rem;    --space-11: 12rem;
 
+  /* Shared vertical rhythm — one source of truth for section padding-block. Keeps the
+     homepage sections consistent and tighter than the old ad-hoc per-section values. */
+  --section-py: clamp(72px, 7vw, 104px);        /* major content sections */
+  --section-py-tight: clamp(56px, 5.5vw, 80px); /* slim callout band */
+
   /* Content widths */
   --measure-narrow:  32rem;
   --measure-default: 44rem;
