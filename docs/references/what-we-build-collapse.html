@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>What We Build — collapse version (PRIMARY)</title>
+<style>
+  :root {
+    --bone-0: #fef9f5;
+    --bone-50: #f4ebe5;
+    --ox-900: #1a0707;
+    --ochre-700: #a05b11;
+    --hairline: rgba(26, 7, 7, 0.16);
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    --serif: Georgia, "Times New Roman", serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: var(--sans); background: var(--bone-0); color: var(--ox-900); }
+
+  .neighbour {
+    height: 100vh; display: grid; place-items: center;
+    color: rgba(26,7,7,0.35); font-size: .8rem; letter-spacing: .12em; text-transform: uppercase;
+    background: var(--bone-0);
+  }
+
+  .wwb { background: var(--bone-50); }
+  /* OUTER = scroll distance only. Entry/exit buffers + 180vh per service (slow + deliberate). */
+  .wwb__outer { position: relative; background: var(--bone-50); }
+
+  /* PIN = robust 100vh sticky + flex-centred content. Spec-compliant, works
+     everywhere. The 100vh frame has the bone bg; content sits balanced in the
+     middle with seamless breathing room above and below (not an empty "frame",
+     just calm centred presentation — the standard premium pattern). */
+  .wwb__pin {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    background: var(--bone-50);
+  }
+  .wwb__inner { max-width: 1180px; margin: 0 auto; padding: clamp(28px,5vh,56px) clamp(24px,5vw,64px); width: 100%; }
+
+  .wwb__heading { font-size: clamp(2rem,1.4rem + 2.4vw,3.25rem); font-weight: 700; letter-spacing: -.02em; margin-bottom: 18px; }
+  .wwb__rule { height: 1px; background: var(--hairline); margin-bottom: clamp(28px,4vh,44px); }
+
+  /* STAGE = fixed height; tall enough to fit all three subs comfortably when fully expanded.
+     Tune this single value to match the longest "all-subs-visible" content across services. */
+  .wwb__stage { position: relative; height: 440px; }
+
+  .wwb-service {
+    position: absolute; inset: 0;
+    display: grid; grid-template-columns: 38% 62%; gap: clamp(24px,4vw,56px);
+    align-items: start;                 /* left name top == right first-sub top */
+    opacity: 0; pointer-events: none;
+    transition: opacity 380ms cubic-bezier(0.22,1,0.36,1);
+  }
+  .wwb-service.is-active { opacity: 1; pointer-events: auto; }
+
+  .wwb-service__name { font-size: clamp(1.6rem,1.1rem + 1.8vw,2.4rem); font-weight: 700; letter-spacing: -.01em; line-height: 1.05; }
+  .wwb-service__name em { font-style: italic; font-family: var(--serif); color: var(--ochre-700); font-weight: 400; }
+
+  .wwb-subs { position: relative; height: 440px; overflow: hidden; }   /* matches stage; clips subs as they collapse */
+  .wwb-subs__track { position: relative; will-change: transform; }
+  .wwb-sub { margin-bottom: 30px; will-change: opacity; }
+  .wwb-sub__label { font-size: .75rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--ochre-700); margin-bottom: 9px; }
+  .wwb-sub__body { font-size: clamp(1rem,.95rem + .3vw,1.125rem); line-height: 1.5; max-width: 46ch; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wwb__outer { height: auto !important; }
+    .wwb__pin { position: static; transform: none; }
+    .wwb__stage { height: auto; }
+    .wwb-service { position: static; opacity: 1; pointer-events: auto; margin-bottom: 56px; }
+    .wwb-subs { height: auto; overflow: visible; }
+    .wwb-subs__track { transform: none !important; }
+    .wwb-sub { opacity: 1 !important; }
+  }
+</style>
+</head>
+<body>
+  <div class="neighbour">↑ previous section ↑</div>
+  <section class="wwb">
+    <div class="wwb__outer" id="outer">
+      <div class="wwb__pin">
+        <div class="wwb__inner">
+          <h2 class="wwb__heading">What we build.</h2>
+          <div class="wwb__rule"></div>
+          <div class="wwb__stage" id="stage"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="neighbour">↓ selected work ↓</div>
+
+<script>
+  const services = [
+    { lead:"Bespoke", accent:"software", subs:[
+      {label:"The Challenge", body:"You're running your business on tools built for someone else. The important work lives in spreadsheets, and in steps your team just has to remember."},
+      {label:"What We Offer", body:"Software built around how your business actually works — not how a vendor assumed it should. Custom platforms, with the code owned entirely by you."},
+      {label:"The Outcome", body:"A system that does exactly what you need and nothing you don't. When something needs to change, it changes — because it's yours."},
+    ]},
+    { lead:"Modernization &", accent:"replacement", subs:[
+      {label:"The Challenge", body:"Legacy systems and a patchwork of disconnected apps quietly slow everything down. Nobody's quite sure which system holds the truth."},
+      {label:"What We Offer", body:"We replace the tangle with a single platform built around how your business runs today. One system, one source of truth, one team on the hook."},
+      {label:"The Outcome", body:"The daily friction disappears. One place to look, one place to trust, and a foundation you can actually build on."},
+    ]},
+    { lead:"Integrations &", accent:"automation", subs:[
+      {label:"The Challenge", body:"Your tools don't talk to each other, so your team becomes the integration — copying data between systems and re-keying the same numbers by hand."},
+      {label:"What We Offer", body:"We connect what's broken and automate what's manual. Where AI genuinely earns its keep, we weave it in quietly. The rest stays human."},
+      {label:"The Outcome", body:"Hours of repetitive work disappear every week. Your team spends its time on the decisions that actually need a person."},
+    ]},
+    { lead:"Mobile", accent:"applications", subs:[
+      {label:"The Challenge", body:"Your team isn't at a desk — they're on site and in the field. But the software they need was built for a screen they're not looking at."},
+      {label:"What We Offer", body:"Apps built for where the work actually happens. Offline sync, push notifications, and cross-platform builds so iOS and Android stay in step."},
+      {label:"The Outcome", body:"Work gets captured where and when it happens, not hours later from memory. The data flows back on its own."},
+    ]},
+  ];
+
+  const N = services.length;
+  const PER_SERVICE_VH = 180;   // SLOW + deliberate. Higher = slower scroll through each service.
+  const BUFFER_VH = 60;         // entry/exit hold so pin engages/releases cleanly (no neighbour collision)
+  const HOLD = 0.28;            // fraction of each service spent fully-visible BEFORE collapse (fresh start)
+
+  const outer = document.getElementById('outer');
+  const stage = document.getElementById('stage');
+  outer.style.height = (BUFFER_VH + N * PER_SERVICE_VH + BUFFER_VH) + 'vh';
+
+  const els = services.map((s, i) => {
+    const el = document.createElement('article');
+    el.className = 'wwb-service' + (i === 0 ? ' is-active' : '');
+    el.innerHTML =
+      '<h3 class="wwb-service__name">' + s.lead + ' <em>' + s.accent + '</em>.</h3>' +
+      '<div class="wwb-subs"><div class="wwb-subs__track">' +
+        s.subs.map(sub => '<div class="wwb-sub"><div class="wwb-sub__label">' + sub.label +
+          '</div><div class="wwb-sub__body">' + sub.body + '</div></div>').join('') +
+      '</div></div>';
+    stage.appendChild(el);
+    return el;
+  });
+
+  let metrics = [];
+  function measure() {
+    metrics = els.map(el => {
+      const subs = [...el.querySelectorAll('.wwb-sub')];
+      return { subs, track: el.querySelector('.wwb-subs__track'), offs: subs.map(s => s.offsetTop) };
+    });
+  }
+  measure();
+  addEventListener('resize', measure);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+
+  const clamp01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
+  const eo = t => 1 - Math.pow(1 - t, 4);
+  let lastActive = -1;
+
+  function update() {
+    const rect = outer.getBoundingClientRect();
+    const scrollable = rect.height - innerHeight;
+    let q = scrollable > 0 ? clamp01(-rect.top / scrollable) : 0;
+
+    // Remap past the entry/exit buffers so choreography only runs while fully pinned.
+    const bufFrac = BUFFER_VH / (BUFFER_VH + N * PER_SERVICE_VH + BUFFER_VH);
+    const p = clamp01((q - bufFrac) / (1 - 2 * bufFrac));
+
+    const prog = p * N;
+    const active = Math.min(N - 1, Math.floor(prog));
+    const lpRaw = clamp01(prog - active);
+    // ENTRY HOLD: first HOLD fraction = fresh (all subs visible), then collapse over the rest.
+    const lp = lpRaw < HOLD ? 0 : (lpRaw - HOLD) / (1 - HOLD);
+
+    if (active !== lastActive) {
+      els.forEach((el, i) => el.classList.toggle('is-active', i === active));
+      lastActive = active;
+    }
+
+    const m = metrics[active];
+    const nSub = m.subs.length;
+    const collapsible = nSub - 1;          // keep the LAST sub — never empty, never a lone title
+    const cf = lp * collapsible;
+    const idx = Math.min(collapsible - 1, Math.floor(cf));
+    const frac = cf - idx;
+    const ty = -(m.offs[idx] + eo(frac) * (m.offs[idx + 1] - m.offs[idx]));
+    m.track.style.transform = 'translateY(' + ty.toFixed(1) + 'px)';
+    for (let k = 0; k < nSub; k++) {
+      m.subs[k].style.opacity = (k < collapsible ? 1 - eo(clamp01(cf - k)) : 1).toFixed(3);
+    }
+  }
+  addEventListener('scroll', update, { passive: true });
+  addEventListener('resize', update);
+  update();
+</script>
+</body>
+</html>
