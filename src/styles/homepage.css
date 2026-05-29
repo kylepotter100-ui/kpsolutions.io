@@ -154,11 +154,12 @@ html.js-reveal .reveal-hero {
 .pinned-content {
   position: sticky;
   top: 0;
-  min-height: 100vh;
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: clamp(120px, 22vh, 224px) 32px 0;
+  /* No min-height: box wraps the passage so equal top/bottom padding yields balanced
+     breathing room above and below the text (upper area, not viewport-centred). */
+  padding: clamp(120px, 22vh, 224px) 32px;
 }
 .pinned-passage {
   font-family: var(--font-sans);
@@ -382,11 +383,11 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start; /* top-anchored: heading stays put as the stage resizes per service */
     z-index: 2;
     background: var(--bone-50);
   }
-  html.js-reveal .wwb[data-wwb-active] .wwb__inner { width: 100%; padding-block: clamp(24px, 4vh, 48px); }
+  html.js-reveal .wwb[data-wwb-active] .wwb__inner { width: 100%; padding-block: clamp(64px, 12vh, 140px) clamp(24px, 4vh, 48px); }
   html.js-reveal .wwb[data-wwb-active] .wwb__heading { margin-bottom: clamp(14px, 1.8vh, 20px); }
   html.js-reveal .wwb[data-wwb-active] .wwb__rule { margin-bottom: clamp(26px, 3.6vh, 44px); }
   html.js-reveal .wwb[data-wwb-active] .wwb__stage { position: relative; height: min(560px, 64vh); }
