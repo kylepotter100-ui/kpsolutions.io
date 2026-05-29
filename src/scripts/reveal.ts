@@ -126,7 +126,7 @@ function initPinnedPassage(): void {
 // the track + per-sub opacity ONLY; the last sub stays). Stage height is measured
 // from the tallest service and capped to the viewport. Desktop-only; the pin CSS is
 // gated on data-wwb-active, so mobile / reduced-motion / no-JS keep the static list.
-const WWB_PER_VH = 180; // scroll distance per service (×vh); 4 services → 820vh total
+const WWB_PER_VH = 110; // scroll distance per service (×vh); 4 services → ~540vh total
 const WWB_HOLD = 0.2; // fraction of each service fully visible before collapse begins
 function initWhatWeBuild(): void {
   const section = document.querySelector<HTMLElement>("[data-wwb]");
@@ -150,8 +150,9 @@ function initWhatWeBuild(): void {
   // clip box to its OWN natural subs height (capped to the viewport); the stage is
   // sized per active service in render() so it ends right after that service's last
   // sub. Top-anchored pin → only the bottom edge moves, so no heading shift on swap.
-  let metrics: { subs: HTMLElement[]; track: HTMLElement | null; offs: number[]; h: number; hCapped: number }[] = [];
-  let lastStageH = -1;
+  let metrics: { subs: HTMLElement[]; track: HTMLElement | null; wrap: HTMLElement | null; offs: number[]; h: number; hCapped: number }[] = [];
+  let lastClipH = -1;
+  let lastActiveIdx = -1;
   const measure = () => {
     const wraps = groups.map((g) => g.querySelector<HTMLElement>("[data-wwb-subs]"));
     stage.style.height = "auto";
@@ -162,20 +163,16 @@ function initWhatWeBuild(): void {
       }
     });
     const cap = Math.max(300, window.innerHeight - 260);
-    metrics = groups.map((el) => {
+    metrics = groups.map((el, i) => {
       const subs = Array.from(el.querySelectorAll<HTMLElement>("[data-wwb-sub]"));
       const track = el.querySelector<HTMLElement>("[data-wwb-track]");
       const h = track ? track.scrollHeight : 0;
-      return { subs, track, offs: subs.map((s) => s.offsetTop), h, hCapped: Math.min(h + 16, cap) };
+      return { subs, track, wrap: wraps[i], offs: subs.map((s) => s.offsetTop), h, hCapped: Math.min(h + 16, cap) };
     });
-    // Each clip box gets its own service's height; the stage gets the active one.
-    wraps.forEach((w, i) => {
-      if (w) {
-        w.style.height = `${metrics[i].hCapped}px`;
-        w.style.overflow = "hidden";
-      }
+    wraps.forEach((w) => {
+      if (w) w.style.overflow = "hidden";
     });
-    lastStageH = -1; // force render() to re-apply the stage height after re-measure
+    lastClipH = -1; // force render() to re-apply the clip height after re-measure
   };
 
   // Progress 0..1 from the outer's viewport-relative position (reference formula):
@@ -193,21 +190,19 @@ function initWhatWeBuild(): void {
 
     __wwbActive = active;
     for (let i = 0; i < N; i++) groups[i].classList.toggle("is-active", i === active);
+    if (active !== lastActiveIdx) {
+      lastActiveIdx = active;
+      lastClipH = -1; // force the newly-active service's clip box to be re-sized
+    }
 
     const m = metrics[active];
     if (!m || !m.track || m.subs.length === 0) return;
-    // Size the stage to the ACTIVE service's content so it ends right after its last
-    // sub — written only on change (top-anchored pin: bottom edge moves, heading stays).
-    if (m.hCapped !== lastStageH) {
-      stage.style.height = `${m.hCapped}px`;
-      lastStageH = m.hCapped;
-    }
     __wwbContentH = m.h;
-    __wwbStageH = m.hCapped;
     const collapsible = m.subs.length - 1; // keep the LAST sub — never empty
     if (collapsible < 1) {
       m.track.style.transform = "translateY(0px)";
       m.subs.forEach((s) => (s.style.opacity = "1"));
+      setClip(m, m.hCapped);
       return;
     }
     const cf = lp * collapsible;
@@ -217,6 +212,22 @@ function initWhatWeBuild(): void {
     for (let k = 0; k < m.subs.length; k++) {
       m.subs[k].style.opacity = (k < collapsible ? 1 - eo(clamp01(cf - k)) : 1).toFixed(3);
     }
+    // Shrink the clip box / stage to hug the still-visible content: as the track
+    // translates up by |ty|, the content bottom relative to the clip top is h+ty, so
+    // the frame ends right under the active sub (the Outcome when fully collapsed).
+    const lastSubH = m.h - m.offs[m.offs.length - 1];
+    setClip(m, Math.min(m.hCapped, Math.max(lastSubH, m.h + ty)));
+  };
+
+  // Apply the live clip height to the stage and the active service's clip box. The
+  // pin (height:auto) then hugs it, so the framed card cuts off just under the content.
+  const setClip = (m: (typeof metrics)[number], clipH: number) => {
+    const h = Math.round(clipH);
+    if (h === lastClipH) return;
+    lastClipH = h;
+    __wwbStageH = h;
+    stage.style.height = `${h}px`;
+    if (m.wrap) m.wrap.style.height = `${h}px`;
   };
 
   let ticking = false;

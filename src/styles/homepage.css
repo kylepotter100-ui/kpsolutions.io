@@ -144,13 +144,14 @@ html.js-reveal .reveal-hero {
 /* ── Pinned passage (Apple-style manifesto) ────────────────── */
 .pinned {
   position: relative;
-  height: 140vh;
+  height: 118vh;
   background: radial-gradient(70% 55% at 50% 45%, oklch(97% 0.012 55) 0%, var(--bone-0) 70%);
 }
 /* Sticky pane centred in the viewport while the (taller) section scrolls, so the
-   passage sits with tight, balanced breathing room — not a tall empty container —
-   while the word-bolding plays out. The section is >100vh so the scroll-pin has
-   travel for the activation; top:0 + no transform keeps it confined to its section. */
+   passage sits with balanced breathing room while the word-bolding plays out. The
+   section is >100vh so the scroll-pin has travel for the activation; top:0 + no
+   transform keeps it confined to its section. A narrow measure wraps the sentence
+   to more lines so it fills more height — shrinking the top/bottom gaps. */
 .pinned-content {
   position: sticky;
   top: 0;
@@ -158,15 +159,15 @@ html.js-reveal .reveal-hero {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(40px, 7vh, 88px) 32px;
+  padding: clamp(32px, 5vh, 64px) 32px;
 }
 .pinned-passage {
   font-family: var(--font-sans);
   font-weight: 400;
-  font-size: clamp(1.875rem, 1.35rem + 2.4vw, 3rem);
-  line-height: 1.45;
+  font-size: clamp(1.625rem, 1.2rem + 1.9vw, 2.5rem);
+  line-height: 1.4;
   letter-spacing: -0.018em;
-  max-width: 75ch;
+  max-width: 54ch;
   padding-inline: clamp(24px, 6vw, 96px);
   text-align: center;
   text-wrap: pretty;
@@ -375,32 +376,27 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
    opacity (driver). */
 @media (min-width: 769px) {
   html.js-reveal .wwb[data-wwb-active] .wwb__outer { height: 600vh; }
-  /* The pin HUGS its content (no forced 100vh frame) and sticks at the top, so the
-     card ends just below the active service's Outcome — no viewport-tall frame
-     padding a gap under the content. The next section then scrolls up to meet it. */
+  /* The pin HUGS its content and sticks at the top, so the frame ends just below the
+     active service's Outcome (the clip box shrinks as the subs collapse — driven in
+     reveal.ts), with the heading top-anchored so it never jumps on a service swap. */
   html.js-reveal .wwb[data-wwb-active] .wwb__pin {
     position: sticky;
     top: 0;
-    height: 100vh;
+    height: auto;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    display: block;
     z-index: 2;
     background: var(--bone-50);
   }
-  /* Heading anchored at the top (no jump on swap); the service block is centred in
-     the space beneath it, so the leftover space is split above/below the block
-     rather than dumped under the Outcome. */
+  /* Top-anchored: heading → rule → stage stack directly, so the service name sits
+     right under "What we build." Modest top padding clears the nav; tight bottom. */
   html.js-reveal .wwb[data-wwb-active] .wwb__inner {
     width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    padding-block: clamp(56px, 8vh, 100px) clamp(40px, 5vh, 64px);
+    padding-block: clamp(48px, 7vh, 96px) clamp(24px, 4vh, 40px);
   }
   html.js-reveal .wwb[data-wwb-active] .wwb__heading { margin-bottom: clamp(14px, 1.8vh, 20px); }
   html.js-reveal .wwb[data-wwb-active] .wwb__rule { margin-bottom: clamp(26px, 3.6vh, 44px); }
-  html.js-reveal .wwb[data-wwb-active] .wwb__stage { position: relative; height: min(560px, 64vh); margin-block: auto; }
+  html.js-reveal .wwb[data-wwb-active] .wwb__stage { position: relative; height: min(520px, 62vh); }
   html.js-reveal .wwb[data-wwb-active] .wwb-service {
     position: absolute;
     inset: 0;
@@ -419,7 +415,7 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   }
   html.js-reveal .wwb[data-wwb-active] .wwb-service__name { margin: 0; }
   /* Clip box (height set in JS to match the stage); subs rising past its top vanish. */
-  html.js-reveal .wwb[data-wwb-active] .wwb-subs { position: relative; height: min(560px, 64vh); overflow: hidden; }
+  html.js-reveal .wwb[data-wwb-active] .wwb-subs { position: relative; height: min(520px, 62vh); overflow: hidden; }
   html.js-reveal .wwb[data-wwb-active] .wwb-subs__track { position: relative; will-change: transform; }
   html.js-reveal .wwb[data-wwb-active] .wwb-sub { margin-bottom: 28px; will-change: opacity; }
   html.js-reveal .wwb[data-wwb-active] .wwb-sub:last-child { margin-bottom: 0; }
