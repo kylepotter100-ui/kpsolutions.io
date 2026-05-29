@@ -22,6 +22,18 @@ const easeOut: [number, number, number, number] = [0.22, 1, 0.36, 1];
 // a bounce/elastic (honors the motion law).
 const easeSettle: [number, number, number, number] = [0.2, 1.1, 0.3, 1];
 
+// Each init is isolated so a throw in one can't abort the others (or the debug
+// overlay). Errors are recorded for the overlay readout.
+function safe(label: string, fn: () => void) {
+  try {
+    fn();
+  } catch (err) {
+    __wwbLastError = `${label}: ${(err as Error)?.message ?? String(err)}`;
+    // eslint-disable-next-line no-console
+    console.error(`[reveal] ${label} threw`, err);
+  }
+}
+
 if (reduceMotion) {
   document
     .querySelectorAll<HTMLElement>(".reveal, .reveal-stagger")
@@ -37,11 +49,14 @@ if (reduceMotion) {
     { amount: 0.15 },
   );
 
-  initHeroOnLoad();
-  initHeroParallax();
-  initPinnedPassage();
-  initWhatWeBuild();
+  safe("initHeroOnLoad", initHeroOnLoad);
+  safe("initHeroParallax", initHeroParallax);
+  safe("initPinnedPassage", initPinnedPassage);
+  safe("initWhatWeBuild", initWhatWeBuild);
 }
+
+// Diagnostic overlay runs regardless of the above, in every motion branch.
+safe("initWwbDebug", initWwbDebug);
 
 // Hero on-load: headline words stagger in, then subhead / principle / CTAs
 // cascade. ~1.2s total. Guarded by the headline's presence (shared script).
@@ -177,18 +192,15 @@ function initWhatWeBuild(): void {
     });
   };
 
-  // Progress 0..1 from the document scroll position over the section's span. Uses
-  // pageYoffset + the outer's offset within the document (not getBoundingClientRect
-  // height), so it's robust to layout quirks and matches when the pin is engaged.
-  const progress = (): number => {
-    const top = outer.getBoundingClientRect().top + window.scrollY; // outer's doc Y
-    const span = outer.offsetHeight - window.innerHeight; // scrollable distance
-    if (span <= 0) return 0;
-    return clamp01((window.scrollY - top) / span);
-  };
-
+  // Progress 0..1 from the outer's viewport-relative position (reference formula):
+  // when the outer top is at the viewport top, top=0 → 0; when its bottom reaches
+  // the viewport bottom, top=-span → 1. Viewport-relative, so it's correct no
+  // matter which element is the scroller.
   const render = () => {
-    const prog = progress() * N;
+    const span = outer.offsetHeight - window.innerHeight;
+    const top = outer.getBoundingClientRect().top;
+    const q = span > 0 ? clamp01(-top / span) : 0;
+    const prog = q * N;
     const active = Math.min(N - 1, Math.floor(prog));
     const lpRaw = clamp01(prog - active);
     const lp = lpRaw < WWB_HOLD ? 0 : (lpRaw - WWB_HOLD) / (1 - WWB_HOLD);
@@ -225,14 +237,18 @@ function initWhatWeBuild(): void {
 
   measure();
   render();
+  // Listen broadly: window covers document scroll; document capture-phase covers
+  // scroll on ANY ancestor/sub-container, so progress updates whatever the real
+  // scroller turns out to be.
   window.addEventListener("scroll", onScroll, { passive: true });
+  document.addEventListener("scroll", onScroll, { passive: true, capture: true });
   window.addEventListener("resize", () => {
     measure();
     render();
   });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measure(); render(); });
 
-  __wwbDriverRunning = true; // reached only if every guard passed + listener bound
+  __wwbDriverRunning = true; // reached only if every guard passed + listeners bound
 }
 
 // On-page diagnostic overlay, gated on ?debug so it never ships to real visitors.
@@ -287,4 +303,3 @@ function initWwbDebug(): void {
   };
   requestAnimationFrame(render);
 }
-initWwbDebug();
