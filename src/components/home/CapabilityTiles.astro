@@ -1,44 +1,32 @@
 ---
-// "What we build" — pinned collapse scrollytelling. A persistent heading + hairline
-// sit at the top of a content-height card centred in the viewport. The active
-// service's name is fixed on the left; its three sub-sections (Challenge / Offer /
-// Outcome) stack on the right. As you scroll, sub 1 collapses upward, then sub 2,
-// leaving the Outcome; then the card cross-fades to the next service, fresh with
-// all three subs. Driven by reveal.ts initWhatWeBuild (desktop only): a raw scroll
-// listener writes transform (track translateY) + opacity (per sub) ONLY, with the
-// stage height measured from the real content and capped to the viewport. Mobile /
-// reduced-motion / no-JS render the static interleaved list. Copy from capabilities.ts.
+// "What we build" — a content-sized list. Heading + hairline, then each service
+// (name, then its Challenge / Offer / Outcome sub-sections) in normal flow. No pin,
+// no scroll-jacking: the section is sized by its content + padding. Each service
+// fades in on scroll-enter via the shared .reveal-stagger / inView system. Copy from
+// capabilities.ts.
 import { capabilities } from "../../lib/capabilities";
 ---
 
-<section id="capabilities" class="wwb" data-wwb aria-labelledby="wwb-heading">
-  <div class="wwb__outer" data-wwb-outer>
-    <div class="wwb__pin">
-      <div class="wwb__inner shell">
-        <h2 id="wwb-heading" class="section-heading wwb__heading">What we build.</h2>
-        <div class="wwb__rule" aria-hidden="true"></div>
-        <div class="wwb__stage" data-wwb-stage>
-          {
-            capabilities.map((s, i) => (
-              <article class={i === 0 ? "wwb-service is-active" : "wwb-service"} data-wwb-group>
-                <h3 class="wwb-service__name">
-                  {s.lead} <span class="display-italic">{s.accent}</span>.
-                </h3>
-                <div class="wwb-subs" data-wwb-subs>
-                  <div class="wwb-subs__track" data-wwb-track>
-                    {s.subs.map((sub) => (
-                      <div class="wwb-sub" data-wwb-sub>
-                        <h4 class="wwb-sub__label">{sub.label}</h4>
-                        <p class="wwb-sub__body">{sub.body}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </article>
-            ))
-          }
-        </div>
-      </div>
-    </div>
+<section id="capabilities" class="wwb" aria-labelledby="wwb-heading">
+  <div class="wwb__inner shell">
+    <h2 id="wwb-heading" class="section-heading wwb__heading">What we build.</h2>
+    <div class="wwb__rule" aria-hidden="true"></div>
+    {
+      capabilities.map((s) => (
+        <article class="wwb-service reveal-stagger">
+          <h3 class="wwb-service__name">
+            {s.lead} <span class="display-italic">{s.accent}</span>.
+          </h3>
+          <div class="wwb-service__subs">
+            {s.subs.map((sub) => (
+              <div class="wwb-sub">
+                <h4 class="wwb-sub__label">{sub.label}</h4>
+                <p class="wwb-sub__body">{sub.body}</p>
+              </div>
+            ))}
+          </div>
+        </article>
+      ))
+    }
   </div>
 </section>

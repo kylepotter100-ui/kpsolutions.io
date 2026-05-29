@@ -144,21 +144,14 @@ html.js-reveal .reveal-hero {
 /* ── Pinned passage (Apple-style manifesto) ────────────────── */
 .pinned {
   position: relative;
-  height: 140vh;
   background: radial-gradient(70% 55% at 50% 45%, oklch(97% 0.012 55) 0%, var(--bone-0) 70%);
 }
-/* Sticky pane centred in the viewport while the (taller) section scrolls, so the
-   passage sits with tight, balanced breathing room — not a tall empty container —
-   while the word-bolding plays out. The section is >100vh so the scroll-pin has
-   travel for the activation; top:0 + no transform keeps it confined to its section. */
+/* Content-sized: the passage is a normal centred text block (no pin, no scroll-jack).
+   Key phrases activate once when the section scrolls into view (initPinnedPassage). */
 .pinned-content {
-  position: sticky;
-  top: 0;
-  min-height: 100vh;
   display: flex;
-  align-items: center;
   justify-content: center;
-  padding: clamp(40px, 7vh, 88px) 32px;
+  padding: clamp(58px, 8.4vw, 96px) 32px clamp(48px, 7vw, 80px);
 }
 .pinned-passage {
   font-family: var(--font-sans);
@@ -166,7 +159,7 @@ html.js-reveal .reveal-hero {
   font-size: clamp(1.625rem, 1.2rem + 1.9vw, 2.5rem);
   line-height: 1.4;
   letter-spacing: -0.018em;
-  max-width: 75ch;
+  max-width: 54ch;
   padding-inline: clamp(24px, 6vw, 96px);
   text-align: center;
   text-wrap: pretty;
@@ -185,12 +178,9 @@ html.js-reveal .pinned-passage .activate { color: var(--bone-400); opacity: 0.5;
 html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opacity: 1; }
 @media (prefers-reduced-motion: reduce) {
   html.js-reveal .pinned-passage .activate { color: var(--ox-500); opacity: 1; }
-  .pinned { height: auto; }
-  .pinned-content { position: static; min-height: 0; padding: clamp(58px, 8.4vw, 96px) 32px clamp(48px, 7vw, 80px); }
 }
 @media (max-width: 768px) {
-  .pinned { height: 150vh; }
-  .pinned-content { padding: clamp(40px, 8vh, 88px) 20px; }
+  .pinned-content { padding: clamp(40px, 8vw, 72px) 20px; }
   .pinned-passage {
     font-size: clamp(1.25rem, 1.05rem + 1.2vw, 1.625rem);
     padding-inline: clamp(20px, 8vw, 40px);
@@ -326,11 +316,11 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   z-index: 3;
 }
 
-/* ── "What we build" — content-height centred pinned scrollytelling ── */
-/* Base (no-JS / crawler / mobile / reduced-motion): a static interleaved list —
-   heading + hairline, then each service (name then its three sub-sections) fully
-   expanded in normal flow. The content-height centred pin + collapse choreography
-   is layered only when reveal.ts adds [data-wwb-active] on desktop. */
+/* ── "What we build" — content-sized list ──────────────────── */
+/* Heading + hairline, then each service (name + its three sub-sections) in normal
+   flow. Sized by content + padding; no pin, no scroll-jack. On desktop each service
+   is a name (left) / details (right) grid. Services fade in on scroll-enter via the
+   shared .reveal-stagger / inView system. */
 .wwb { position: relative; background: var(--bone-50); color: var(--ox-900); }
 .wwb__inner { padding-block: clamp(96px, 9vw, 140px); }
 .wwb__heading { margin: 0 0 clamp(18px, 2vh, 28px); }
@@ -364,59 +354,17 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   color: var(--ox-900);
 }
 
-/* JS desktop: a content-height card centred in a 100vh sticky pin. The pin is a
-   COLUMN flex (justify-content:center vertically; default align-items:stretch keeps
-   the inner FULL WIDTH — a row flex would collapse it because the absolute services
-   contribute no intrinsic width) and clips with overflow:hidden so nothing can spill
-   into the next section. The outer (600vh) is pure scroll distance. Stage/subs get a
-   bounded fallback height here and JS overrides it with the measured content height
-   (capped to the viewport). Services overlay (absolute inset:0), one active (opacity
-   cross-fade); the active service's track collapses upward via transform + per-sub
-   opacity (driver). */
+/* Desktop: lay each service as name (left) / its three sub-sections (right), still
+   sized by content — no pin, no scroll-jack. */
 @media (min-width: 769px) {
-  html.js-reveal .wwb[data-wwb-active] .wwb__outer { height: 600vh; }
-  /* The pin HUGS its content (no forced 100vh frame) and sticks at the top, so the
-     card ends just below the active service's Outcome — no viewport-tall frame
-     padding a gap under the content. The next section then scrolls up to meet it. */
-  html.js-reveal .wwb[data-wwb-active] .wwb__pin {
-    position: sticky;
-    top: 0;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    z-index: 2;
-    background: var(--bone-50);
-  }
-  /* Modest top offset clears the header and keeps the heading from hugging the very
-     top edge; tight bottom so the card cuts off just below the Outcome. */
-  html.js-reveal .wwb[data-wwb-active] .wwb__inner { width: 100%; padding-block: clamp(72px, 11vh, 132px) clamp(28px, 4vh, 52px); }
-  html.js-reveal .wwb[data-wwb-active] .wwb__heading { margin-bottom: clamp(14px, 1.8vh, 20px); }
-  html.js-reveal .wwb[data-wwb-active] .wwb__rule { margin-bottom: clamp(26px, 3.6vh, 44px); }
-  html.js-reveal .wwb[data-wwb-active] .wwb__stage { position: relative; height: min(560px, 64vh); }
-  html.js-reveal .wwb[data-wwb-active] .wwb-service {
-    position: absolute;
-    inset: 0;
+  .wwb-service {
     display: grid;
-    grid-template-columns: 38% 62%;
-    gap: clamp(28px, 4vw, 64px);
-    align-items: start; /* left name top == right first-sub top */
-    margin: 0;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 380ms cubic-bezier(0.22, 1, 0.36, 1);
+    grid-template-columns: 34% 1fr;
+    gap: clamp(28px, 4vw, 72px);
+    align-items: start;
   }
-  html.js-reveal .wwb[data-wwb-active] .wwb-service.is-active {
-    opacity: 1;
-    pointer-events: auto;
-  }
-  html.js-reveal .wwb[data-wwb-active] .wwb-service__name { margin: 0; }
-  /* Clip box (height set in JS to match the stage); subs rising past its top vanish. */
-  html.js-reveal .wwb[data-wwb-active] .wwb-subs { position: relative; height: min(560px, 64vh); overflow: hidden; }
-  html.js-reveal .wwb[data-wwb-active] .wwb-subs__track { position: relative; will-change: transform; }
-  html.js-reveal .wwb[data-wwb-active] .wwb-sub { margin-bottom: 28px; will-change: opacity; }
-  html.js-reveal .wwb[data-wwb-active] .wwb-sub:last-child { margin-bottom: 0; }
-  /* Wider, more readable body measure in the now-correct full-width column. */
-  html.js-reveal .wwb[data-wwb-active] .wwb-sub__body { max-width: 54ch; }
+  .wwb-service__name { grid-column: 1; margin-bottom: 0; }
+  .wwb-service__subs { grid-column: 2; }
 }
 
 /* ── Process callout — dark inverted moment ────────────────── */
