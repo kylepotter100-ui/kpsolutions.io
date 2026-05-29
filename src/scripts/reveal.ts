@@ -119,20 +119,21 @@ function initPinnedPassage(): void {
   );
 }
 
-// "What we build" — pinned collapse scrollytelling. A raw scroll listener (not
-// motion's scroll) drives it: progress comes from the outer's getBoundingClientRect
-// over the 600vh scroll distance (height lives in CSS). The stage height is MEASURED
-// from the real content at runtime — the tallest service's three subs — and capped
-// to the viewport, so all three fit with no clipping and no wasted space. Per frame
-// we write ONLY transform (track translateY) + opacity (per sub); offsets re-measured
-// on resize / fonts.ready. Desktop-only; the pin CSS is gated on data-wwb-active, so
-// mobile / reduced-motion / no-JS keep the static interleaved list.
-const WWB_BUF = 0.07; // entry/exit hold as a fraction of the outer scroll distance
-const WWB_HOLD = 0.28; // fraction of each service fully visible before collapse begins
+// "What we build" — pinned collapse scrollytelling. Fresh, dependency-free driver:
+// a plain window scroll listener computes progress from the section's own position
+// in the document (window.scrollY vs. the section's offsetTop / scroll span), so it
+// does NOT depend on the outer's rendered height being right — and the outer height
+// is FORCED in JS as a guarantee of scroll distance. As progress advances, the
+// active service swaps and its three subs collapse upward (transform translateY on
+// the track + per-sub opacity ONLY; the last sub stays). Stage height is measured
+// from the tallest service and capped to the viewport. Desktop-only; the pin CSS is
+// gated on data-wwb-active, so mobile / reduced-motion / no-JS keep the static list.
+const WWB_PER_VH = 125; // scroll distance per service (×vh); 4 services → 600vh total
+const WWB_HOLD = 0.2; // fraction of each service fully visible before collapse begins
 function initWhatWeBuild(): void {
   const section = document.querySelector<HTMLElement>("[data-wwb]");
   if (!section) return;
-  // Guards: bail BEFORE opting into the pin so the section keeps the static list.
+  // Guard: desktop only — below this the static interleaved list is the right UX.
   if (!window.matchMedia("(min-width: 769px)").matches) return;
   const outer = section.querySelector<HTMLElement>("[data-wwb-outer]");
   const stage = section.querySelector<HTMLElement>("[data-wwb-stage]");
@@ -141,17 +142,17 @@ function initWhatWeBuild(): void {
   if (!outer || !stage || N === 0) return;
 
   section.setAttribute("data-wwb-active", "");
+  // Guarantee the scroll distance in JS (don't rely on the CSS height resolving).
+  outer.style.height = `${100 + N * WWB_PER_VH}vh`;
 
   const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
   const eo = (t: number) => 1 - Math.pow(1 - t, 4); // easeOutQuart (matches reference)
 
-  // Cached layout, re-measured on resize / fonts.ready. We size the stage + each
-  // clip box to the tallest service's natural subs height (capped so it never
-  // overflows the viewport), then record each sub's offsetTop for the collapse.
+  // Cached layout, re-measured on resize / fonts.ready. Size the stage + each clip
+  // box to the tallest service's natural subs height (capped to the viewport).
   let metrics: { subs: HTMLElement[]; track: HTMLElement | null; offs: number[] }[] = [];
   const measure = () => {
     const wraps = groups.map((g) => g.querySelector<HTMLElement>("[data-wwb-subs]"));
-    // Release any imposed height so the tracks lay out at natural content height.
     stage.style.height = "auto";
     wraps.forEach((w) => {
       if (w) {
@@ -166,10 +167,7 @@ function initWhatWeBuild(): void {
       if (track) maxH = Math.max(maxH, track.scrollHeight);
       return { subs, track, offs: subs.map((s) => s.offsetTop) };
     });
-    // Fit the tallest three-sub stack, but never exceed the viewport (reserve room
-    // for the heading, hairline and breathing space so the pin stays centred).
-    const cap = Math.max(300, window.innerHeight - 260);
-    const stageH = Math.min(maxH + 8, cap);
+    const stageH = Math.min(maxH + 8, Math.max(300, window.innerHeight - 260));
     stage.style.height = `${stageH}px`;
     wraps.forEach((w) => {
       if (w) {
@@ -179,12 +177,20 @@ function initWhatWeBuild(): void {
     });
   };
 
-  const apply = (q: number) => {
-    const p = clamp01((q - WWB_BUF) / (1 - 2 * WWB_BUF)); // strip entry/exit buffers
-    const prog = p * N;
+  // Progress 0..1 from the document scroll position over the section's span. Uses
+  // pageYoffset + the outer's offset within the document (not getBoundingClientRect
+  // height), so it's robust to layout quirks and matches when the pin is engaged.
+  const progress = (): number => {
+    const top = outer.getBoundingClientRect().top + window.scrollY; // outer's doc Y
+    const span = outer.offsetHeight - window.innerHeight; // scrollable distance
+    if (span <= 0) return 0;
+    return clamp01((window.scrollY - top) / span);
+  };
+
+  const render = () => {
+    const prog = progress() * N;
     const active = Math.min(N - 1, Math.floor(prog));
     const lpRaw = clamp01(prog - active);
-    // Entry hold: first HOLD fraction stays fully expanded, then collapse.
     const lp = lpRaw < WWB_HOLD ? 0 : (lpRaw - WWB_HOLD) / (1 - WWB_HOLD);
 
     __wwbActive = active;
@@ -192,8 +198,7 @@ function initWhatWeBuild(): void {
 
     const m = metrics[active];
     if (!m || !m.track || m.subs.length === 0) return;
-    const nSub = m.subs.length;
-    const collapsible = nSub - 1; // keep the LAST sub — never empty, never a lone title
+    const collapsible = m.subs.length - 1; // keep the LAST sub — never empty
     if (collapsible < 1) {
       m.track.style.transform = "translateY(0px)";
       m.subs.forEach((s) => (s.style.opacity = "1"));
@@ -201,32 +206,41 @@ function initWhatWeBuild(): void {
     }
     const cf = lp * collapsible;
     const idx = Math.min(collapsible - 1, Math.floor(cf));
-    const frac = cf - idx;
-    const ty = -(m.offs[idx] + eo(frac) * (m.offs[idx + 1] - m.offs[idx]));
+    const ty = -(m.offs[idx] + eo(cf - idx) * (m.offs[idx + 1] - m.offs[idx]));
     m.track.style.transform = `translateY(${ty.toFixed(1)}px)`;
-    for (let k = 0; k < nSub; k++) {
+    for (let k = 0; k < m.subs.length; k++) {
       m.subs[k].style.opacity = (k < collapsible ? 1 - eo(clamp01(cf - k)) : 1).toFixed(3);
     }
   };
 
-  // Drive the collapse with motion's scroll() — the same API that animates the
-  // pinned passage / hero parallax on this page — over the 600vh outer. Motion
-  // owns scroll-source detection + rAF + progress (0..1 across the outer).
-  measure();
-  apply(0); // correct initial paint (service 0, fully expanded)
-  scroll((q: number) => apply(q), { target: outer, offset: ["start start", "end end"] });
-  // Heights depend on viewport size; re-measure on resize (motion re-fires apply).
-  window.addEventListener("resize", () => measure(), { passive: true });
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => measure());
+  let ticking = false;
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      ticking = false;
+      render();
+    });
+  };
 
-  __wwbDriverRunning = true; // reached only if every guard passed + scroll() bound
+  measure();
+  render();
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", () => {
+    measure();
+    render();
+  });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measure(); render(); });
+
+  __wwbDriverRunning = true; // reached only if every guard passed + listener bound
 }
 
 // On-page diagnostic overlay, gated on ?debug so it never ships to real visitors.
 // Reads live runtime state for the "What we build" pin so it can be screenshotted
 // without DevTools. Called unconditionally (works in every motion branch).
+const WWB_DEBUG_ALWAYS = true; // TEMP: show the overlay without ?debug while diagnosing
 function initWwbDebug(): void {
-  if (!new URLSearchParams(location.search).has("debug")) return;
+  if (!WWB_DEBUG_ALWAYS && !new URLSearchParams(location.search).has("debug")) return;
 
   const strip = document.createElement("div");
   strip.style.cssText =
