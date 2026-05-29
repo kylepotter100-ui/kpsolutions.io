@@ -144,22 +144,21 @@ html.js-reveal .reveal-hero {
 /* ── Pinned passage (Apple-style manifesto) ────────────────── */
 .pinned {
   position: relative;
-  height: 100vh;
-  background: radial-gradient(70% 55% at 50% 40%, oklch(97% 0.012 55) 0%, var(--bone-0) 70%);
+  height: 140vh;
+  background: radial-gradient(70% 55% at 50% 45%, oklch(97% 0.012 55) 0%, var(--bone-0) 70%);
 }
-/* Sticky 100vh pane, top-aligned (not dead-centre) so the short passage sits in
-   the upper portion of the viewport rather than floating in an empty container.
-   The text stays put while the word-bolding plays out over the scroll. top:0 +
-   no transform keeps the box confined to its section (no bleed over the hero). */
+/* Sticky pane centred in the viewport while the (taller) section scrolls, so the
+   passage sits with tight, balanced breathing room — not a tall empty container —
+   while the word-bolding plays out. The section is >100vh so the scroll-pin has
+   travel for the activation; top:0 + no transform keeps it confined to its section. */
 .pinned-content {
   position: sticky;
   top: 0;
+  min-height: 100vh;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  /* No min-height: box wraps the passage so equal top/bottom padding yields balanced
-     breathing room above and below the text (upper area, not viewport-centred). */
-  padding: clamp(120px, 22vh, 224px) 32px;
+  padding: clamp(40px, 7vh, 88px) 32px;
 }
 .pinned-passage {
   font-family: var(--font-sans);
@@ -191,7 +190,7 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
 }
 @media (max-width: 768px) {
   .pinned { height: 150vh; }
-  .pinned-content { padding: clamp(96px, 18vh, 168px) 20px 0; }
+  .pinned-content { padding: clamp(40px, 8vh, 88px) 20px; }
   .pinned-passage {
     font-size: clamp(1.25rem, 1.05rem + 1.2vw, 1.625rem);
     padding-inline: clamp(20px, 8vw, 40px);
@@ -376,21 +375,21 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
    opacity (driver). */
 @media (min-width: 769px) {
   html.js-reveal .wwb[data-wwb-active] .wwb__outer { height: 600vh; }
+  /* The pin HUGS its content (no forced 100vh frame) and sticks at the top, so the
+     card ends just below the active service's Outcome — no viewport-tall frame
+     padding a gap under the content. The next section then scrolls up to meet it. */
   html.js-reveal .wwb[data-wwb-active] .wwb__pin {
     position: sticky;
     top: 0;
-    height: 100vh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* top-anchored: heading stays put as the stage resizes per service */
     z-index: 2;
     background: var(--bone-50);
   }
-  /* Centre the content within the 100vh pin via a FIXED top reference (not per
-     service), so the empty space splits above/below instead of all-below while the
-     heading stays put on every service swap. 620px ≈ heading + rule + tallest stage. */
-  html.js-reveal .wwb[data-wwb-active] .wwb__inner { width: 100%; padding-block: max(56px, calc((100vh - 620px) / 2)) clamp(24px, 4vh, 48px); }
+  /* Modest top offset clears the header and keeps the heading from hugging the very
+     top edge; tight bottom so the card cuts off just below the Outcome. */
+  html.js-reveal .wwb[data-wwb-active] .wwb__inner { width: 100%; padding-block: clamp(72px, 11vh, 132px) clamp(28px, 4vh, 52px); }
   html.js-reveal .wwb[data-wwb-active] .wwb__heading { margin-bottom: clamp(14px, 1.8vh, 20px); }
   html.js-reveal .wwb[data-wwb-active] .wwb__rule { margin-bottom: clamp(26px, 3.6vh, 44px); }
   html.js-reveal .wwb[data-wwb-active] .wwb__stage { position: relative; height: min(560px, 64vh); }
