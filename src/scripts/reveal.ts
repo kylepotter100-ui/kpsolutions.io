@@ -298,9 +298,9 @@ function initDebugOverlay(): void {
   const readout = document.createElement("div");
   readout.setAttribute(
     "style",
-    "position:fixed;left:8px;bottom:8px;z-index:9999;font:11px/1.45 ui-monospace,monospace;" +
+    "position:fixed;left:8px;bottom:8px;z-index:9999;font:10px/1.4 ui-monospace,monospace;" +
       "background:rgba(0,0,0,.82);color:#fff;padding:8px 10px;border-radius:6px;white-space:pre;" +
-      "pointer-events:none;max-width:48vw",
+      "pointer-events:none;max-width:92vw",
   );
   document.body.appendChild(readout);
   if (pin) pin.style.outline = "1px solid #ee1133";
@@ -314,6 +314,23 @@ function initDebugOverlay(): void {
       lines.push(`WWB pin   h=${px(r.height)} top=${px(r.top)} (vh=${px(window.innerHeight)})`);
       if (stage) lines.push(`WWB stage h=${px(stage.getBoundingClientRect().height)}`);
       if (heading) lines.push(`WWB headY ${px(heading.getBoundingClientRect().top)} idx=${indexEl?.textContent ?? "-"}`);
+      // Per-sub diagnostic for the ACTIVE service: confirms whether max-height /
+      // padding-bottom / opacity reach 0 and whether the rect actually collapses,
+      // so we can root-cause the mobile broken-merge symptom without guessing.
+      const activeSvc = document.querySelector<HTMLElement>("[data-wwb-group].is-active");
+      if (activeSvc) {
+        const groups = document.querySelectorAll<HTMLElement>("[data-wwb-group]");
+        const activeIdx = Array.from(groups).indexOf(activeSvc);
+        lines.push(`WWB subs (active=${activeIdx})`);
+        const subs = activeSvc.querySelectorAll<HTMLElement>("[data-wwb-sub]");
+        subs.forEach((sub, k) => {
+          const rh = sub.getBoundingClientRect().height;
+          const mh = sub.style.maxHeight || "—";
+          const pb = sub.style.paddingBottom || "—";
+          const op = sub.style.opacity || "—";
+          lines.push(`  k${k} rect=${px(rh)} mh=${mh} pb=${pb} op=${op}`);
+        });
+      }
     }
     if (panel) {
       const r = panel.getBoundingClientRect();
