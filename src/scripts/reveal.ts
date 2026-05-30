@@ -201,17 +201,32 @@ function initWhatWeBuild(): void {
         sub.style.opacity = "1";
         sub.style.overflow = "";
         sub.style.paddingBottom = "";
-        subsH += m.subH[k];
+        subsH += Number.isFinite(m.subH[k]) ? m.subH[k] : 0;
         continue;
       }
       const p = eo(local);
-      const h = m.subH[k] * (1 - p);
+      // Live fallback: if the cached natural height/padding is missing (mobile measured
+      // before layout/fonts settled, so the array entry is undefined or 0), read the live
+      // value from the DOM now and cache it back. Without this, `subH[k] * (1-p)` would be
+      // NaN, the browser silently rejects `"NaNpx"`, and the sub stays at full height even
+      // though opacity animates fine (the bug the overlay caught on mobile).
+      let baseH = m.subH[k];
+      if (!Number.isFinite(baseH) || baseH <= 0) {
+        baseH = sub.getBoundingClientRect().height;
+        if (Number.isFinite(baseH) && baseH > 0) m.subH[k] = baseH;
+      }
+      let basePB = m.padB[k];
+      if (!Number.isFinite(basePB)) {
+        basePB = parseFloat(getComputedStyle(sub).paddingBottom) || 0;
+        m.padB[k] = basePB;
+      }
+      const h = baseH * (1 - p);
       sub.style.overflow = "hidden";
       sub.style.maxHeight = `${h.toFixed(1)}px`;
       sub.style.opacity = (1 - p).toFixed(3);
       // Animate the padding-bottom to 0 in lockstep, so a fully-collapsed sub leaves zero
       // residual space and the surviving Outcome sits flush with the service-name top.
-      sub.style.paddingBottom = `${(m.padB[k] * (1 - p)).toFixed(1)}px`;
+      sub.style.paddingBottom = `${(basePB * (1 - p)).toFixed(1)}px`;
       subsH += h;
     }
     return subsH;
@@ -270,6 +285,8 @@ function initWhatWeBuild(): void {
     });
   };
 
+  const remeasure = () => { measure(); render(); };
+
   measure();
   render();
   // Listen broadly: window covers document scroll; document capture-phase covers
@@ -277,11 +294,27 @@ function initWhatWeBuild(): void {
   // scroller turns out to be.
   window.addEventListener("scroll", onScroll, { passive: true });
   document.addEventListener("scroll", onScroll, { passive: true, capture: true });
-  window.addEventListener("resize", () => {
-    measure();
-    render();
-  });
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measure(); render(); });
+  window.addEventListener("resize", remeasure);
+  // Post-layout settle: the initial measure can fire before fonts apply (heights wrong)
+  // and even before the first paint on mobile (heights briefly 0). Wait for fonts, then
+  // two animation frames so the browser has fully reflowed with the resolved metrics
+  // before we cache subH/padB.
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => {
+      requestAnimationFrame(() => requestAnimationFrame(remeasure));
+    });
+  }
+  // Live re-measure on layout change without recursing into the JS-driven collapse:
+  // observe the service NAME (never animated), not the subs (animated). When a name
+  // height changes — webfont swap, mobile orientation, dynamic UA chrome — re-measure
+  // so subH stays in sync with reality.
+  if ("ResizeObserver" in window) {
+    const ro = new ResizeObserver(remeasure);
+    groups.forEach((g) => {
+      const name = g.querySelector<HTMLElement>(".wwb-service__name");
+      if (name) ro.observe(name);
+    });
+  }
 }
 
 // Debug overlay — only when the URL contains `?debug`. Outlines the WWB pin and the passage
