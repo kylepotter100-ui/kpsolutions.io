@@ -465,9 +465,11 @@ html.js-reveal .wwb[data-wwb-active] .wwb-sub__body { max-width: 54ch; }
     align-content: start;
   }
   html.js-reveal .wwb[data-wwb-active] .wwb-sub__body { max-width: none; }
-  /* Single-column on phones with content ≈ filling the viewport → no clear low-left slot
-     and little void, so the index numeral is dropped here. */
-  html.js-reveal .wwb[data-wwb-active] .wwb__index { display: none; }
+  /* The single column has no empty side column, but the void still opens below the collapsed
+     Outcome. Show the faint index numeral here too — it sits behind the content (z-index:0)
+     and fills the void as intentional structure, matching desktop. Smaller clamp than desktop
+     so 01–04 fills the void without running past the narrow viewport edge. */
+  html.js-reveal .wwb[data-wwb-active] .wwb__index { font-size: clamp(110px, 26vh, 200px); }
 }
 
 /* ── Process callout — dark inverted moment ────────────────── */
