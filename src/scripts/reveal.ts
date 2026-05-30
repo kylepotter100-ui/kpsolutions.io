@@ -134,9 +134,6 @@ function initWhatWeBuild(): void {
   outer.style.height = `${100 + N * WWB_PER_VH}vh`;
 
   const NAV_CLEAR = 16; // min gap above the centred pin so it never tucks under the nav
-  const indexEl = section.querySelector<HTMLElement>("[data-wwb-index]");
-  let idxTimer: ReturnType<typeof setTimeout> | undefined;
-  let lastActive = -1;
 
   const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
   const eo = (t: number) => 1 - Math.pow(1 - t, 4); // easeOutQuart
@@ -283,16 +280,6 @@ function initWhatWeBuild(): void {
       if (m && i !== active) applyCollapse(m, 0);
     }
 
-    // Index numeral swaps at the crossfade midpoint (~190ms of the 380ms opacity fade), so
-    // it changes when the two services are evenly blended, not while the old one still shows.
-    if (active !== lastActive) {
-      lastActive = active;
-      clearTimeout(idxTimer);
-      idxTimer = setTimeout(() => {
-        if (indexEl) indexEl.textContent = String(active + 1).padStart(2, "0");
-      }, 190);
-    }
-
     const m = metrics[active];
     if (!m) return;
     applyCollapse(m, lp); // stage height is fixed; the collapse animates within it
@@ -347,7 +334,6 @@ function initDebugOverlay(): void {
   const pin = document.querySelector<HTMLElement>(".wwb__pin");
   const heading = document.querySelector<HTMLElement>(".wwb__heading");
   const stage = document.querySelector<HTMLElement>("[data-wwb-stage]");
-  const indexEl = document.querySelector<HTMLElement>("[data-wwb-index]");
   const panel = document.querySelector<HTMLElement>(".pinned-content");
   if (!pin && !panel) return;
 
@@ -369,7 +355,7 @@ function initDebugOverlay(): void {
       const r = pin.getBoundingClientRect();
       lines.push(`WWB pin   h=${px(r.height)} top=${px(r.top)} (vh=${px(window.innerHeight)})`);
       if (stage) lines.push(`WWB stage h=${px(stage.getBoundingClientRect().height)}`);
-      if (heading) lines.push(`WWB headY ${px(heading.getBoundingClientRect().top)} idx=${indexEl?.textContent ?? "-"}`);
+      if (heading) lines.push(`WWB headY ${px(heading.getBoundingClientRect().top)}`);
       // Per-sub diagnostic for the ACTIVE service: confirms whether max-height /
       // padding-bottom / opacity reach 0 and whether the rect actually collapses,
       // so we can root-cause the mobile broken-merge symptom without guessing.
