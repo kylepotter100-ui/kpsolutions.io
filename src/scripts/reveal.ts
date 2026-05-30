@@ -150,12 +150,22 @@ function initWhatWeBuild(): void {
   type SvcMetric = { subs: HTMLElement[]; subH: number[]; padB: number[]; nameH: number };
   let metrics: SvcMetric[] = [];
   const pin = section.querySelector<HTMLElement>(".wwb__pin");
-  // Centre the fixed-height pin in the viewport — clamped so it never tucks under the nav,
-  // and degrading to near-top on short/mobile viewports where the content ~fills the screen.
+  // Desktop centres the fixed-height pin: the large index numeral fills the void below the
+  // collapsed Outcome, and the modest dead-scroll before the sticky pin releases reads as
+  // intentional. Mobile hides the numeral, so that void reads as an empty gap — bottom-anchor
+  // the pin there instead. A sticky pin at top=T releases after scrolling (H − T − pinH),
+  // while collapse progress hits 1 after span = (H − innerHeight); the handoff is flush iff
+  // those coincide ⇒ T = innerHeight − pinH. So on mobile we set top to that, making
+  // SelectedWork climb up flush exactly as the last Outcome completes. Clamped to NAV_CLEAR so
+  // a pin taller than the viewport still clears the nav.
   const placePin = () => {
     if (!pin) return;
     const pinH = pin.getBoundingClientRect().height;
-    pin.style.top = `${Math.max(NAV_CLEAR, Math.round((window.innerHeight - pinH) / 2))}px`;
+    const vh = window.innerHeight;
+    const top = window.matchMedia("(max-width: 768px)").matches
+      ? Math.max(NAV_CLEAR, Math.round(vh - pinH))
+      : Math.max(NAV_CLEAR, Math.round((vh - pinH) / 2));
+    pin.style.top = `${top}px`;
   };
   const measure = () => {
     metrics = groups.map((el) => {
