@@ -457,6 +457,12 @@ html.js-reveal .wwb[data-wwb-active] .wwb-sub__body { max-width: 54ch; }
     grid-template-columns: 1fr;
     gap: clamp(8px, 3vw, 18px);
     --wwb-label-nudge: 0px; /* name stacks above the subs — no cap-height race */
+    /* Single column ⇒ two implicit rows (name, subs). Without this, align-content falls
+       back to `stretch`, which splits the fixed stage's surplus height across both rows —
+       so as the subs collapse the name row inflates and pushes the subs DOWN (sinking /
+       centring). Packing the rows to the top keeps the subs top-anchored, so survivors
+       rise and the Outcome hugs the top, matching desktop's single-row behaviour. */
+    align-content: start;
   }
   html.js-reveal .wwb[data-wwb-active] .wwb-sub__body { max-width: none; }
   /* Single-column on phones with content ≈ filling the viewport → no clear low-left slot
