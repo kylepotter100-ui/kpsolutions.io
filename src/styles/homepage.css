@@ -396,29 +396,10 @@ html.js-reveal .wwb[data-wwb-active] .wwb__inner {
 html.js-reveal .wwb[data-wwb-active] .wwb__heading { margin-bottom: clamp(14px, 1.8vh, 20px); }
 html.js-reveal .wwb[data-wwb-active] .wwb__rule { margin-bottom: clamp(26px, 3.6vh, 44px); }
 html.js-reveal .wwb[data-wwb-active] .wwb__stage { position: relative; }
-/* Faint service-index numeral, anchored low-left in the fixed stage. It fills the space that
-   opens below the Outcome as the subs collapse, so the (geometrically unavoidable) void reads
-   as intentional structure. Decorative: aria-hidden, very low alpha, sits behind the opaque
-   service text, never affects contrast. JS sets the digits at the crossfade midpoint. */
-html.js-reveal .wwb[data-wwb-active] .wwb__index {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  z-index: 0;
-  margin: 0;
-  font-family: var(--font-display, var(--font-sans));
-  font-size: clamp(140px, 24vh, 240px);
-  line-height: 0.8;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  color: color-mix(in oklch, var(--ox-900) 6%, transparent);
-  pointer-events: none;
-  user-select: none;
-}
 html.js-reveal .wwb[data-wwb-active] .wwb-service {
   position: absolute;
   inset: 0;
-  z-index: 1; /* opaque service text sits above the faint index numeral */
+  z-index: 1;
   display: grid;
   grid-template-columns: 38% 62%;
   gap: clamp(28px, 4vw, 64px);
@@ -465,11 +446,6 @@ html.js-reveal .wwb[data-wwb-active] .wwb-sub__body { max-width: 54ch; }
     align-content: start;
   }
   html.js-reveal .wwb[data-wwb-active] .wwb-sub__body { max-width: none; }
-  /* The single column has no empty side column, but the void still opens below the collapsed
-     Outcome. Show the faint index numeral here too — it sits behind the content (z-index:0)
-     and fills the void as intentional structure, matching desktop. Smaller clamp than desktop
-     so 01–04 fills the void without running past the narrow viewport edge. */
-  html.js-reveal .wwb[data-wwb-active] .wwb__index { font-size: clamp(110px, 26vh, 200px); }
 }
 
 /* ── Process callout — dark inverted moment ────────────────── */
