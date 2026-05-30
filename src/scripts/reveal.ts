@@ -202,25 +202,38 @@ function initWhatWeBuild(): void {
         sub.style.overflow = "";
         sub.style.paddingBottom = "";
         subsH += Number.isFinite(m.subH[k]) ? m.subH[k] : 0;
+        delete sub.dataset.wwbCh;
+        delete sub.dataset.wwbLh;
+        delete sub.dataset.wwbFb;
+        delete sub.dataset.wwbH;
         continue;
       }
       const p = eo(local);
+      // ── Diagnostic: capture the CACHED value entering this branch, before any heal. ──
+      const cachedH = m.subH[k];
+      sub.dataset.wwbCh =
+        cachedH === undefined ? "u" : Number.isNaN(cachedH) ? "NaN" : `${Math.round(cachedH)}`;
       // Live fallback: if the cached natural height/padding is missing (mobile measured
       // before layout/fonts settled, so the array entry is undefined or 0), read the live
       // value from the DOM now and cache it back. Without this, `subH[k] * (1-p)` would be
       // NaN, the browser silently rejects `"NaNpx"`, and the sub stays at full height even
       // though opacity animates fine (the bug the overlay caught on mobile).
       let baseH = m.subH[k];
+      let fb = "0";
       if (!Number.isFinite(baseH) || baseH <= 0) {
         baseH = sub.getBoundingClientRect().height;
         if (Number.isFinite(baseH) && baseH > 0) m.subH[k] = baseH;
+        fb = "1";
       }
+      sub.dataset.wwbFb = fb;
+      sub.dataset.wwbLh = Number.isFinite(baseH) ? `${Math.round(baseH)}` : "NaN";
       let basePB = m.padB[k];
       if (!Number.isFinite(basePB)) {
         basePB = parseFloat(getComputedStyle(sub).paddingBottom) || 0;
         m.padB[k] = basePB;
       }
       const h = baseH * (1 - p);
+      sub.dataset.wwbH = Number.isFinite(h) ? h.toFixed(1) : "NaN";
       sub.style.overflow = "hidden";
       sub.style.maxHeight = `${h.toFixed(1)}px`;
       sub.style.opacity = (1 - p).toFixed(3);
@@ -361,7 +374,21 @@ function initDebugOverlay(): void {
           const mh = sub.style.maxHeight || "—";
           const pb = sub.style.paddingBottom || "—";
           const op = sub.style.opacity || "—";
-          lines.push(`  k${k} rect=${px(rh)} mh=${mh} pb=${pb} op=${op}`);
+          // Read what applyCollapse SAW + WROTE this tick (set on the sub as dataset).
+          // cH = cached subH[k] at branch entry; lH = baseH after the live-fallback;
+          // fb = whether the fallback fired; h = the px value passed to style.maxHeight.
+          const cH = sub.dataset.wwbCh ?? "—";
+          const lH = sub.dataset.wwbLh ?? "—";
+          const fb = sub.dataset.wwbFb ?? "—";
+          const hh = sub.dataset.wwbH ?? "—";
+          lines.push(
+            `  k${k} rect=${px(rh)} cH=${cH} lH=${lH} fb=${fb} h=${hh} mh=${mh} pb=${pb} op=${op}`,
+          );
+          // Direct read of what the browser CURRENTLY thinks max-height is. If the JS wrote
+          // "105.0px" but the engine resolved it to "none", a stylesheet is winning. If the
+          // JS wrote "—" but cmH is a real px, the overlay's style.maxHeight read is lying.
+          const cmH = getComputedStyle(sub).maxHeight;
+          lines.push(`     cmH=${cmH}`);
         });
       }
     }
