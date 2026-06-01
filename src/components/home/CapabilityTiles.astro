@@ -1,7 +1,8 @@
 ---
-// "What we build" — pinned collapse scrollytelling. A persistent heading + hairline
-// sit at the top of a content-height card. The active service's name is fixed on the
-// left (stacked on top on mobile); its three sub-sections (Challenge / Offer / Outcome)
+// "What we build" — pinned collapse scrollytelling. A persistent heading sits at the
+// top of a content-height card. The active service's name is fixed on the left, with
+// the passed names accumulating + dimmed beneath it (stacked on top on mobile); its
+// three sub-sections (Challenge / Offer / Outcome)
 // show on the right. As you scroll, the earlier subs collapse their height and fade so
 // the survivors flow up and the block shrinks from the bottom, leaving the Outcome; then
 // the card cross-fades to the next service, fresh with all three subs. Driven by
@@ -23,7 +24,6 @@ import { capabilities } from "../../lib/capabilities";
               <article
                 class={i === 0 ? "wwb-service is-active" : "wwb-service"}
                 data-wwb-group
-                style={`--svc-idx: ${i};`}
               >
                 <h3 class="wwb-service__name">
                   {s.lead} <span class="display-italic">{s.accent}</span>.
@@ -41,33 +41,6 @@ import { capabilities } from "../../lib/capabilities";
               </article>
             ))
           }
-          {/* Decorative tunnel hairlines (desktop only). One pair of polylines per service:
-              the top + bottom edges of an open-right funnel from the active name to the
-              fixed subs box. Coords are filled in by reveal.ts at measure-time, anchored
-              to the FIXED stage dimensions so the outline never moves while subs collapse. */}
-          <svg
-            class="wwb__tunnels"
-            data-wwb-tunnels
-            aria-hidden="true"
-            preserveAspectRatio="none"
-          >
-            {capabilities.map((_, i) => (
-              <>
-                <polyline
-                  class="wwb__tunnel-line"
-                  data-tunnel-idx={i}
-                  data-tunnel-edge="top"
-                  vector-effect="non-scaling-stroke"
-                />
-                <polyline
-                  class="wwb__tunnel-line"
-                  data-tunnel-idx={i}
-                  data-tunnel-edge="bot"
-                  vector-effect="non-scaling-stroke"
-                />
-              </>
-            ))}
-          </svg>
         </div>
       </div>
     </div>

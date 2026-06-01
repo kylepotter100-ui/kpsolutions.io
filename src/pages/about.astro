@@ -6,10 +6,8 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import AboutHero from "../components/about/AboutHero.astro";
 import AboutFounder from "../components/about/AboutFounder.astro";
+import AboutDifferentiator from "../components/about/AboutDifferentiator.astro";
 import AboutWhy from "../components/about/AboutWhy.astro";
-import AboutBreak from "../components/about/AboutBreak.astro";
-import AboutPrinciples from "../components/about/AboutPrinciples.astro";
-import AboutNotDo from "../components/about/AboutNotDo.astro";
 import AboutClosing from "../components/about/AboutClosing.astro";
 import { breadcrumbSchema, type JsonLdSchema } from "../lib/schema";
 import "../styles/about.css";
@@ -27,7 +25,7 @@ const personSchema: JsonLdSchema = {
   url: `${SITE}/about`,
   worksFor: { "@type": "Organization", name: "KP Solutions", url: SITE },
   description:
-    "Founder of KP Solutions. Fifteen years building software inside the businesses that ran it, as developer, CTO, and founder.",
+    "Founder of KP Solutions. Years inside the business software industry — selling and implementing the platforms companies run on — now building bespoke software around how each business actually works.",
 };
 
 const schemas: JsonLdSchema[] = [
@@ -44,10 +42,8 @@ const schemas: JsonLdSchema[] = [
   <main>
     <AboutHero />
     <AboutFounder />
+    <AboutDifferentiator />
     <AboutWhy />
-    <AboutBreak />
-    <AboutPrinciples />
-    <AboutNotDo />
     <AboutClosing />
   </main>
   <Footer />

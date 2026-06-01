@@ -15,7 +15,9 @@ const {
   title,
   description,
   canonical,
-  ogImage,
+  // Default branded card so every page has a populated 1200x630 OG image.
+  // Pages can pass their own ogImage to override.
+  ogImage = "/og-default.png",
   ogType = "website",
   schemas = [],
 } = Astro.props;

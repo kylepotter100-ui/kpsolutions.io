@@ -8,21 +8,11 @@
   background: var(--bone-0);
   border-bottom: 1px solid var(--bone-200);
 }
-.process-hero__grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 64px;
-  align-items: stretch;
-  padding: 0 32px;
-  min-height: 60vh;
-}
-.process-hero__text {
+.process-hero__inner {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
   gap: 28px;
-  padding-bottom: 24px;
-  max-width: 26ch;
+  padding: 0 32px;
 }
 .process-hero__title {
   font-size: clamp(2.5rem, 1.3rem + 5vw, 5.5rem);
@@ -48,43 +38,19 @@
   color: var(--bone-500);
   font-weight: 400;
 }
-.process-hero__image { position: relative; min-height: 60vh; }
-.process-hero__image .placeholder-surface { position: absolute; inset: 0; overflow: hidden; }
-.placeholder-surface--process-hero {
-  background:
-    radial-gradient(55% 65% at 70% 30%, oklch(56% 0.100 48 / 0.55) 0%, transparent 60%),
-    radial-gradient(85% 95% at 15% 95%, oklch(28% 0.080 22 / 0.60) 0%, transparent 65%),
-    linear-gradient(160deg, oklch(26% 0.075 28) 0%, oklch(14% 0.040 22) 100%);
-}
 
-/* Process week — sticky image, alternating side */
+/* Process week — text-only, stacked, separated by a single hairline */
 .process-week {
-  padding: 140px 0;
+  padding: var(--section-py) 0;
   background: var(--bone-0);
   border-bottom: 1px solid var(--bone-200);
 }
 .process-week:last-of-type { border-bottom: none; }
-.process-week__grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  align-items: start;
-  padding: 0 32px;
-}
-.process-week__image { position: relative; min-height: 720px; }
-.process-week__sticky {
-  position: sticky;
-  top: 110px;
-  aspect-ratio: 4 / 5;
-  overflow: hidden;
-}
-.process-week__sticky .placeholder-surface { position: absolute; inset: 0; overflow: hidden; }
 .process-week__text {
   display: flex;
   flex-direction: column;
   gap: 24px;
   max-width: 48ch;
-  padding-top: 8px;
 }
 .process-week__marker {
   font-family: var(--font-mono);
@@ -141,38 +107,6 @@
   font-family: var(--font-mono);
 }
 
-/* Place image on the requested side */
-.process-week--image-left .process-week__image  { order: 1; }
-.process-week--image-left .process-week__text   { order: 2; }
-.process-week--image-right .process-week__image { order: 2; }
-.process-week--image-right .process-week__text  { order: 1; }
-
-/* Process palettes — foundation → frame → finish → completed */
-.placeholder-surface--week-01 {
-  background:
-    radial-gradient(60% 70% at 70% 30%, oklch(54% 0.080 50 / 0.45) 0%, transparent 60%),
-    radial-gradient(85% 100% at 18% 92%, oklch(28% 0.075 22 / 0.55) 0%, transparent 65%),
-    linear-gradient(165deg, oklch(28% 0.075 28) 0%, oklch(14% 0.040 22) 100%);
-}
-.placeholder-surface--week-02 {
-  background:
-    radial-gradient(55% 65% at 75% 25%, oklch(58% 0.090 55 / 0.50) 0%, transparent 60%),
-    radial-gradient(85% 100% at 18% 95%, oklch(30% 0.085 22 / 0.60) 0%, transparent 65%),
-    linear-gradient(160deg, oklch(26% 0.080 26) 0%, oklch(13% 0.038 22) 100%);
-}
-.placeholder-surface--week-03 {
-  background:
-    radial-gradient(55% 65% at 78% 22%, oklch(62% 0.105 50 / 0.55) 0%, transparent 60%),
-    radial-gradient(85% 100% at 18% 95%, oklch(32% 0.090 24 / 0.65) 0%, transparent 65%),
-    linear-gradient(155deg, oklch(28% 0.090 28) 0%, oklch(14% 0.040 22) 100%);
-}
-.placeholder-surface--week-04 {
-  background:
-    radial-gradient(60% 75% at 65% 30%, oklch(68% 0.115 60 / 0.55) 0%, transparent 60%),
-    radial-gradient(85% 100% at 18% 95%, oklch(34% 0.095 28 / 0.65) 0%, transparent 65%),
-    linear-gradient(155deg, oklch(30% 0.090 30) 0%, oklch(15% 0.040 22) 100%);
-}
-
 /* Shared process titles */
 .process-section-title {
   font-size: clamp(2rem, 1.3rem + 2.4vw, 3.25rem);
@@ -201,7 +135,7 @@
 .process-prose:last-child { margin-bottom: 0; }
 
 /* What's included */
-.process-included { padding: 120px 0; background: var(--bone-50); }
+.process-included { padding: var(--section-py) 0; background: var(--bone-50); }
 .process-included__grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -236,7 +170,7 @@
 
 /* What it costs */
 .process-cost {
-  padding: 88px 0;
+  padding: var(--section-py-tight) 0;
   background: var(--bone-0);
   border-top: 1px solid var(--bone-200);
   border-bottom: 1px solid var(--bone-200);
@@ -269,40 +203,13 @@
 }
 
 /* Why it works */
-.process-why { padding: 120px 0; background: var(--bone-0); }
+.process-why { padding: var(--section-py) 0; background: var(--bone-0); }
 .process-why__inner { max-width: 720px; margin: 0 auto; }
 .process-why .process-section-title { max-width: 14ch; }
 
-/* Atmospheric break */
-.process-break { position: relative; width: 100%; }
-.process-break__surface {
-  position: relative;
-  width: 100%;
-  min-height: 50vh;
-  overflow: hidden;
-  background:
-    radial-gradient(60% 75% at 70% 25%, oklch(64% 0.115 58 / 0.55) 0%, transparent 60%),
-    radial-gradient(80% 95% at 20% 92%, oklch(28% 0.085 22 / 0.65) 0%, transparent 65%),
-    linear-gradient(155deg, oklch(26% 0.070 28) 0%, oklch(12% 0.030 22) 100%);
-}
-.process-break__grain {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.18;
-  mix-blend-mode: overlay;
-  pointer-events: none;
-}
-.process-break__scrim {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(120% 80% at 50% 50%, transparent 50%, oklch(8% 0.020 22 / 0.4) 100%);
-  pointer-events: none;
-}
 
 /* Process closing */
-.process-closing { padding: 180px 0; background: var(--bone-0); }
+.process-closing { padding: var(--section-py) 0; background: var(--bone-0); }
 .process-closing__inner { max-width: 880px; }
 .process-closing__title {
   font-size: clamp(2.5rem, 1.5rem + 3.4vw, 4.5rem);
@@ -324,18 +231,7 @@
 
 /* ── Mobile / narrow ───────────────────────────────────────── */
 @media (max-width: 960px) {
-  .process-hero__grid { grid-template-columns: 1fr; gap: 48px; min-height: 0; }
-  .process-hero__text { padding-bottom: 0; max-width: none; }
-  .process-hero__image { min-height: 60vw; }
   .process-week { padding: 96px 0; }
-  .process-week__grid { grid-template-columns: 1fr; gap: 48px; }
-  .process-week__image,
-  .process-week--image-left .process-week__image,
-  .process-week--image-right .process-week__image { order: 1; min-height: 0; }
-  .process-week__text,
-  .process-week--image-left .process-week__text,
-  .process-week--image-right .process-week__text { order: 2; }
-  .process-week__sticky { position: relative; top: auto; aspect-ratio: 16 / 10; }
   .process-included { padding: 80px 0; }
   .process-included__grid { grid-template-columns: 1fr; gap: 40px; }
   .process-cost { padding: 64px 0; }
