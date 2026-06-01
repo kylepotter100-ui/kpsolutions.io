@@ -214,6 +214,10 @@ function initWhatWeBuild(): void {
       const stageH = fixedStage;
       const colX = Math.round(stageW * 0.38);
       const GAP = 32; // tight fixed gap between rows; tune live on preview if needed
+      // PAD pushes the bracket off the active name (above + below) and pulls the
+      // column-boundary vertical inboard of the subs box, so the hairline reads as
+      // a soft frame around the content rather than hugging the text edges.
+      const PAD = 14;
       const nameY: number[] = new Array(metrics.length);
       let acc = 0;
       metrics.forEach((m, i) => {
@@ -222,20 +226,22 @@ function initWhatWeBuild(): void {
       });
       groups.forEach((g, i) => g.style.setProperty("--svc-y", `${nameY[i]}px`));
       tunnelSvg.setAttribute("viewBox", `0 0 ${stageW} ${stageH}`);
+      const bendX = colX - PAD;
       metrics.forEach((m, i) => {
-        const yTop = nameY[i];
-        const yBot = nameY[i] + m.nameH;
+        const yTop = nameY[i] - PAD;
+        const yBot = nameY[i] + m.nameH + PAD;
         const topEl = tunnelEls.find(
           (el) => el.dataset.tunnelIdx === String(i) && el.dataset.tunnelEdge === "top",
         );
         const botEl = tunnelEls.find(
           (el) => el.dataset.tunnelIdx === String(i) && el.dataset.tunnelEdge === "bot",
         );
-        if (topEl) topEl.setAttribute("points", `0,${yTop} ${colX},${yTop} ${colX},0 ${stageW},0`);
+        if (topEl)
+          topEl.setAttribute("points", `0,${yTop} ${bendX},${yTop} ${bendX},0 ${stageW},0`);
         if (botEl)
           botEl.setAttribute(
             "points",
-            `0,${yBot} ${colX},${yBot} ${colX},${stageH} ${stageW},${stageH}`,
+            `0,${yBot} ${bendX},${yBot} ${bendX},${stageH} ${stageW},${stageH}`,
           );
       });
       // Force a fresh draw-on the next time `active` changes (covers the case where
