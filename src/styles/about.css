@@ -62,9 +62,9 @@
 .about-founder__sticky .brand-field { position: absolute; inset: 0; overflow: hidden; }
 .brand-field--portrait {
   background:
-    radial-gradient(60% 75% at 60% 30%, oklch(58% 0.090 48 / 0.55) 0%, transparent 60%),
-    radial-gradient(85% 100% at 18% 95%, oklch(28% 0.080 22 / 0.65) 0%, transparent 65%),
-    linear-gradient(165deg, oklch(28% 0.080 28) 0%, oklch(14% 0.040 22) 100%);
+    radial-gradient(64% 78% at 60% 28%, oklch(58% 0.110 48 / 0.6) 0%, transparent 62%),
+    radial-gradient(90% 100% at 16% 96%, oklch(34% 0.090 24 / 0.55) 0%, transparent 65%),
+    linear-gradient(165deg, oklch(33% 0.090 28) 0%, oklch(20% 0.055 24) 100%);
 }
 /* Typographic anchor in place of a founder photo — a Boska monogram lockup on the
    oxblood field, mirroring the homepage's type-on-gradient treatment. */
@@ -163,24 +163,6 @@
   max-width: 36ch;
 }
 
-/* Atmospheric break */
-.about-break { position: relative; width: 100%; }
-.about-break__surface {
-  position: relative;
-  width: 100%;
-  min-height: 50vh;
-  overflow: hidden;
-  background:
-    radial-gradient(60% 75% at 70% 30%, oklch(58% 0.110 55 / 0.55) 0%, transparent 60%),
-    radial-gradient(80% 95% at 20% 92%, oklch(28% 0.080 22 / 0.65) 0%, transparent 65%),
-    linear-gradient(155deg, oklch(24% 0.065 28) 0%, oklch(12% 0.030 22) 100%);
-}
-.about-break__scrim {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(120% 80% at 50% 50%, transparent 50%, oklch(8% 0.020 22 / 0.4) 100%);
-  pointer-events: none;
-}
 
 /* How I work — principles grid */
 .about-principles { padding: var(--section-py) 0; background: var(--bone-0); }

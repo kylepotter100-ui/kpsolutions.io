@@ -16,7 +16,7 @@ const parts = italicWord ? name.split(italicWord) : null;
 
 <section class:list={["process-week", imageLeft ? "process-week--image-left" : "process-week--image-right"]}>
   <div class="shell-wide process-week__grid">
-    {imageLeft && <ProcessWeekImage surface={surface} />}
+    {imageLeft && <ProcessWeekImage surface={surface} marker={marker} />}
 
     <div class="reveal process-week__text">
       <div class="process-week__marker">Week {marker}</div>
@@ -46,6 +46,6 @@ const parts = italicWord ? name.split(italicWord) : null;
       </ul>
     </div>
 
-    {!imageLeft && <ProcessWeekImage surface={surface} />}
+    {!imageLeft && <ProcessWeekImage surface={surface} marker={marker} />}
   </div>
 </section>

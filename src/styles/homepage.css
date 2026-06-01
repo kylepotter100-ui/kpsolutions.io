@@ -446,14 +446,11 @@ html.js-reveal .wwb[data-wwb-active] .wwb-sub__body { max-width: 54ch; }
     align-content: start;
   }
   html.js-reveal .wwb[data-wwb-active] .wwb-sub__body { max-width: none; }
-  /* The stacked-name + tunnel hairline treatment is desktop-only. Mobile keeps the
-     current single-column collapse + the original article-level crossfade. */
-  html.js-reveal .wwb[data-wwb-active] .wwb__tunnels { display: none; }
 }
 
-/* ── Desktop stacked-tunnel: names accumulate down the left column, a drawn open-right
-   funnel hairline links the active name to its subs box. Strictly additive — the
-   right-column collapse mechanic, pin, pace, and handoff are untouched. ── */
+/* ── Desktop: the service names accumulate down the left column (passed dim, active full).
+   Strictly additive — the right-column collapse mechanic, pin, pace, and handoff are
+   untouched. ── */
 @media (min-width: 769px) {
   /* Move the crossfade off the article (so names can persist) onto the subs only. */
   html.js-reveal .wwb[data-wwb-active] .wwb-service { opacity: 1; transition: none; }
@@ -463,10 +460,6 @@ html.js-reveal .wwb[data-wwb-active] .wwb-sub__body { max-width: 54ch; }
     transition: opacity 380ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   html.js-reveal .wwb[data-wwb-active] .wwb-service.is-active .wwb-subs { opacity: 1; }
-  /* Breathing room inside the tunnel frame: offset the subs content down by the frame pad
-     (matches the 2×PAD stage growth + the down-shifted name stack in reveal.ts) so the
-     frame's top/bottom edges don't hug the first sub-header or the Outcome. */
-  html.js-reveal .wwb[data-wwb-active] .wwb-subs { padding-top: var(--wwb-frame-pad, 0px); }
 
   /* Names sit permanently in their stack slot via translateY (paint-only transform —
      doesn't affect the grid layout, so the subs in column 2 stay top-anchored to the
@@ -481,27 +474,6 @@ html.js-reveal .wwb[data-wwb-active] .wwb-sub__body { max-width: 54ch; }
   }
   html.js-reveal .wwb[data-wwb-active] .wwb-service.is-passed .wwb-service__name { opacity: 0.4; }
   html.js-reveal .wwb[data-wwb-active] .wwb-service.is-active .wwb-service__name { opacity: 1; }
-
-  /* Tunnel SVG: anchored to the FIXED stage rect via inset:0, sits behind the services
-     (z:0 vs z:1) so subs text covers any overlap. The polyline coords are computed in
-     reveal.ts against stage dimensions; non-scaling-stroke keeps the hairline 1px true
-     regardless of the SVG's stretched preserveAspectRatio. */
-  html.js-reveal .wwb[data-wwb-active] .wwb__tunnels {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 0;
-  }
-  html.js-reveal .wwb[data-wwb-active] .wwb__tunnel-line {
-    fill: none;
-    stroke: color-mix(in oklch, var(--ochre-700) 55%, transparent);
-    stroke-width: 1.25;
-    opacity: 0;
-    transition: opacity 380ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  html.js-reveal .wwb[data-wwb-active] .wwb__tunnel-line.is-active { opacity: 1; }
 }
 
 /* ── Process callout — dark inverted moment ────────────────── */

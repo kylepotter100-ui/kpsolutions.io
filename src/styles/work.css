@@ -164,9 +164,9 @@
 }
 .brand-field--architecture {
   background:
-    radial-gradient(60% 70% at 75% 25%, oklch(58% 0.105 50 / 0.45) 0%, transparent 60%),
-    radial-gradient(85% 95% at 15% 95%, oklch(30% 0.085 22 / 0.60) 0%, transparent 65%),
-    linear-gradient(160deg, oklch(28% 0.080 28) 0%, oklch(13% 0.035 22) 100%);
+    radial-gradient(64% 72% at 75% 24%, oklch(58% 0.110 50 / 0.6) 0%, transparent 62%),
+    radial-gradient(90% 95% at 14% 96%, oklch(34% 0.090 24 / 0.55) 0%, transparent 65%),
+    linear-gradient(160deg, oklch(33% 0.090 28) 0%, oklch(20% 0.055 24) 100%);
 }
 
 /* The build — visual gallery */
@@ -218,47 +218,29 @@
 /* Per-screen brand-field palettes */
 .brand-field--screen-home {
   background:
-    radial-gradient(60% 70% at 75% 25%, oklch(60% 0.090 50 / 0.45) 0%, transparent 60%),
-    radial-gradient(80% 100% at 15% 95%, oklch(32% 0.090 22 / 0.55) 0%, transparent 65%),
-    linear-gradient(165deg, oklch(28% 0.075 28) 0%, oklch(14% 0.040 22) 100%);
+    radial-gradient(64% 72% at 75% 24%, oklch(60% 0.100 50 / 0.55) 0%, transparent 62%),
+    radial-gradient(85% 100% at 14% 96%, oklch(35% 0.090 24 / 0.5) 0%, transparent 65%),
+    linear-gradient(165deg, oklch(33% 0.085 28) 0%, oklch(20% 0.055 24) 100%);
 }
 .brand-field--screen-booking {
   background:
-    radial-gradient(55% 65% at 30% 30%, oklch(64% 0.085 55 / 0.45) 0%, transparent 60%),
-    radial-gradient(85% 95% at 85% 90%, oklch(32% 0.080 28 / 0.55) 0%, transparent 65%),
-    linear-gradient(150deg, oklch(26% 0.070 24) 0%, oklch(14% 0.035 22) 100%);
+    radial-gradient(60% 68% at 30% 28%, oklch(64% 0.095 55 / 0.55) 0%, transparent 62%),
+    radial-gradient(88% 95% at 84% 90%, oklch(35% 0.085 28 / 0.5) 0%, transparent 65%),
+    linear-gradient(150deg, oklch(33% 0.082 26) 0%, oklch(20% 0.055 24) 100%);
 }
 .brand-field--screen-admin {
   background:
-    radial-gradient(55% 70% at 50% 30%, oklch(50% 0.075 40 / 0.45) 0%, transparent 60%),
-    radial-gradient(80% 100% at 15% 95%, oklch(22% 0.055 22 / 0.55) 0%, transparent 65%),
-    linear-gradient(180deg, oklch(20% 0.055 26) 0%, oklch(12% 0.030 22) 100%);
+    radial-gradient(60% 72% at 50% 28%, oklch(54% 0.090 42 / 0.55) 0%, transparent 62%),
+    radial-gradient(85% 100% at 14% 96%, oklch(32% 0.075 24 / 0.5) 0%, transparent 65%),
+    linear-gradient(180deg, oklch(31% 0.075 28) 0%, oklch(20% 0.052 24) 100%);
 }
 .brand-field--screen-brand {
   background:
-    radial-gradient(70% 90% at 50% 50%, oklch(55% 0.115 60 / 0.45) 0%, transparent 60%),
-    radial-gradient(80% 100% at 50% 100%, oklch(24% 0.065 22 / 0.55) 0%, transparent 65%),
-    linear-gradient(160deg, oklch(26% 0.080 28) 0%, oklch(13% 0.035 22) 100%);
+    radial-gradient(74% 92% at 50% 48%, oklch(57% 0.120 60 / 0.55) 0%, transparent 62%),
+    radial-gradient(85% 100% at 50% 100%, oklch(33% 0.080 24 / 0.5) 0%, transparent 64%),
+    linear-gradient(160deg, oklch(33% 0.090 28) 0%, oklch(20% 0.055 24) 100%);
 }
 
-/* Atmospheric break */
-.case-break { position: relative; width: 100%; }
-.case-break__surface {
-  position: relative;
-  width: 100%;
-  min-height: 50vh;
-  overflow: hidden;
-  background:
-    radial-gradient(60% 75% at 70% 30%, oklch(54% 0.115 55 / 0.55) 0%, transparent 60%),
-    radial-gradient(80% 95% at 20% 92%, oklch(28% 0.085 22 / 0.65) 0%, transparent 65%),
-    linear-gradient(155deg, oklch(22% 0.060 28) 0%, oklch(12% 0.030 22) 100%);
-}
-.case-break__scrim {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(120% 80% at 50% 50%, transparent 50%, oklch(8% 0.020 22 / 0.4) 100%);
-  pointer-events: none;
-}
 
 /* The outcome */
 .case-outcome { padding: var(--section-py) 0; background: var(--bone-0); }

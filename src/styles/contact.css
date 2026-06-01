@@ -173,24 +173,6 @@ textarea.contact-field__input { resize: vertical; min-height: 96px; }
 }
 .contact-aside__email:hover { color: var(--ochre-700); text-decoration-color: var(--ochre-700); }
 
-/* Atmospheric break */
-.contact-break { position: relative; width: 100%; }
-.contact-break__surface {
-  position: relative;
-  width: 100%;
-  min-height: 40vh;
-  overflow: hidden;
-  background:
-    radial-gradient(55% 70% at 70% 30%, oklch(54% 0.095 50 / 0.50) 0%, transparent 60%),
-    radial-gradient(80% 95% at 18% 92%, oklch(28% 0.080 22 / 0.60) 0%, transparent 65%),
-    linear-gradient(160deg, oklch(24% 0.065 28) 0%, oklch(12% 0.030 22) 100%);
-}
-.contact-break__scrim {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(120% 80% at 50% 50%, transparent 50%, oklch(8% 0.020 22 / 0.4) 100%);
-  pointer-events: none;
-}
 
 /* What happens next — three-step strip */
 .contact-next { padding: var(--section-py-tight) 0; background: var(--bone-0); }

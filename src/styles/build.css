@@ -208,24 +208,6 @@
 }
 .build-cat--text-only .build-cat__title { max-width: 16ch; }
 
-/* Atmospheric break between cats 3 and 4 */
-.build-break { position: relative; width: 100%; }
-.build-break__surface {
-  position: relative;
-  width: 100%;
-  min-height: 60vh;
-  overflow: hidden;
-  background:
-    radial-gradient(65% 75% at 75% 35%, oklch(54% 0.115 55 / 0.55) 0%, transparent 60%),
-    radial-gradient(80% 95% at 18% 90%, oklch(30% 0.090 28 / 0.6) 0%, transparent 65%),
-    linear-gradient(160deg, oklch(22% 0.060 28) 0%, oklch(12% 0.035 22) 100%);
-}
-.build-break__scrim {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(120% 80% at 50% 50%, transparent 50%, oklch(8% 0.020 22 / 0.4) 100%);
-  pointer-events: none;
-}
 
 /* Build closing */
 .build-closing { padding: var(--section-py) 0; background: var(--bone-0); }
@@ -253,21 +235,21 @@
 .build-cat__editorial-image .brand-field { position: absolute; inset: 0; }
 .brand-field--platform {
   background:
-    radial-gradient(55% 65% at 70% 25%, oklch(56% 0.110 50 / 0.55) 0%, transparent 60%),
-    radial-gradient(85% 95% at 15% 95%, oklch(30% 0.085 22 / 0.60) 0%, transparent 65%),
-    linear-gradient(160deg, oklch(26% 0.075 28) 0%, oklch(14% 0.040 22) 100%);
+    radial-gradient(60% 68% at 70% 24%, oklch(57% 0.115 50 / 0.6) 0%, transparent 62%),
+    radial-gradient(90% 95% at 14% 96%, oklch(34% 0.090 24 / 0.55) 0%, transparent 65%),
+    linear-gradient(160deg, oklch(33% 0.090 28) 0%, oklch(20% 0.055 24) 100%);
 }
 .brand-field--aeo {
   background:
-    radial-gradient(40% 55% at 50% 50%, oklch(52% 0.140 55 / 0.55) 0%, transparent 65%),
-    radial-gradient(80% 80% at 50% 100%, oklch(22% 0.060 22 / 0.6) 0%, transparent 60%),
-    linear-gradient(180deg, oklch(13% 0.035 22) 0%, oklch(8% 0.020 22) 100%);
+    radial-gradient(52% 62% at 50% 46%, oklch(54% 0.140 55 / 0.6) 0%, transparent 64%),
+    radial-gradient(85% 85% at 50% 100%, oklch(32% 0.085 24 / 0.55) 0%, transparent 62%),
+    linear-gradient(180deg, oklch(30% 0.080 26) 0%, oklch(19% 0.052 24) 100%);
 }
 .brand-field--integrations {
   background:
-    radial-gradient(60% 80% at 30% 30%, oklch(58% 0.090 60 / 0.45) 0%, transparent 60%),
-    radial-gradient(80% 100% at 80% 90%, oklch(28% 0.075 24 / 0.65) 0%, transparent 65%),
-    linear-gradient(135deg, oklch(28% 0.075 30) 0%, oklch(14% 0.035 22) 100%);
+    radial-gradient(64% 82% at 30% 28%, oklch(58% 0.100 60 / 0.55) 0%, transparent 62%),
+    radial-gradient(85% 100% at 82% 90%, oklch(34% 0.085 26 / 0.55) 0%, transparent 65%),
+    linear-gradient(135deg, oklch(33% 0.088 30) 0%, oklch(20% 0.055 24) 100%);
 }
 /* ── Mobile / narrow ───────────────────────────────────────── */
 @media (max-width: 960px) {
