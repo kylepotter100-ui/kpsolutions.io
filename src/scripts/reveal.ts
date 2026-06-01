@@ -135,6 +135,18 @@ function initWhatWeBuild(): void {
 
   const NAV_CLEAR = 16; // min gap above the centred pin so it never tucks under the nav
 
+  // Desktop stacked-tunnel: cache the decorative SVG + polylines that frame the active
+  // service's name → subs box. Coords are computed once in measure() against the FIXED
+  // stage so the outline never moves while the subs collapse inside. Hidden on mobile via
+  // CSS (display:none); render()'s tunnel block is also gated on !isMobile.
+  const mq = window.matchMedia("(max-width: 768px)");
+  let isMobile = mq.matches;
+  const tunnelSvg = section.querySelector<SVGSVGElement>("[data-wwb-tunnels]");
+  const tunnelEls = tunnelSvg
+    ? Array.from(tunnelSvg.querySelectorAll<SVGPolylineElement>(".wwb__tunnel-line"))
+    : [];
+  let lastActive = -1;
+
   const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
   const eo = (t: number) => 1 - Math.pow(1 - t, 4); // easeOutQuart
 
@@ -159,12 +171,13 @@ function initWhatWeBuild(): void {
     if (!pin) return;
     const pinH = pin.getBoundingClientRect().height;
     const vh = window.innerHeight;
-    const top = window.matchMedia("(max-width: 768px)").matches
+    const top = isMobile
       ? Math.max(NAV_CLEAR, Math.round(vh - pinH))
       : Math.max(NAV_CLEAR, Math.round((vh - pinH) / 2));
     pin.style.top = `${top}px`;
   };
   const measure = () => {
+    isMobile = mq.matches;
     metrics = groups.map((el) => {
       const subs = Array.from(el.querySelectorAll<HTMLElement>("[data-wwb-sub]"));
       subs.forEach((s) => {
@@ -182,13 +195,44 @@ function initWhatWeBuild(): void {
       };
     });
     // Fixed stage = tallest entry-state across all services. A constant stage ⇒ constant pin
-    // height ⇒ the heading never drifts on a swap; the collapsed-state void is filled by the
-    // index numeral rather than reclaimed by resizing.
+    // height ⇒ the heading never drifts on a swap.
     const fixedStage = Math.round(
       metrics.reduce((mx, m) => Math.max(mx, m.nameH, m.subH.reduce((a, b) => a + b, 0)), 0),
     );
     stage.style.height = `${fixedStage}px`;
     placePin();
+    // Desktop only: compute the tunnel polyline coords from the FIXED stage dimensions.
+    // Each service gets one top + one bottom polyline forming an open-right funnel from
+    // its name (in the left-column stack slot at i × rowH) to the subs box (full right
+    // column, Y = 0 .. stageH). colX matches the CSS 38%/62% grid split, so the bend in
+    // the hairline sits exactly on the column boundary.
+    if (!isMobile && tunnelSvg && tunnelEls.length) {
+      const stageW = stage.getBoundingClientRect().width;
+      const stageH = fixedStage;
+      const colX = Math.round(stageW * 0.38);
+      const rowH = Math.round(Math.max(...metrics.map((m) => m.nameH), 40) + 70);
+      section.style.setProperty("--wwb-row-h", `${rowH}px`);
+      tunnelSvg.setAttribute("viewBox", `0 0 ${stageW} ${stageH}`);
+      metrics.forEach((m, i) => {
+        const yTop = i * rowH;
+        const yBot = i * rowH + m.nameH;
+        const topEl = tunnelEls.find(
+          (el) => el.dataset.tunnelIdx === String(i) && el.dataset.tunnelEdge === "top",
+        );
+        const botEl = tunnelEls.find(
+          (el) => el.dataset.tunnelIdx === String(i) && el.dataset.tunnelEdge === "bot",
+        );
+        if (topEl) topEl.setAttribute("points", `0,${yTop} ${colX},${yTop} ${colX},0 ${stageW},0`);
+        if (botEl)
+          botEl.setAttribute(
+            "points",
+            `0,${yBot} ${colX},${yBot} ${colX},${stageH} ${stageW},${stageH}`,
+          );
+      });
+      // Force a fresh draw-on the next time `active` changes (covers the case where
+      // measure runs after a service was already active — e.g. fonts.ready re-measure).
+      lastActive = -1;
+    }
   };
 
   // Collapse the earlier subs (keep the LAST one — the Outcome — always full). lp 0→1
@@ -275,9 +319,34 @@ function initWhatWeBuild(): void {
     for (let i = 0; i < N; i++) {
       const m = metrics[i];
       groups[i].classList.toggle("is-active", i === active);
+      // .is-passed marks services scrolled past — drives the dimmed-name state in the
+      // desktop stacked-tunnel layout. Auto-toggles back off on backward scroll.
+      groups[i].classList.toggle("is-passed", i < active);
       // Non-active services reset to fully expanded, so the incoming one cross-fades in
       // already-open (no reload flash); the active one collapses by its own progress.
       if (m && i !== active) applyCollapse(m, 0);
+    }
+
+    // Desktop tunnel swap: on active-index change, fade out the old tunnel + draw on the
+    // new one (stroke-dashoffset: length → 0). The coords are fixed (set in measure), so
+    // this is a CSS class toggle + one animate() call per polyline per swap. Mobile skips.
+    if (active !== lastActive) {
+      lastActive = active;
+      if (!isMobile && tunnelEls.length) {
+        tunnelEls.forEach((el) => {
+          const idx = Number(el.dataset.tunnelIdx);
+          const nowActive = idx === active;
+          el.classList.toggle("is-active", nowActive);
+          if (nowActive) {
+            const len = el.getTotalLength();
+            if (Number.isFinite(len) && len > 0) {
+              el.style.strokeDasharray = String(len);
+              el.style.strokeDashoffset = String(len);
+              animate(el, { strokeDashoffset: 0 }, { duration: 0.6, easing: [0.22, 1, 0.36, 1] });
+            }
+          }
+        });
+      }
     }
 
     const m = metrics[active];

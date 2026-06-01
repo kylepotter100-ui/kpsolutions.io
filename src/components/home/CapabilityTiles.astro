@@ -20,7 +20,11 @@ import { capabilities } from "../../lib/capabilities";
         <div class="wwb__stage" data-wwb-stage>
           {
             capabilities.map((s, i) => (
-              <article class={i === 0 ? "wwb-service is-active" : "wwb-service"} data-wwb-group>
+              <article
+                class={i === 0 ? "wwb-service is-active" : "wwb-service"}
+                data-wwb-group
+                style={`--svc-idx: ${i};`}
+              >
                 <h3 class="wwb-service__name">
                   {s.lead} <span class="display-italic">{s.accent}</span>.
                 </h3>
@@ -37,6 +41,33 @@ import { capabilities } from "../../lib/capabilities";
               </article>
             ))
           }
+          {/* Decorative tunnel hairlines (desktop only). One pair of polylines per service:
+              the top + bottom edges of an open-right funnel from the active name to the
+              fixed subs box. Coords are filled in by reveal.ts at measure-time, anchored
+              to the FIXED stage dimensions so the outline never moves while subs collapse. */}
+          <svg
+            class="wwb__tunnels"
+            data-wwb-tunnels
+            aria-hidden="true"
+            preserveAspectRatio="none"
+          >
+            {capabilities.map((_, i) => (
+              <>
+                <polyline
+                  class="wwb__tunnel-line"
+                  data-tunnel-idx={i}
+                  data-tunnel-edge="top"
+                  vector-effect="non-scaling-stroke"
+                />
+                <polyline
+                  class="wwb__tunnel-line"
+                  data-tunnel-idx={i}
+                  data-tunnel-edge="bot"
+                  vector-effect="non-scaling-stroke"
+                />
+              </>
+            ))}
+          </svg>
         </div>
       </div>
     </div>
