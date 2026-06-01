@@ -203,19 +203,28 @@ function initWhatWeBuild(): void {
     placePin();
     // Desktop only: compute the tunnel polyline coords from the FIXED stage dimensions.
     // Each service gets one top + one bottom polyline forming an open-right funnel from
-    // its name (in the left-column stack slot at i × rowH) to the subs box (full right
-    // column, Y = 0 .. stageH). colX matches the CSS 38%/62% grid split, so the bend in
-    // the hairline sits exactly on the column boundary.
+    // its name (in its CUMULATIVE left-column slot — sum of preceding actual nameH +
+    // gaps, NOT a uniform max-row height, so single-line names don't inherit the slot of
+    // a wrapped name) to the subs box (full right column, Y = 0 .. stageH). colX matches
+    // the CSS 38%/62% grid split, so the bend in the hairline sits exactly on the
+    // column boundary. JS writes --svc-y per article; the desktop CSS reads it to
+    // translateY each name into its slot.
     if (!isMobile && tunnelSvg && tunnelEls.length) {
       const stageW = stage.getBoundingClientRect().width;
       const stageH = fixedStage;
       const colX = Math.round(stageW * 0.38);
-      const rowH = Math.round(Math.max(...metrics.map((m) => m.nameH), 40) + 70);
-      section.style.setProperty("--wwb-row-h", `${rowH}px`);
+      const GAP = 32; // tight fixed gap between rows; tune live on preview if needed
+      const nameY: number[] = new Array(metrics.length);
+      let acc = 0;
+      metrics.forEach((m, i) => {
+        nameY[i] = acc;
+        acc += m.nameH + GAP;
+      });
+      groups.forEach((g, i) => g.style.setProperty("--svc-y", `${nameY[i]}px`));
       tunnelSvg.setAttribute("viewBox", `0 0 ${stageW} ${stageH}`);
       metrics.forEach((m, i) => {
-        const yTop = i * rowH;
-        const yBot = i * rowH + m.nameH;
+        const yTop = nameY[i];
+        const yBot = nameY[i] + m.nameH;
         const topEl = tunnelEls.find(
           (el) => el.dataset.tunnelIdx === String(i) && el.dataset.tunnelEdge === "top",
         );
