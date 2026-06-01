@@ -463,6 +463,10 @@ html.js-reveal .wwb[data-wwb-active] .wwb-sub__body { max-width: 54ch; }
     transition: opacity 380ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   html.js-reveal .wwb[data-wwb-active] .wwb-service.is-active .wwb-subs { opacity: 1; }
+  /* Breathing room inside the tunnel frame: offset the subs content down by the frame pad
+     (matches the 2×PAD stage growth + the down-shifted name stack in reveal.ts) so the
+     frame's top/bottom edges don't hug the first sub-header or the Outcome. */
+  html.js-reveal .wwb[data-wwb-active] .wwb-subs { padding-top: var(--wwb-frame-pad, 0px); }
 
   /* Names sit permanently in their stack slot via translateY (paint-only transform —
      doesn't affect the grid layout, so the subs in column 2 stay top-anchored to the

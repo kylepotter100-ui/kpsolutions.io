@@ -196,9 +196,16 @@ function initWhatWeBuild(): void {
     });
     // Fixed stage = tallest entry-state across all services. A constant stage ⇒ constant pin
     // height ⇒ the heading never drifts on a swap.
-    const fixedStage = Math.round(
-      metrics.reduce((mx, m) => Math.max(mx, m.nameH, m.subH.reduce((a, b) => a + b, 0)), 0),
-    );
+    // Desktop tunnel frame adds PAD breathing room above + below the subs box, so grow the
+    // fixed stage by 2×PAD: content is offset down by PAD (via --wwb-frame-pad on the subs),
+    // leaving PAD below even for the tallest service. Mobile re-hugs the stage per-frame in
+    // render(), so it ignores the extra height.
+    const FRAME_PAD = 14;
+    const useTunnel = !isMobile && !!tunnelSvg && tunnelEls.length > 0;
+    const fixedStage =
+      Math.round(
+        metrics.reduce((mx, m) => Math.max(mx, m.nameH, m.subH.reduce((a, b) => a + b, 0)), 0),
+      ) + (useTunnel ? 2 * FRAME_PAD : 0);
     stage.style.height = `${fixedStage}px`;
     placePin();
     // Desktop only: compute the tunnel polyline coords from the FIXED stage dimensions.
@@ -209,17 +216,23 @@ function initWhatWeBuild(): void {
     // the CSS 38%/62% grid split, so the bend in the hairline sits exactly on the
     // column boundary. JS writes --svc-y per article; the desktop CSS reads it to
     // translateY each name into its slot.
-    if (!isMobile && tunnelSvg && tunnelEls.length) {
+    if (useTunnel && tunnelSvg) {
       const stageW = stage.getBoundingClientRect().width;
       const stageH = fixedStage;
       const colX = Math.round(stageW * 0.38);
       const GAP = 32; // tight fixed gap between rows; tune live on preview if needed
-      // PAD pushes the bracket off the active name (above + below) and pulls the
-      // column-boundary vertical inboard of the subs box, so the hairline reads as
-      // a soft frame around the content rather than hugging the text edges.
-      const PAD = 14;
+      // PAD does three things, all at the same magnitude as the 2×PAD stage growth above:
+      //  • offsets the whole name stack + the subs content down by PAD (subs via the
+      //    --wwb-frame-pad var below), so the frame's top edge (y=0) sits PAD above the
+      //    content instead of hugging the first sub-header / the Outcome;
+      //  • pulls the column-boundary bend inboard of the subs box (bendX = colX − PAD);
+      //  • brackets each name by ±PAD. Starting the stack at PAD also lifts service 0's top
+      //    bracket from y = −PAD (above the viewBox → clipped → invisible) to y = 0 (on the
+      //    frame edge → visible, matching the right-side top line).
+      const PAD = FRAME_PAD;
+      section.style.setProperty("--wwb-frame-pad", `${PAD}px`);
       const nameY: number[] = new Array(metrics.length);
-      let acc = 0;
+      let acc = PAD;
       metrics.forEach((m, i) => {
         nameY[i] = acc;
         acc += m.nameH + GAP;
