@@ -1,24 +1,14 @@
 ---
-// 50/50 hero — copy beside an abstract brand field. Static copy (no reveal gating).
+// Text-only hero. Copy is server-rendered; `reveal` only adds a JS scroll-in fade.
 ---
 
 <section class="process-hero" id="top">
-  <div class="shell-wide process-hero__grid">
-    <div class="process-hero__text">
-      <h1 class="process-hero__title">
-        The Four Week <span class="process-hero__italic">Build</span>.
-      </h1>
-      <p class="process-hero__sub">
-        Brief on Monday. Live four Fridays later. Fixed fee. Code owned by you.
-      </p>
-    </div>
-
-    <div class="process-hero__image">
-      <div class="brand-field brand-field--process-hero">
-        <div class="grain-overlay" aria-hidden="true"></div>
-        <div class="brand-field__scrim"></div>
-        <div class="brand-field__mark" aria-hidden="true">KP</div>
-      </div>
-    </div>
+  <div class="reveal shell process-hero__inner">
+    <h1 class="process-hero__title">
+      The Four Week <span class="process-hero__italic">Build</span>.
+    </h1>
+    <p class="process-hero__sub">
+      Brief on Monday. Live four Fridays later. Fixed fee. Code owned by you.
+    </p>
   </div>
 </section>

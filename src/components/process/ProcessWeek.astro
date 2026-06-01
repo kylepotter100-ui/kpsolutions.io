@@ -1,23 +1,17 @@
 ---
-import ProcessWeekImage from "./ProcessWeekImage.astro";
-
 interface Props {
   marker: string;
   name: string;
   italicWord?: string;
   description: string;
   outcomes: string[];
-  surface: string;
-  imageLeft?: boolean;
 }
-const { marker, name, italicWord, description, outcomes, surface, imageLeft = false } = Astro.props;
+const { marker, name, italicWord, description, outcomes } = Astro.props;
 const parts = italicWord ? name.split(italicWord) : null;
 ---
 
-<section class:list={["process-week", imageLeft ? "process-week--image-left" : "process-week--image-right"]}>
-  <div class="shell-wide process-week__grid">
-    {imageLeft && <ProcessWeekImage surface={surface} marker={marker} />}
-
+<section class="process-week">
+  <div class="shell-tight">
     <div class="reveal process-week__text">
       <div class="process-week__marker">Week {marker}</div>
       <h2 class="process-week__name">
@@ -45,7 +39,5 @@ const parts = italicWord ? name.split(italicWord) : null;
         }
       </ul>
     </div>
-
-    {!imageLeft && <ProcessWeekImage surface={surface} marker={marker} />}
   </div>
 </section>

@@ -8,21 +8,11 @@
   background: var(--bone-0);
   border-bottom: 1px solid var(--bone-200);
 }
-.process-hero__grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 64px;
-  align-items: stretch;
-  padding: 0 32px;
-  min-height: 60vh;
-}
-.process-hero__text {
+.process-hero__inner {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
   gap: 28px;
-  padding-bottom: 24px;
-  max-width: 26ch;
+  padding: 0 32px;
 }
 .process-hero__title {
   font-size: clamp(2.5rem, 1.3rem + 5vw, 5.5rem);
@@ -48,43 +38,19 @@
   color: var(--bone-500);
   font-weight: 400;
 }
-.process-hero__image { position: relative; min-height: 60vh; }
-.process-hero__image .brand-field { position: absolute; inset: 0; overflow: hidden; }
-.brand-field--process-hero {
-  background:
-    radial-gradient(60% 70% at 70% 28%, oklch(57% 0.115 48 / 0.6) 0%, transparent 62%),
-    radial-gradient(90% 95% at 14% 96%, oklch(34% 0.090 24 / 0.55) 0%, transparent 65%),
-    linear-gradient(160deg, oklch(33% 0.090 28) 0%, oklch(20% 0.055 24) 100%);
-}
 
-/* Process week — sticky image, alternating side */
+/* Process week — text-only, stacked, separated by a single hairline */
 .process-week {
   padding: var(--section-py) 0;
   background: var(--bone-0);
   border-bottom: 1px solid var(--bone-200);
 }
 .process-week:last-of-type { border-bottom: none; }
-.process-week__grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  align-items: start;
-  padding: 0 32px;
-}
-.process-week__image { position: relative; min-height: 720px; }
-.process-week__sticky {
-  position: sticky;
-  top: 110px;
-  aspect-ratio: 4 / 5;
-  overflow: hidden;
-}
-.process-week__sticky .brand-field { position: absolute; inset: 0; overflow: hidden; }
 .process-week__text {
   display: flex;
   flex-direction: column;
   gap: 24px;
   max-width: 48ch;
-  padding-top: 8px;
 }
 .process-week__marker {
   font-family: var(--font-mono);
@@ -139,38 +105,6 @@
   color: var(--ochre-700);
   flex-shrink: 0;
   font-family: var(--font-mono);
-}
-
-/* Place image on the requested side */
-.process-week--image-left .process-week__image  { order: 1; }
-.process-week--image-left .process-week__text   { order: 2; }
-.process-week--image-right .process-week__image { order: 2; }
-.process-week--image-right .process-week__text  { order: 1; }
-
-/* Process palettes — foundation → frame → finish → completed */
-.brand-field--week-01 {
-  background:
-    radial-gradient(64% 72% at 70% 28%, oklch(56% 0.100 50 / 0.55) 0%, transparent 62%),
-    radial-gradient(90% 100% at 16% 94%, oklch(34% 0.085 24 / 0.5) 0%, transparent 65%),
-    linear-gradient(165deg, oklch(33% 0.085 28) 0%, oklch(20% 0.055 24) 100%);
-}
-.brand-field--week-02 {
-  background:
-    radial-gradient(60% 68% at 75% 24%, oklch(59% 0.105 55 / 0.55) 0%, transparent 62%),
-    radial-gradient(90% 100% at 16% 96%, oklch(35% 0.090 24 / 0.55) 0%, transparent 65%),
-    linear-gradient(160deg, oklch(33% 0.090 26) 0%, oklch(20% 0.055 24) 100%);
-}
-.brand-field--week-03 {
-  background:
-    radial-gradient(60% 68% at 78% 22%, oklch(63% 0.115 50 / 0.6) 0%, transparent 62%),
-    radial-gradient(90% 100% at 16% 96%, oklch(36% 0.095 26 / 0.6) 0%, transparent 65%),
-    linear-gradient(155deg, oklch(34% 0.095 28) 0%, oklch(21% 0.058 24) 100%);
-}
-.brand-field--week-04 {
-  background:
-    radial-gradient(64% 76% at 66% 28%, oklch(68% 0.120 60 / 0.6) 0%, transparent 62%),
-    radial-gradient(90% 100% at 16% 96%, oklch(37% 0.100 28 / 0.6) 0%, transparent 65%),
-    linear-gradient(155deg, oklch(35% 0.095 30) 0%, oklch(22% 0.058 26) 100%);
 }
 
 /* Shared process titles */
@@ -297,18 +231,7 @@
 
 /* ── Mobile / narrow ───────────────────────────────────────── */
 @media (max-width: 960px) {
-  .process-hero__grid { grid-template-columns: 1fr; gap: 48px; min-height: 0; }
-  .process-hero__text { padding-bottom: 0; max-width: none; }
-  .process-hero__image { min-height: 60vw; }
   .process-week { padding: 96px 0; }
-  .process-week__grid { grid-template-columns: 1fr; gap: 48px; }
-  .process-week__image,
-  .process-week--image-left .process-week__image,
-  .process-week--image-right .process-week__image { order: 1; min-height: 0; }
-  .process-week__text,
-  .process-week--image-left .process-week__text,
-  .process-week--image-right .process-week__text { order: 2; }
-  .process-week__sticky { position: relative; top: auto; aspect-ratio: 16 / 10; }
   .process-included { padding: 80px 0; }
   .process-included__grid { grid-template-columns: 1fr; gap: 40px; }
   .process-cost { padding: 64px 0; }
