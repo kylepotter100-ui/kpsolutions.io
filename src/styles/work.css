@@ -140,164 +140,18 @@
   color: var(--ox-900);
 }
 
-/* The challenge */
-.case-challenge { padding: 96px 0 64px; background: var(--bone-0); }
-.case-challenge__inner { margin: 0 auto; max-width: 720px; }
-.case-challenge .case-section-title { max-width: 14ch; }
-
-/* The approach — asymmetric 50/50 with sticky image */
-.case-approach { padding: 120px 0 160px; background: var(--bone-0); }
-.case-approach__grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 64px;
-  align-items: start;
-  padding: 0 32px;
-}
-.case-approach__text { max-width: 56ch; }
-.case-approach__image { position: relative; }
-.case-approach__sticky {
-  position: sticky;
-  top: 110px;
-  aspect-ratio: 4 / 5;
-  overflow: hidden;
-}
-.brand-field--architecture {
-  background:
-    radial-gradient(64% 72% at 75% 24%, oklch(58% 0.110 50 / 0.6) 0%, transparent 62%),
-    radial-gradient(90% 95% at 14% 96%, oklch(34% 0.090 24 / 0.55) 0%, transparent 65%),
-    linear-gradient(160deg, oklch(33% 0.090 28) 0%, oklch(20% 0.055 24) 100%);
-}
-
-/* The build — visual gallery */
-.case-gallery { padding: 120px 0 80px; background: var(--bone-0); }
-.case-gallery__head {
-  padding: 0 32px;
-  margin: 0 auto 48px;
-  max-width: 1440px;
-}
-.case-gallery__item { margin-bottom: 96px; }
-.case-gallery__item:last-child { margin-bottom: 0; }
-.case-gallery__image-wrap {
-  position: relative;
-  width: 100%;
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 32px;
-}
-.case-gallery__image-wrap .brand-field {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  border: 1px solid var(--bone-200);
-}
-.case-gallery__url {
-  position: absolute;
-  top: 24px;
-  right: 56px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  color: oklch(96% 0.012 60 / 0.55);
-  z-index: 3;
-}
-.case-gallery__caption-row { padding: 0 32px; margin-top: 28px; }
-.case-gallery__caption {
-  font-size: clamp(1.0625rem, 0.95rem + 0.4vw, 1.1875rem);
-  line-height: 1.5;
-  color: var(--bone-500);
-  margin: 0;
-  max-width: 60ch;
-  font-style: italic;
-  font-family: var(--font-display);
-  font-weight: 300;
-  letter-spacing: -0.012em;
-}
-
-/* Per-screen brand-field palettes */
-.brand-field--screen-home {
-  background:
-    radial-gradient(64% 72% at 75% 24%, oklch(60% 0.100 50 / 0.55) 0%, transparent 62%),
-    radial-gradient(85% 100% at 14% 96%, oklch(35% 0.090 24 / 0.5) 0%, transparent 65%),
-    linear-gradient(165deg, oklch(33% 0.085 28) 0%, oklch(20% 0.055 24) 100%);
-}
-.brand-field--screen-booking {
-  background:
-    radial-gradient(60% 68% at 30% 28%, oklch(64% 0.095 55 / 0.55) 0%, transparent 62%),
-    radial-gradient(88% 95% at 84% 90%, oklch(35% 0.085 28 / 0.5) 0%, transparent 65%),
-    linear-gradient(150deg, oklch(33% 0.082 26) 0%, oklch(20% 0.055 24) 100%);
-}
-.brand-field--screen-admin {
-  background:
-    radial-gradient(60% 72% at 50% 28%, oklch(54% 0.090 42 / 0.55) 0%, transparent 62%),
-    radial-gradient(85% 100% at 14% 96%, oklch(32% 0.075 24 / 0.5) 0%, transparent 65%),
-    linear-gradient(180deg, oklch(31% 0.075 28) 0%, oklch(20% 0.052 24) 100%);
-}
-.brand-field--screen-brand {
-  background:
-    radial-gradient(74% 92% at 50% 48%, oklch(57% 0.120 60 / 0.55) 0%, transparent 62%),
-    radial-gradient(85% 100% at 50% 100%, oklch(33% 0.080 24 / 0.5) 0%, transparent 64%),
-    linear-gradient(160deg, oklch(33% 0.090 28) 0%, oklch(20% 0.055 24) 100%);
-}
-
-
-/* The outcome */
-.case-outcome { padding: var(--section-py) 0; background: var(--bone-0); }
-.case-outcome__inner { margin: 0 auto; max-width: 720px; }
-.case-outcome .case-section-title { max-width: 14ch; }
-
-/* The stack */
-.case-stack { padding: 48px 0 96px; background: var(--bone-0); }
-.case-stack__inner {
-  margin: 0 auto;
-  max-width: 720px;
-  padding-top: 32px;
+/* Case studies — sibling entries beneath the hero + meta belt. Append more in lib/work.ts. */
+.case-studies { padding: var(--section-py) 0; background: var(--bone-0); }
+.case-entry { margin: 0 auto; max-width: 720px; padding: 0 32px; }
+.case-entry + .case-entry {
+  margin-top: clamp(64px, 8vw, 112px);
+  padding-top: clamp(64px, 8vw, 112px);
   border-top: 1px solid var(--bone-200);
 }
-.case-stack__label {
-  font-size: 11px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--bone-500);
-  margin: 0 0 20px;
-}
-.case-stack__list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; }
-.case-stack__item {
-  font-family: var(--font-mono);
-  font-size: 14px;
-  letter-spacing: 0.01em;
-  color: var(--ox-900);
-  padding: 12px 0;
-  border-bottom: 1px solid var(--bone-200);
-}
-.case-stack__item:last-child { border-bottom: none; }
-
-/* Case closing */
-.case-closing { padding: 180px 0 160px; background: var(--bone-0); }
-.case-closing__inner { max-width: 880px; }
-.case-closing__title {
-  font-size: clamp(2.5rem, 1.5rem + 3.4vw, 4.5rem);
-  font-weight: 500;
-  letter-spacing: -0.035em;
-  line-height: 0.98;
-  margin: 0;
-  color: var(--ox-900);
-  max-width: 16ch;
-  text-wrap: balance;
-}
+.case-entry__title { max-width: 16ch; }
 
 /* ── Mobile / narrow ───────────────────────────────────────── */
 @media (max-width: 960px) {
   .case-meta__grid { grid-template-columns: 1fr 1fr; gap: 24px; padding: 28px 32px; }
-  .case-approach__grid { grid-template-columns: 1fr; gap: 48px; }
-  .case-approach__sticky { position: relative; top: auto; aspect-ratio: 16 / 10; }
-  .case-challenge,
-  .case-outcome,
-  .case-closing { padding: 80px 0; }
-  .case-approach { padding: 80px 0; }
-  .case-gallery { padding: 80px 0 40px; }
-  .case-gallery__item { margin-bottom: 64px; }
   .case-hero__inner { padding: 96px 32px 64px; }
 }
