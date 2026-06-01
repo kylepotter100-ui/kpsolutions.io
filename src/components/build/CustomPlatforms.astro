@@ -1,6 +1,5 @@
 ---
 import CategoryText from "./CategoryText.astro";
-import PlaceholderSurface from "./PlaceholderSurface.astro";
 ---
 
 <section id="custom-platforms" class="build-cat build-cat--split-right">
@@ -16,10 +15,10 @@ import PlaceholderSurface from "./PlaceholderSurface.astro";
 
     <div class="build-cat__image-col build-cat__image-col--sticky">
       <div class="build-cat__sticky">
-        <PlaceholderSurface
-          variant="platform"
-          label="Custom platform — public-facing application in operational context · pinned while text scrolls"
-        />
+        <div class="brand-field brand-field--platform">
+          <div class="grain-overlay" aria-hidden="true"></div>
+          <div class="brand-field__scrim"></div>
+        </div>
       </div>
     </div>
   </div>

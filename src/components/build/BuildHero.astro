@@ -1,9 +1,10 @@
 ---
-// Compressed, type-only hero (~55vh). Static copy — no reveal gating.
+// Compressed, type-only hero (~55vh). Copy is server-rendered; the `reveal` class
+// only adds a JS scroll-in fade (no-JS / reduced-motion show it immediately).
 ---
 
 <section class="build-hero">
-  <div class="shell build-hero__inner">
+  <div class="reveal shell build-hero__inner">
     <h1 class="build-hero__title">
       Five shapes of <span class="build-hero__italic">bespoke software</span>.
     </h1>

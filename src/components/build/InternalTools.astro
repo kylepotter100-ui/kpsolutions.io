@@ -1,16 +1,12 @@
 ---
-import GrainSurface from "../GrainSurface.astro";
-import PlaceholderLabel from "../PlaceholderLabel.astro";
 import CategoryText from "./CategoryText.astro";
 
-// Full-bleed, text overlay left. The "parallax on scroll" intent is deferred
-// to the imagery phase (it belongs on the real image, not the placeholder surface).
-const grain = "0 0 0 0 0.95  0 0 0 0 0.85  0 0 0 0 0.75  0 0 0 0.4 0";
+// Full-bleed category with the copy overlaid on an abstract brand field (left-aligned).
 ---
 
 <section id="internal-tools" class="build-cat build-cat--bleed">
   <div class="build-cat__bleed-surface build-cat__bleed-surface--internal">
-    <GrainSurface id="bleed-grain-internal" baseFrequency={0.85} seed={29} matrix={grain} class="build-cat__bleed-grain" />
+    <div class="grain-overlay" aria-hidden="true"></div>
     <div class="build-cat__bleed-scrim"></div>
 
     <div class="reveal build-cat__bleed-content">
@@ -22,9 +18,5 @@ const grain = "0 0 0 0 0.95  0 0 0 0 0.85  0 0 0 0 0.75  0 0 0 0.4 0";
         <Fragment slot="title">Internal <span class="build-cat__italic">tools</span>.</Fragment>
       </CategoryText>
     </div>
-
-    <PlaceholderLabel tone="light" position="bottom-right">
-      Internal tool — admin dashboard in back-office setting, slight overhead angle, warm light · parallax on scroll
-    </PlaceholderLabel>
   </div>
 </section>

@@ -107,7 +107,7 @@
 }
 
 /* Category 1 — Custom platforms (40/60 split, image right, sticky) */
-.build-cat--split-right { padding: 160px 0; }
+.build-cat--split-right { padding: var(--section-py) 0; }
 .build-cat__image-col { position: relative; }
 .build-cat__image-col--sticky { min-height: 760px; }
 .build-cat__sticky {
@@ -129,15 +129,6 @@
     radial-gradient(55% 70% at 70% 25%, oklch(62% 0.080 45 / 0.50) 0%, transparent 60%),
     radial-gradient(80% 100% at 15% 95%, oklch(28% 0.080 22 / 0.65) 0%, transparent 65%),
     linear-gradient(160deg, oklch(24% 0.065 28) 0%, oklch(13% 0.035 22) 100%);
-}
-.build-cat__bleed-grain {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.18;
-  mix-blend-mode: overlay;
-  pointer-events: none;
 }
 .build-cat__bleed-scrim {
   position: absolute;
@@ -169,7 +160,7 @@
 .build-cat__bleed-content .build-cat__text { max-width: 38ch; }
 
 /* Category 3 — AI-visible web presence (centred, extra weight) */
-.build-cat--centred { padding: 160px 0; background: var(--bone-50); }
+.build-cat--centred { padding: var(--section-py) 0; background: var(--bone-50); }
 .build-cat__centred-head { text-align: center; margin: 0 auto 56px; }
 .build-cat__editorial-image {
   position: relative;
@@ -195,12 +186,12 @@
 }
 
 /* Category 4 — Integrations & automation (60/40, image left) */
-.build-cat--split-left { padding: 160px 0; }
+.build-cat--split-left { padding: var(--section-py) 0; }
 .build-cat--split-left .build-cat__image-col {
   position: relative;
   min-height: 540px;
 }
-.build-cat--split-left .build-cat__image-col .placeholder-surface {
+.build-cat--split-left .build-cat__image-col .brand-field {
   position: absolute;
   inset: 0;
 }
@@ -229,15 +220,6 @@
     radial-gradient(80% 95% at 18% 90%, oklch(30% 0.090 28 / 0.6) 0%, transparent 65%),
     linear-gradient(160deg, oklch(22% 0.060 28) 0%, oklch(12% 0.035 22) 100%);
 }
-.build-break__grain {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.18;
-  mix-blend-mode: overlay;
-  pointer-events: none;
-}
 .build-break__scrim {
   position: absolute;
   inset: 0;
@@ -246,7 +228,7 @@
 }
 
 /* Build closing */
-.build-closing { padding: 200px 0; background: var(--bone-0); }
+.build-closing { padding: var(--section-py) 0; background: var(--bone-0); }
 .build-closing__inner { max-width: 720px; }
 .build-closing__title {
   font-size: clamp(2.5rem, 1.5rem + 3.4vw, 4.5rem);
@@ -267,21 +249,21 @@
 }
 
 /* Placeholder surface — build variants (base rules live in ui.css) */
-.build-cat__sticky .placeholder-surface { position: absolute; inset: 0; }
-.build-cat__editorial-image .placeholder-surface { position: absolute; inset: 0; }
-.placeholder-surface--platform {
+.build-cat__sticky .brand-field { position: absolute; inset: 0; }
+.build-cat__editorial-image .brand-field { position: absolute; inset: 0; }
+.brand-field--platform {
   background:
     radial-gradient(55% 65% at 70% 25%, oklch(56% 0.110 50 / 0.55) 0%, transparent 60%),
     radial-gradient(85% 95% at 15% 95%, oklch(30% 0.085 22 / 0.60) 0%, transparent 65%),
     linear-gradient(160deg, oklch(26% 0.075 28) 0%, oklch(14% 0.040 22) 100%);
 }
-.placeholder-surface--aeo {
+.brand-field--aeo {
   background:
     radial-gradient(40% 55% at 50% 50%, oklch(52% 0.140 55 / 0.55) 0%, transparent 65%),
     radial-gradient(80% 80% at 50% 100%, oklch(22% 0.060 22 / 0.6) 0%, transparent 60%),
     linear-gradient(180deg, oklch(13% 0.035 22) 0%, oklch(8% 0.020 22) 100%);
 }
-.placeholder-surface--integrations {
+.brand-field--integrations {
   background:
     radial-gradient(60% 80% at 30% 30%, oklch(58% 0.090 60 / 0.45) 0%, transparent 60%),
     radial-gradient(80% 100% at 80% 90%, oklch(28% 0.075 24 / 0.65) 0%, transparent 65%),

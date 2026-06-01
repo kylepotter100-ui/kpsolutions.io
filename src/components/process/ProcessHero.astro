@@ -1,9 +1,5 @@
 ---
-import GrainSurface from "../GrainSurface.astro";
-import PlaceholderLabel from "../PlaceholderLabel.astro";
-
-// 50/50 image-led hero. Static copy (no reveal gating).
-const grain = "0 0 0 0 0.95  0 0 0 0 0.85  0 0 0 0 0.75  0 0 0 0.42 0";
+// 50/50 hero — copy beside an abstract brand field. Static copy (no reveal gating).
 ---
 
 <section class="process-hero" id="top">
@@ -18,12 +14,9 @@ const grain = "0 0 0 0 0.95  0 0 0 0 0.85  0 0 0 0 0.75  0 0 0 0.42 0";
     </div>
 
     <div class="process-hero__image">
-      <div class="placeholder-surface placeholder-surface--process-hero">
-        <GrainSurface id="process-hero-grain" baseFrequency={0.95} seed={103} matrix={grain} class="placeholder-surface__grain" />
-        <div class="placeholder-surface__scrim"></div>
-        <PlaceholderLabel tone="light" position="bottom-left">
-          Process — architectural structure mid-build, scaffolding or structural beams, warm light
-        </PlaceholderLabel>
+      <div class="brand-field brand-field--process-hero">
+        <div class="grain-overlay" aria-hidden="true"></div>
+        <div class="brand-field__scrim"></div>
       </div>
     </div>
   </div>

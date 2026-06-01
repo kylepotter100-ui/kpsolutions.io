@@ -24,4 +24,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-# Sitemap: https://kpsolutions.io/sitemap-index.xml (enable once @astrojs/sitemap is configured)
+Sitemap: https://kpsolutions.io/sitemap-index.xml

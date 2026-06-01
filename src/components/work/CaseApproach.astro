@@ -1,8 +1,4 @@
 ---
-import GrainSurface from "../GrainSurface.astro";
-import PlaceholderLabel from "../PlaceholderLabel.astro";
-
-const grain = "0 0 0 0 0.95  0 0 0 0 0.85  0 0 0 0 0.75  0 0 0 0.4 0";
 ---
 
 <section class="case-approach">
@@ -43,12 +39,9 @@ const grain = "0 0 0 0 0.95  0 0 0 0 0.85  0 0 0 0 0.75  0 0 0 0.4 0";
 
     <div class="case-approach__image">
       <div class="case-approach__sticky">
-        <div class="placeholder-surface placeholder-surface--architecture">
-          <GrainSurface id="case-arch-grain" baseFrequency={0.95} seed={73} matrix={grain} class="placeholder-surface__grain" />
-          <div class="placeholder-surface__scrim"></div>
-          <PlaceholderLabel tone="light" position="bottom-left">
-            System architecture — abstract structural composition, oxblood and bone, no software UI · pinned while text scrolls
-          </PlaceholderLabel>
+        <div class="brand-field brand-field--architecture">
+          <div class="grain-overlay" aria-hidden="true"></div>
+          <div class="brand-field__scrim"></div>
         </div>
       </div>
     </div>
