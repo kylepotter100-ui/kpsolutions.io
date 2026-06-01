@@ -349,9 +349,17 @@ function initWhatWeBuild(): void {
           if (nowActive) {
             const len = el.getTotalLength();
             if (Number.isFinite(len) && len > 0) {
+              // WAAPI: motion's animate() doesn't recognise strokeDashoffset as an animatable
+              // property, so the offset stays at `len` and the stroke renders permanently off
+              // the path (invisible). el.animate() is browser-native, handles SVG presentation
+              // attributes that have CSS mappings, and fill:forwards keeps the final offset
+              // (0) after the animation ends so the stroke stays drawn until the next swap.
               el.style.strokeDasharray = String(len);
               el.style.strokeDashoffset = String(len);
-              animate(el, { strokeDashoffset: 0 }, { duration: 0.6, easing: [0.22, 1, 0.36, 1] });
+              el.animate(
+                { strokeDashoffset: [String(len), "0"] },
+                { duration: 600, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" },
+              );
             }
           }
         });
@@ -489,9 +497,14 @@ function initDebugOverlay(): void {
           const cs = getComputedStyle(poly);
           const opa = cs.opacity;
           const act = poly.classList.contains("is-active") ? "1" : "0";
+          // dasharray / dashoffset — the round-4 smoking gun: if `do` stays at `len` on an
+          // active polyline post-activation, the WAAPI draw-on didn't run and the stroke is
+          // rendering off the path. `do=0` post-activation means the draw-on completed.
+          const da = cs.strokeDasharray;
+          const dof = cs.strokeDashoffset;
           const tag = `T${idx}${edge === "top" ? "t" : "b"}`;
           const lenStr = Number.isFinite(len) ? `${Math.round(len)}` : "NaN";
-          let line = `  ${tag} pts=${ptsN} rect=${px(r.width)}×${px(r.height)} len=${lenStr} opa=${opa} act=${act}`;
+          let line = `  ${tag} pts=${ptsN} rect=${px(r.width)}×${px(r.height)} len=${lenStr} opa=${opa} act=${act} da=${da} do=${dof}`;
           if (act === "1") {
             line += ` stroke=${cs.stroke} sw=${cs.strokeWidth}`;
           }
