@@ -135,6 +135,18 @@ function initWhatWeBuild(): void {
 
   const NAV_CLEAR = 16; // min gap above the centred pin so it never tucks under the nav
 
+  // Desktop stacked-tunnel: cache the decorative SVG + polylines that frame the active
+  // service's name → subs box. Coords are computed once in measure() against the FIXED
+  // stage so the outline never moves while the subs collapse inside. Hidden on mobile via
+  // CSS (display:none); render()'s tunnel block is also gated on !isMobile.
+  const mq = window.matchMedia("(max-width: 768px)");
+  let isMobile = mq.matches;
+  const tunnelSvg = section.querySelector<SVGSVGElement>("[data-wwb-tunnels]");
+  const tunnelEls = tunnelSvg
+    ? Array.from(tunnelSvg.querySelectorAll<SVGPolylineElement>(".wwb__tunnel-line"))
+    : [];
+  let lastActive = -1;
+
   const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
   const eo = (t: number) => 1 - Math.pow(1 - t, 4); // easeOutQuart
 
@@ -159,12 +171,13 @@ function initWhatWeBuild(): void {
     if (!pin) return;
     const pinH = pin.getBoundingClientRect().height;
     const vh = window.innerHeight;
-    const top = window.matchMedia("(max-width: 768px)").matches
+    const top = isMobile
       ? Math.max(NAV_CLEAR, Math.round(vh - pinH))
       : Math.max(NAV_CLEAR, Math.round((vh - pinH) / 2));
     pin.style.top = `${top}px`;
   };
   const measure = () => {
+    isMobile = mq.matches;
     metrics = groups.map((el) => {
       const subs = Array.from(el.querySelectorAll<HTMLElement>("[data-wwb-sub]"));
       subs.forEach((s) => {
@@ -182,13 +195,72 @@ function initWhatWeBuild(): void {
       };
     });
     // Fixed stage = tallest entry-state across all services. A constant stage ⇒ constant pin
-    // height ⇒ the heading never drifts on a swap; the collapsed-state void is filled by the
-    // index numeral rather than reclaimed by resizing.
-    const fixedStage = Math.round(
-      metrics.reduce((mx, m) => Math.max(mx, m.nameH, m.subH.reduce((a, b) => a + b, 0)), 0),
-    );
+    // height ⇒ the heading never drifts on a swap.
+    // Desktop tunnel frame adds PAD breathing room above + below the subs box, so grow the
+    // fixed stage by 2×PAD: content is offset down by PAD (via --wwb-frame-pad on the subs),
+    // leaving PAD below even for the tallest service. Mobile re-hugs the stage per-frame in
+    // render(), so it ignores the extra height.
+    const FRAME_PAD = 14;
+    const useTunnel = !isMobile && !!tunnelSvg && tunnelEls.length > 0;
+    const fixedStage =
+      Math.round(
+        metrics.reduce((mx, m) => Math.max(mx, m.nameH, m.subH.reduce((a, b) => a + b, 0)), 0),
+      ) + (useTunnel ? 2 * FRAME_PAD : 0);
     stage.style.height = `${fixedStage}px`;
     placePin();
+    // Desktop only: compute the tunnel polyline coords from the FIXED stage dimensions.
+    // Each service gets one top + one bottom polyline forming an open-right funnel from
+    // its name (in its CUMULATIVE left-column slot — sum of preceding actual nameH +
+    // gaps, NOT a uniform max-row height, so single-line names don't inherit the slot of
+    // a wrapped name) to the subs box (full right column, Y = 0 .. stageH). colX matches
+    // the CSS 38%/62% grid split, so the bend in the hairline sits exactly on the
+    // column boundary. JS writes --svc-y per article; the desktop CSS reads it to
+    // translateY each name into its slot.
+    if (useTunnel && tunnelSvg) {
+      const stageW = stage.getBoundingClientRect().width;
+      const stageH = fixedStage;
+      const colX = Math.round(stageW * 0.38);
+      const GAP = 32; // tight fixed gap between rows; tune live on preview if needed
+      // PAD does three things, all at the same magnitude as the 2×PAD stage growth above:
+      //  • offsets the whole name stack + the subs content down by PAD (subs via the
+      //    --wwb-frame-pad var below), so the frame's top edge (y=0) sits PAD above the
+      //    content instead of hugging the first sub-header / the Outcome;
+      //  • pulls the column-boundary bend inboard of the subs box (bendX = colX − PAD);
+      //  • brackets each name by ±PAD. Starting the stack at PAD also lifts service 0's top
+      //    bracket from y = −PAD (above the viewBox → clipped → invisible) to y = 0 (on the
+      //    frame edge → visible, matching the right-side top line).
+      const PAD = FRAME_PAD;
+      section.style.setProperty("--wwb-frame-pad", `${PAD}px`);
+      const nameY: number[] = new Array(metrics.length);
+      let acc = PAD;
+      metrics.forEach((m, i) => {
+        nameY[i] = acc;
+        acc += m.nameH + GAP;
+      });
+      groups.forEach((g, i) => g.style.setProperty("--svc-y", `${nameY[i]}px`));
+      tunnelSvg.setAttribute("viewBox", `0 0 ${stageW} ${stageH}`);
+      const bendX = colX - PAD;
+      metrics.forEach((m, i) => {
+        const yTop = nameY[i] - PAD;
+        const yBot = nameY[i] + m.nameH + PAD;
+        const topEl = tunnelEls.find(
+          (el) => el.dataset.tunnelIdx === String(i) && el.dataset.tunnelEdge === "top",
+        );
+        const botEl = tunnelEls.find(
+          (el) => el.dataset.tunnelIdx === String(i) && el.dataset.tunnelEdge === "bot",
+        );
+        if (topEl)
+          topEl.setAttribute("points", `0,${yTop} ${bendX},${yTop} ${bendX},0 ${stageW},0`);
+        if (botEl)
+          botEl.setAttribute(
+            "points",
+            `0,${yBot} ${bendX},${yBot} ${bendX},${stageH} ${stageW},${stageH}`,
+          );
+      });
+      // Force a fresh draw-on the next time `active` changes (covers the case where
+      // measure runs after a service was already active — e.g. fonts.ready re-measure).
+      lastActive = -1;
+    }
   };
 
   // Collapse the earlier subs (keep the LAST one — the Outcome — always full). lp 0→1
@@ -275,9 +347,42 @@ function initWhatWeBuild(): void {
     for (let i = 0; i < N; i++) {
       const m = metrics[i];
       groups[i].classList.toggle("is-active", i === active);
+      // .is-passed marks services scrolled past — drives the dimmed-name state in the
+      // desktop stacked-tunnel layout. Auto-toggles back off on backward scroll.
+      groups[i].classList.toggle("is-passed", i < active);
       // Non-active services reset to fully expanded, so the incoming one cross-fades in
       // already-open (no reload flash); the active one collapses by its own progress.
       if (m && i !== active) applyCollapse(m, 0);
+    }
+
+    // Desktop tunnel swap: on active-index change, fade out the old tunnel + draw on the
+    // new one (stroke-dashoffset: length → 0). The coords are fixed (set in measure), so
+    // this is a CSS class toggle + one animate() call per polyline per swap. Mobile skips.
+    if (active !== lastActive) {
+      lastActive = active;
+      if (!isMobile && tunnelEls.length) {
+        tunnelEls.forEach((el) => {
+          const idx = Number(el.dataset.tunnelIdx);
+          const nowActive = idx === active;
+          el.classList.toggle("is-active", nowActive);
+          if (nowActive) {
+            const len = el.getTotalLength();
+            if (Number.isFinite(len) && len > 0) {
+              // WAAPI: motion's animate() doesn't recognise strokeDashoffset as an animatable
+              // property, so the offset stays at `len` and the stroke renders permanently off
+              // the path (invisible). el.animate() is browser-native, handles SVG presentation
+              // attributes that have CSS mappings, and fill:forwards keeps the final offset
+              // (0) after the animation ends so the stroke stays drawn until the next swap.
+              el.style.strokeDasharray = String(len);
+              el.style.strokeDashoffset = String(len);
+              el.animate(
+                { strokeDashoffset: [String(len), "0"] },
+                { duration: 600, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" },
+              );
+            }
+          }
+        });
+      }
     }
 
     const m = metrics[active];
@@ -385,6 +490,44 @@ function initDebugOverlay(): void {
           // JS wrote "—" but cmH is a real px, the overlay's style.maxHeight read is lying.
           const cmH = getComputedStyle(sub).maxHeight;
           lines.push(`     cmH=${cmH}`);
+        });
+      }
+      // ── Desktop tunnel diagnostics: surface why the hairlines render (or don't). ──
+      // For each polyline (4 services × {top,bot} = 8 lines): the points attribute count
+      // (0 ⇒ JS setAttribute never fired), the polyline's bounding rect (0×0 ⇒ the SVG
+      // sized to zero or coords are off-canvas), getTotalLength (0 ⇒ degenerate
+      // geometry), the .is-active class membership, and the COMPUTED opacity (vs the
+      // CSS toggle). For the active polylines we also surface computed stroke + width
+      // so we can confirm the cascade reached the element. Gated to desktop by checking
+      // computed display:none on the SVG (mobile hides it via CSS).
+      const tsvg = document.querySelector<SVGSVGElement>("[data-wwb-tunnels]");
+      if (tsvg && getComputedStyle(tsvg).display !== "none") {
+        const tlines = Array.from(tsvg.querySelectorAll<SVGPolylineElement>(".wwb__tunnel-line"));
+        const sr = tsvg.getBoundingClientRect();
+        lines.push(`WWB tunnels svg=${px(sr.width)}×${px(sr.height)}`);
+        tlines.forEach((poly) => {
+          const idx = poly.dataset.tunnelIdx ?? "?";
+          const edge = poly.dataset.tunnelEdge ?? "?";
+          const ptsAttr = poly.getAttribute("points") ?? "";
+          const ptsN = ptsAttr.trim() === "" ? 0 : ptsAttr.trim().split(/\s+/).length;
+          const r = poly.getBoundingClientRect();
+          let len = NaN;
+          try { len = poly.getTotalLength(); } catch { /* ignore */ }
+          const cs = getComputedStyle(poly);
+          const opa = cs.opacity;
+          const act = poly.classList.contains("is-active") ? "1" : "0";
+          // dasharray / dashoffset — the round-4 smoking gun: if `do` stays at `len` on an
+          // active polyline post-activation, the WAAPI draw-on didn't run and the stroke is
+          // rendering off the path. `do=0` post-activation means the draw-on completed.
+          const da = cs.strokeDasharray;
+          const dof = cs.strokeDashoffset;
+          const tag = `T${idx}${edge === "top" ? "t" : "b"}`;
+          const lenStr = Number.isFinite(len) ? `${Math.round(len)}` : "NaN";
+          let line = `  ${tag} pts=${ptsN} rect=${px(r.width)}×${px(r.height)} len=${lenStr} opa=${opa} act=${act} da=${da} do=${dof}`;
+          if (act === "1") {
+            line += ` stroke=${cs.stroke} sw=${cs.strokeWidth}`;
+          }
+          lines.push(line);
         });
       }
     }
