@@ -1,31 +1,15 @@
 ---
+import CategoryText from "./CategoryText.astro";
 ---
 
-<section id="aeo" class="build-cat build-cat--centred">
-  <div class="shell">
-    <div class="reveal build-cat__centred-head">
-      <h2 class="build-cat__title build-cat__title--centred">
-        AI-visible web <span class="build-cat__italic">presence</span>.
-      </h2>
-    </div>
-
-    <div class="reveal build-cat__editorial-image">
-      <div class="brand-field brand-field--aeo">
-        <div class="grain-overlay" aria-hidden="true"></div>
-        <div class="brand-field__scrim"></div>
-        <div class="brand-field__mark" aria-hidden="true">KP</div>
-      </div>
-    </div>
-
-    <div class="reveal build-cat__centred-body">
-      <p class="build-cat__centred-desc">
-        For businesses with no site, or whose current site is invisible to
-        ChatGPT, Claude, Perplexity, and Google AI Overviews. Engineered to be
-        cited by AI search engines, not just indexed by traditional ones.
-        Schema.org graphs, llms.txt directive layers, direct-answer markup, and
-        the editorial register that AI engines surface verbatim. Indexed by
-        Google is a side effect, not the goal.
-      </p>
+<section id="aeo" class="build-cat build-cat--text-only">
+  <div class="shell-tight">
+    <div class="reveal">
+      <CategoryText
+        body="For businesses with no site, or whose current site is invisible to ChatGPT, Claude, Perplexity, and Google AI Overviews. Engineered to be cited by AI search engines, not just indexed by traditional ones. Schema.org graphs, llms.txt directive layers, direct-answer markup, and the editorial register that AI engines surface verbatim. Indexed by Google is a side effect, not the goal."
+      >
+        <Fragment slot="title">AI-visible web <span class="build-cat__italic">presence</span>.</Fragment>
+      </CategoryText>
     </div>
   </div>
 </section>

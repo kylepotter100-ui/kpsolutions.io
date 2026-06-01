@@ -2,17 +2,9 @@
 import CategoryText from "./CategoryText.astro";
 ---
 
-<section id="integrations" class="build-cat build-cat--split-left">
-  <div class="shell-wide build-cat__grid build-cat__grid--60-40">
-    <div class="build-cat__image-col">
-      <div class="brand-field brand-field--integrations">
-        <div class="grain-overlay" aria-hidden="true"></div>
-        <div class="brand-field__scrim"></div>
-        <div class="brand-field__mark" aria-hidden="true">KP</div>
-      </div>
-    </div>
-
-    <div class="reveal build-cat__text-col">
+<section id="integrations" class="build-cat build-cat--text-only">
+  <div class="shell-tight">
+    <div class="reveal">
       <CategoryText
         body="Connecting the systems you already run so they behave like one. Webhook plumbing, state reconciliation, and the operator UI to fix things when they drift. ERP ↔ Stripe, CRM ↔ inbox, payment provider ↔ ledger — and the dashboard that tells you when something didn't line up."
         example="A nightly job that reconciles three subscription providers against a single customer ledger and surfaces the diffs in a Slack channel before the morning standup."
