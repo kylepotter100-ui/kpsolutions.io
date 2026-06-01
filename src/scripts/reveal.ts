@@ -159,21 +159,19 @@ function initWhatWeBuild(): void {
   type SvcMetric = { subs: HTMLElement[]; subH: number[]; padB: number[]; nameH: number };
   let metrics: SvcMetric[] = [];
   const pin = section.querySelector<HTMLElement>(".wwb__pin");
-  // Desktop centres the fixed-height pin: the large index numeral fills the void below the
-  // collapsed Outcome, and the modest dead-scroll before the sticky pin releases reads as
-  // intentional. Mobile hides the numeral, so that void reads as an empty gap — bottom-anchor
-  // the pin there instead. A sticky pin at top=T releases after scrolling (H − T − pinH),
-  // while collapse progress hits 1 after span = (H − innerHeight); the handoff is flush iff
-  // those coincide ⇒ T = innerHeight − pinH. So on mobile we set top to that, making
-  // SelectedWork climb up flush exactly as the last Outcome completes. Clamped to NAV_CLEAR so
-  // a pin taller than the viewport still clears the nav.
+  // Bottom-anchor the fixed-height pin on every viewport. A sticky pin at top=T releases
+  // after scrolling (H − T − pinH); collapse progress hits 1 after span = (H − innerHeight).
+  // The handoff is flush iff those coincide ⇒ T = innerHeight − pinH, so the pin releases
+  // exactly as the last Outcome finishes collapsing and SelectedWork climbs up with no
+  // dead-scroll gap. (Desktop previously centred the pin at (vh − pinH)/2, which left
+  // ≈(vh − pinH)/2 of empty bone before SelectedWork — the inter-section gap.) The trade is
+  // that the pinned card's slack now sits above the heading rather than split above/below.
+  // Clamped to NAV_CLEAR so a pin taller than the viewport still clears the nav.
   const placePin = () => {
     if (!pin) return;
     const pinH = pin.getBoundingClientRect().height;
     const vh = window.innerHeight;
-    const top = isMobile
-      ? Math.max(NAV_CLEAR, Math.round(vh - pinH))
-      : Math.max(NAV_CLEAR, Math.round((vh - pinH) / 2));
+    const top = Math.max(NAV_CLEAR, Math.round(vh - pinH));
     pin.style.top = `${top}px`;
   };
   const measure = () => {
