@@ -465,6 +465,39 @@ function initDebugOverlay(): void {
           lines.push(`     cmH=${cmH}`);
         });
       }
+      // ── Desktop tunnel diagnostics: surface why the hairlines render (or don't). ──
+      // For each polyline (4 services × {top,bot} = 8 lines): the points attribute count
+      // (0 ⇒ JS setAttribute never fired), the polyline's bounding rect (0×0 ⇒ the SVG
+      // sized to zero or coords are off-canvas), getTotalLength (0 ⇒ degenerate
+      // geometry), the .is-active class membership, and the COMPUTED opacity (vs the
+      // CSS toggle). For the active polylines we also surface computed stroke + width
+      // so we can confirm the cascade reached the element. Gated to desktop by checking
+      // computed display:none on the SVG (mobile hides it via CSS).
+      const tsvg = document.querySelector<SVGSVGElement>("[data-wwb-tunnels]");
+      if (tsvg && getComputedStyle(tsvg).display !== "none") {
+        const tlines = Array.from(tsvg.querySelectorAll<SVGPolylineElement>(".wwb__tunnel-line"));
+        const sr = tsvg.getBoundingClientRect();
+        lines.push(`WWB tunnels svg=${px(sr.width)}×${px(sr.height)}`);
+        tlines.forEach((poly) => {
+          const idx = poly.dataset.tunnelIdx ?? "?";
+          const edge = poly.dataset.tunnelEdge ?? "?";
+          const ptsAttr = poly.getAttribute("points") ?? "";
+          const ptsN = ptsAttr.trim() === "" ? 0 : ptsAttr.trim().split(/\s+/).length;
+          const r = poly.getBoundingClientRect();
+          let len = NaN;
+          try { len = poly.getTotalLength(); } catch { /* ignore */ }
+          const cs = getComputedStyle(poly);
+          const opa = cs.opacity;
+          const act = poly.classList.contains("is-active") ? "1" : "0";
+          const tag = `T${idx}${edge === "top" ? "t" : "b"}`;
+          const lenStr = Number.isFinite(len) ? `${Math.round(len)}` : "NaN";
+          let line = `  ${tag} pts=${ptsN} rect=${px(r.width)}×${px(r.height)} len=${lenStr} opa=${opa} act=${act}`;
+          if (act === "1") {
+            line += ` stroke=${cs.stroke} sw=${cs.strokeWidth}`;
+          }
+          lines.push(line);
+        });
+      }
     }
     if (panel) {
       const r = panel.getBoundingClientRect();
