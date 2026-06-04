@@ -1,4 +1,5 @@
 import type { APIRoute } from "astro";
+import { env } from "cloudflare:workers";
 import { ORG_EMAIL } from "../../lib/site";
 
 export const prerender = false;
@@ -16,7 +17,7 @@ interface Payload {
   anything?: string;
 }
 
-export const POST: APIRoute = async ({ request, locals }) => {
+export const POST: APIRoute = async ({ request }) => {
   let body: Payload;
   try {
     body = await request.json();
@@ -34,7 +35,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     return json({ error: "Please complete the required fields." }, 422);
   }
 
-  const apiKey = locals.runtime?.env?.RESEND_API_KEY;
+  const apiKey = (env as { RESEND_API_KEY?: string }).RESEND_API_KEY;
   if (!apiKey) {
     console.error("contact: RESEND_API_KEY missing from runtime env");
     return json({ error: "Email service is not configured." }, 500);
