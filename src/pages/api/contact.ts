@@ -35,25 +35,45 @@ export const POST: APIRoute = async ({ request, locals }) => {
   }
 
   const apiKey = locals.runtime?.env?.RESEND_API_KEY;
-  if (!apiKey) return json({ error: "Email service is not configured." }, 500);
+  if (!apiKey) {
+    console.error("contact: RESEND_API_KEY missing from runtime env");
+    return json({ error: "Email service is not configured." }, 500);
+  }
 
   const parts = [`Name: ${name}`];
   if (business) parts.push(`Business: ${business}`);
   parts.push(`Email: ${email}`, "", "Operational problem:", problem);
   if (anything) parts.push("", "Anything else:", anything);
 
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      from: "KP Solutions <noreply@kpsolutions.io>",
-      to: [ORG_EMAIL],
-      reply_to: email,
-      subject: `New enquiry — ${name}${business ? ` · ${business}` : ""}`,
-      text: parts.join("\n"),
-    }),
-  });
+  const from = "KP Solutions <noreply@kpsolutions.io>";
+  const to = ORG_EMAIL;
 
-  if (!res.ok) return json({ error: "Could not send your message." }, 502);
+  let res: Response;
+  try {
+    res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from,
+        to: [to],
+        reply_to: email,
+        subject: `New enquiry — ${name}${business ? ` · ${business}` : ""}`,
+        text: parts.join("\n"),
+      }),
+    });
+  } catch (err) {
+    console.error("contact: resend fetch threw", { from, to, err: String(err) });
+    return json({ error: "Could not send your message." }, 502);
+  }
+
+  const bodyText = await res.text();
+  if (!res.ok) {
+    console.error("contact: resend send failed", { status: res.status, body: bodyText, from, to });
+    return json({ error: "Could not send your message." }, 502);
+  }
+
+  let id: string | undefined;
+  try { id = (JSON.parse(bodyText) as { id?: string }).id; } catch { /* non-JSON success body */ }
+  console.log("contact: resend send ok", { id, to });
   return json({ ok: true });
 };
