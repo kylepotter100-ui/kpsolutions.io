@@ -19,13 +19,29 @@ const orgRef = {
 export function organizationSchema(): JsonLdSchema {
   return {
     "@context": "https://schema.org",
-    "@type": "Organization",
+    "@type": "ProfessionalService",
     "@id": ORG_ID,
     name: ORG_NAME,
     url: SITE_URL,
     description:
       "Custom software for established operators. KP Solutions is a one-person bespoke software studio building software that solves operational problems.",
     email: ORG_EMAIL,
+    address: {
+      "@type": "PostalAddress",
+      addressRegion: "East Midlands",
+      addressCountry: "GB",
+    },
+    areaServed: [
+      { "@type": "AdministrativeArea", name: "East Midlands" },
+      { "@type": "Country", name: "United Kingdom" },
+    ],
+    knowsAbout: [
+      "Custom software development",
+      "Internal tools and operations dashboards",
+      "Systems integration and automation",
+      "Legacy software replacement",
+      "AI-visible web presence (AEO/GEO)",
+    ],
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "sales",
