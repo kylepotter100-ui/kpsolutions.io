@@ -1,14 +1,33 @@
 ---
-// Text-only hero. Copy is server-rendered; `reveal` only adds a JS scroll-in fade.
+import Button from "../Button.astro";
+
+// Oxblood hero matching ServicesHero — hero-bg-* primitives from homepage.css,
+// .hero-word stagger via the existing initHeroOnLoad (data-hero-* hooks).
 ---
 
-<section class="process-hero" id="top">
-  <div class="reveal shell process-hero__inner">
-    <h1 class="process-hero__title">
-      How we <span class="process-hero__italic">build</span>.
+<section id="top" class="process-hero">
+  <div class="hero-bg" aria-hidden="true">
+    <div class="hero-bg-field"></div>
+    <div class="hero-bg-glow"></div>
+    <div class="hero-bg-grain"></div>
+    <div class="hero-bg-scrim"></div>
+  </div>
+
+  <div class="process-hero__content">
+    <p class="process-hero__eyebrow reveal-hero" data-hero-principle>Process</p>
+
+    <h1 class="process-hero__title" data-hero-headline>
+      <span class="hero-word">How</span>
+      <span class="hero-word">we</span>
+      <span class="hero-word"><span class="process-hero__italic">build</span>.</span>
     </h1>
-    <p class="process-hero__sub">
+
+    <p class="process-hero__sub reveal-hero" data-hero-sub>
       Scoped comprehensively. Fixed fee. Code owned by you, from day one.
     </p>
+
+    <div class="process-hero__cta reveal-hero" data-hero-cta>
+      <Button href="/contact" variant="hero-primary" icon="arrow-right">Start a conversation</Button>
+    </div>
   </div>
 </section>
