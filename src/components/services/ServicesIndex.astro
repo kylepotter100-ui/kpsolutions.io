@@ -1,0 +1,25 @@
+---
+// Slim numbered anchor strip — 5 in-page links to the shape sections below.
+// Adds wayfinding between hero/passage and the long body.
+
+const items = [
+  { num: "01", label: "Custom platforms", href: "#custom-platforms" },
+  { num: "02", label: "Internal tools", href: "#internal-tools" },
+  { num: "03", label: "AI-visible presence", href: "#aeo" },
+  { num: "04", label: "Integrations & automation", href: "#integrations" },
+  { num: "05", label: "Legacy replacement", href: "#legacy" },
+];
+---
+
+<nav class="reveal services-index" aria-label="Services index">
+  <div class="services-index__grid">
+    {
+      items.map((it) => (
+        <a href={it.href} class="services-index__link">
+          <span class="services-index__num">{it.num}</span>
+          <span class="services-index__label">{it.label}</span>
+        </a>
+      ))
+    }
+  </div>
+</nav>

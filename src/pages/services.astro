@@ -4,21 +4,26 @@ export const prerender = true;
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import BuildHero from "../components/build/BuildHero.astro";
-import CustomPlatforms from "../components/build/CustomPlatforms.astro";
-import InternalTools from "../components/build/InternalTools.astro";
-import AIVisible from "../components/build/AIVisible.astro";
-import Integrations from "../components/build/Integrations.astro";
-import LegacyReplacement from "../components/build/LegacyReplacement.astro";
-import BuildClosing from "../components/build/BuildClosing.astro";
+import ServicesHero from "../components/services/ServicesHero.astro";
+import ServicesPassage from "../components/services/ServicesPassage.astro";
+import ServicesIndex from "../components/services/ServicesIndex.astro";
+import CustomPlatforms from "../components/services/CustomPlatforms.astro";
+import InternalTools from "../components/services/InternalTools.astro";
+import AIVisible from "../components/services/AIVisible.astro";
+import Integrations from "../components/services/Integrations.astro";
+import LegacyReplacement from "../components/services/LegacyReplacement.astro";
+import ServicesClosing from "../components/services/ServicesClosing.astro";
 import FAQ, { type FaqItem } from "../components/FAQ.astro";
 import { serviceSchema, breadcrumbSchema, faqPageSchema, type JsonLdSchema } from "../lib/schema";
-import "../styles/build.css";
+// homepage.css carries the .hero-bg-* and .pinned* primitives reused by
+// ServicesHero and ServicesPassage; services.css holds the page-specific rules.
+import "../styles/homepage.css";
+import "../styles/services.css";
 
 const SITE = "https://kpsolutions.io";
-const title = "Build — KP Solutions";
+const title = "Services — KP Solutions";
 const description =
-  "Five shapes of bespoke software. Software is the product. The shape it takes depends on what your operation actually needs.";
+  "Five shapes of bespoke software — custom platforms, internal tools, AI-visible web presence, integrations and automation, and phased legacy replacement. Fixed fee, four-week cycle, code owned by you.";
 
 // Drawn from existing site copy (four-week process, ownership, the five shapes,
 // phased legacy replacement, AI-visible web presence) — no invented claims.
@@ -54,28 +59,30 @@ const schemas: JsonLdSchema[] = [
     name: "Bespoke software",
     description:
       "Custom platforms, internal tools, AI-visible web presence, integrations and automation, and phased legacy replacement, built around how your operation actually works.",
-    url: `${SITE}/build`,
+    url: `${SITE}/services`,
     serviceType: "Custom software development",
   }),
   faqPageSchema(faqItems.map((it) => ({ question: it.q, answer: it.a }))),
   breadcrumbSchema([
     { name: "Home", url: `${SITE}/` },
-    { name: "Build", url: `${SITE}/build` },
+    { name: "Services", url: `${SITE}/services` },
   ]),
 ];
 ---
 
 <BaseLayout title={title} description={description} schemas={schemas}>
-  <Header heroMode="light" />
+  <Header heroMode="dark" />
   <main>
-    <BuildHero />
+    <ServicesHero />
+    <ServicesPassage />
+    <ServicesIndex />
     <CustomPlatforms />
     <InternalTools />
     <AIVisible />
     <Integrations />
     <LegacyReplacement />
     <FAQ items={faqItems} />
-    <BuildClosing />
+    <ServicesClosing />
   </main>
   <Footer />
 </BaseLayout>

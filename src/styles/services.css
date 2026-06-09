@@ -1,0 +1,275 @@
+/* ============================================================
+   /services — page-specific surfaces. Reuses .hero-bg-* and
+   .pinned* primitives from homepage.css (imported from
+   services.astro). Class rename: .build-* → .services-*.
+   ============================================================ */
+
+/* ── Services hero (oxblood, matches homepage hero treatment) ── */
+.services-hero {
+  position: relative;
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: oklch(13% 0.035 22);
+  color: var(--bone-0);
+  isolation: isolate;
+}
+.services-hero__content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--section-py) 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  transform-origin: 50% 100%;
+  will-change: transform, opacity;
+}
+.services-hero__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ochre-300);
+  margin: 0;
+}
+.services-hero__title {
+  font-size: clamp(2.5rem, 1.3rem + 5.2vw, 6rem);
+  line-height: 0.96;
+  font-weight: 500;
+  letter-spacing: -0.038em;
+  margin: 0;
+  max-width: 14ch;
+  color: var(--bone-0);
+  text-wrap: balance;
+}
+.services-hero__italic {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: -0.04em;
+}
+.services-hero__sub {
+  font-size: clamp(1.0625rem, 0.85rem + 0.55vw, 1.3125rem);
+  line-height: 1.5;
+  max-width: 54ch;
+  margin: 0;
+  color: oklch(96% 0.014 60 / 0.86);
+  font-weight: 400;
+  text-wrap: pretty;
+}
+
+/* Per-word headline units — matches homepage's .hero-word so the same
+   on-load stagger applies via the existing initHeroOnLoad. */
+.services-hero .hero-word { display: inline-block; transform-origin: 50% 50%; }
+html.js-reveal .services-hero__title[data-hero-headline] .hero-word { opacity: 0.3; }
+html.js-reveal .services-hero .reveal-hero { opacity: 0; transform: translateY(10px); }
+@media (prefers-reduced-motion: reduce) {
+  html.js-reveal .services-hero__title[data-hero-headline] .hero-word,
+  html.js-reveal .services-hero .reveal-hero {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ── Services index — slim numbered anchor strip ────────────── */
+.services-index {
+  background: var(--bone-0);
+  border-bottom: 1px solid var(--bone-200);
+  padding: 28px 0;
+}
+.services-index__grid {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+}
+.services-index__link {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px;
+  text-decoration: none;
+  color: var(--ox-900);
+  border-left: 1px solid var(--bone-200);
+  transition: color 200ms var(--ease-out);
+}
+.services-index__link:first-child { border-left: none; }
+.services-index__num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ochre-700);
+}
+.services-index__label {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  line-height: 1.3;
+}
+.services-index__link:hover { color: var(--ochre-700); }
+.services-index__link:hover .services-index__num { color: var(--ox-900); }
+
+/* ── Service category (the five shapes) ─────────────────────── */
+.services-cat { background: var(--bone-0); }
+.services-cat__inner {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 96px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.services-cat__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ochre-700);
+  margin: 0;
+}
+.services-cat__title {
+  font-size: clamp(2rem, 1.3rem + 2.4vw, 3.25rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin: 0;
+  color: var(--ox-900);
+  max-width: 16ch;
+  text-wrap: balance;
+}
+.services-cat__italic {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: -0.04em;
+}
+.services-cat__body {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--bone-500);
+  margin: 0;
+  max-width: 46ch;
+}
+.services-cat__bullets {
+  list-style: none;
+  padding: 16px 0 0;
+  margin: 4px 0 0;
+  border-top: 1px solid var(--bone-200);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.services-cat__bullet {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--ox-900);
+  letter-spacing: -0.005em;
+}
+.services-cat__bullet-mark {
+  color: var(--ochre-700);
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+.services-cat__example {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ox-900);
+  margin: 8px 0 0;
+  max-width: 46ch;
+  padding-top: 20px;
+  border-top: 1px solid var(--bone-200);
+}
+.services-cat__example-label {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 16px;
+  margin-right: 6px;
+  color: var(--ox-700);
+}
+
+/* Alternating section backgrounds for quiet horizontal rhythm.
+   bone-0 / bone-50 / bone-0 / bone-50 / bone-0 across the five shapes. */
+.services-cat--alt { background: var(--bone-50); }
+
+/* Single hairline between sections — the section's own border-bottom.
+   No border on the last section before FAQ (FAQ has its own top rule). */
+.services-cat { border-bottom: 1px solid var(--bone-200); }
+.services-cat:last-of-type { border-bottom: none; }
+
+/* ── Services closing (richer than the previous build-closing) ── */
+.services-closing {
+  position: relative;
+  padding: var(--section-py) 0;
+  background: var(--ox-900);
+  color: var(--bone-0);
+  overflow: hidden;
+  isolation: isolate;
+}
+.services-closing::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(60% 70% at 18% 18%, oklch(46% 0.090 48 / 0.55) 0%, transparent 60%),
+    radial-gradient(70% 80% at 82% 88%, oklch(28% 0.085 22 / 0.45) 0%, transparent 65%);
+  pointer-events: none;
+}
+.services-closing__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+.services-closing__title {
+  font-size: clamp(2.5rem, 1.5rem + 3.4vw, 4.5rem);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+  margin: 0;
+  color: var(--bone-0);
+  max-width: 14ch;
+  text-wrap: balance;
+}
+.services-closing__italic {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: -0.04em;
+}
+.services-closing__body {
+  font-size: 18px;
+  line-height: 1.55;
+  color: oklch(96% 0.014 60 / 0.84);
+  margin: 32px 0 56px;
+  max-width: 44ch;
+}
+
+/* ── Mobile / narrow ───────────────────────────────────────── */
+@media (max-width: 960px) {
+  .services-hero { min-height: 60vh; }
+  .services-index__grid { grid-template-columns: 1fr 1fr; }
+  .services-index__link:nth-child(odd) { border-left: none; }
+  .services-index__link:nth-child(even) { border-left: 1px solid var(--bone-200); }
+  .services-index__link:nth-child(n+3) { border-top: 1px solid var(--bone-200); }
+  .services-cat__inner { padding: 72px 32px; }
+  .services-closing { padding: 96px 0; }
+}

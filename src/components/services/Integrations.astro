@@ -1,0 +1,14 @@
+---
+import CategoryText from "./CategoryText.astro";
+---
+
+<section id="integrations" class="services-cat services-cat--alt">
+  <CategoryText
+    num="04"
+    body="Connecting the systems you already run so they behave like one. Webhook plumbing, state reconciliation, and the operator UI to fix things when they drift. ERP ↔ Stripe, CRM ↔ inbox, payment provider ↔ ledger — and the dashboard that tells you when something didn't line up."
+    bullets={["Webhook plumbing", "State reconciliation", "Operator UI for drift", "ERP / CRM / payments wiring"]}
+    example="A nightly job that reconciles three subscription providers against a single customer ledger and surfaces the diffs in a Slack channel before the morning standup."
+  >
+    <Fragment slot="title">Integrations &amp; <span class="services-cat__italic">automation</span>.</Fragment>
+  </CategoryText>
+</section>

@@ -5,8 +5,7 @@
 ## Canonical pages
 
 - [Home](https://kpsolutions.io/): Overview of KP Solutions and how the studio works.
-- [What we build](https://kpsolutions.io/build): The five shapes of bespoke software — custom platforms, internal tools, integrations & automation, legacy replacement, and AI-visible web presence.
+- [Services](https://kpsolutions.io/services): The five shapes of bespoke software — custom platforms, internal tools, AI-visible web presence, integrations & automation, and phased legacy replacement.
 - [Work](https://kpsolutions.io/work): Potter Sanctuary — a residency-booking platform with payments, customer accounts, and operator tooling, built and shipped in four weeks.
 - [Process](https://kpsolutions.io/process): The four-week build — brief on Monday, live four Fridays later, fixed fee, code owned by you.
-- [About](https://kpsolutions.io/about): The founder, the positioning, and what the studio does and doesn't take on.
 - [Contact](https://kpsolutions.io/contact): How to start a conversation about a project.

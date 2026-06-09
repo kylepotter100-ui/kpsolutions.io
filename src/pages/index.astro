@@ -27,7 +27,7 @@ const schemas: JsonLdSchema[] = [
     serviceSchema({
       name: `${c.lead} ${c.accent}`,
       description: c.subs[1].body,
-      url: new URL(`/build#${c.id}`, SITE).href,
+      url: new URL(`/services#${c.id}`, SITE).href,
     }),
   ),
 ];

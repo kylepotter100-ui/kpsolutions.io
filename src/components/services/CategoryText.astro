@@ -1,0 +1,37 @@
+---
+// Shared text block for a service category. Numbered ochre eyebrow + a
+// serif-italic title (passed via the `title` slot) + body + capabilities
+// bullets + italic Example line. All five shapes use this same symmetric
+// template; the only per-shape differences are content + the alternating
+// background class on the outer section.
+interface Props {
+  num: string;
+  body: string;
+  bullets: string[];
+  example?: string;
+}
+const { num, body, bullets, example } = Astro.props;
+---
+
+<div class="reveal services-cat__inner">
+  <p class="services-cat__eyebrow">{num} · Service</p>
+  <h2 class="services-cat__title"><slot name="title" /></h2>
+  <p class="services-cat__body">{body}</p>
+  <ul class="services-cat__bullets reveal-stagger">
+    {
+      bullets.map((b) => (
+        <li class="services-cat__bullet">
+          <span class="services-cat__bullet-mark" aria-hidden="true">—</span>
+          <span>{b}</span>
+        </li>
+      ))
+    }
+  </ul>
+  {
+    example && (
+      <p class="services-cat__example">
+        <span class="services-cat__example-label">Example.</span> {example}
+      </p>
+    )
+  }
+</div>
