@@ -2,12 +2,12 @@
 import CategoryText from "./CategoryText.astro";
 ---
 
-<section id="legacy" class="services-cat">
+<section id="legacy" class="services-cat" data-svc-section>
   <CategoryText
     num="05"
+    overline="Move on without the big-bang risk"
     body="Retiring a fragmented SaaS stack or an aging custom system, in pieces, without a sixteen-month replatform. Cut over one workflow at a time. The old system stays live until the new one is honestly better. The first engagement targets the workflow with the worst fit and works outward from there."
-    bullets={["Phased cut-over", "One workflow at a time", "Old system stays live until ready", "Worst-fit workflow first"]}
-    example="Replacing a $4k-a-month subscription with a custom internal tool, then absorbing the next two adjacent workflows in subsequent four-week engagements."
+    words={["Phased cut-over", "One workflow at a time", "Old system stays live", "Worst-fit first", "No sixteen-month replatform"]}
   >
     <Fragment slot="title">Legacy <span class="services-cat__italic">replacement</span>.</Fragment>
   </CategoryText>

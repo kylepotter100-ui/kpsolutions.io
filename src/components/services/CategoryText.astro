@@ -1,37 +1,36 @@
 ---
-// Shared text block for a service category. Numbered ochre eyebrow + a
-// serif-italic title (passed via the `title` slot) + body + capabilities
-// bullets + italic Example line. All five shapes use this same symmetric
-// template; the only per-shape differences are content + the alternating
-// background class on the outer section.
+// Shared text block + kinetic word-cycler for a service category.
+//
+// Layout: two-column grid (~1180px). Left = numbered ochre eyebrow + serif-
+// italic title + plain-language description. Right = overline + a kinetic
+// panel where five examples cycle in place in large display type. All five
+// words are server-rendered (AEO/crawler-safe); the cycler is pure CSS,
+// zero JS, with a reduced-motion fallback that renders the words as a static
+// stacked list.
 interface Props {
   num: string;
+  overline: string;
   body: string;
-  bullets: string[];
-  example?: string;
+  words: string[];
 }
-const { num, body, bullets, example } = Astro.props;
+const { num, overline, body, words } = Astro.props;
 ---
 
-<div class="reveal services-cat__inner">
-  <p class="services-cat__eyebrow">{num} · Service</p>
-  <h2 class="services-cat__title"><slot name="title" /></h2>
-  <p class="services-cat__body">{body}</p>
-  <ul class="services-cat__bullets reveal-stagger">
-    {
-      bullets.map((b) => (
-        <li class="services-cat__bullet">
-          <span class="services-cat__bullet-mark" aria-hidden="true">—</span>
-          <span>{b}</span>
-        </li>
-      ))
-    }
-  </ul>
-  {
-    example && (
-      <p class="services-cat__example">
-        <span class="services-cat__example-label">Example.</span> {example}
-      </p>
-    )
-  }
+<div class="services-cat__inner">
+  <div class="services-cat__text reveal">
+    <p class="services-cat__eyebrow">{num} · Service</p>
+    <h2 class="services-cat__title"><slot name="title" /></h2>
+    <p class="services-cat__body">{body}</p>
+  </div>
+
+  <div class="services-cat__kinetic reveal" aria-hidden="false">
+    <p class="services-cat__overline">{overline}</p>
+    <div class="services-cat__cycler" aria-label="Examples">
+      {
+        words.map((w, i) => (
+          <span class="services-cat__cycler-word" style={`--i:${i}`}>{w}</span>
+        ))
+      }
+    </div>
+  </div>
 </div>
