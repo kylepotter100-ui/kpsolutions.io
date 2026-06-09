@@ -1,0 +1,77 @@
+---
+// Closing CTA band — light cream surface, lime headline accent, two buttons.
+// Replaces the template's waitlist email capture with a direct link to /contact.
+// Server-rendered, zero JS.
+import Button from "../Button.astro";
+---
+
+<section class="ccta" aria-labelledby="ccta-heading">
+  <div class="shell">
+    <div class="ccta__inner reveal">
+      <span class="ccta__eyebrow">Ready when you are</span>
+      <h2 id="ccta-heading" class="ccta__heading">
+        Tell us about the work that <span class="display-italic">doesn't fit</span> the tools you have.
+      </h2>
+      <p class="ccta__lede">
+        Twenty minutes is usually enough to know whether bespoke software is
+        the right call. If it isn't, we'll say so.
+      </p>
+      <div class="ccta__row">
+        <Button href="/contact" variant="lime-primary" icon="arrow-right">Start a conversation</Button>
+        <Button href="/work" variant="lime-secondary">See what we ship</Button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ccta {
+    background: var(--ink-0);
+    color: var(--ink-900);
+    padding: clamp(96px, 10vw, 160px) 0;
+    border-top: 1px solid oklch(0% 0 0 / 0.06);
+  }
+  .ccta__inner {
+    max-width: 880px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .ccta__eyebrow {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--lime-700);
+    font-weight: 500;
+  }
+  .ccta__heading {
+    font-size: clamp(2.25rem, 1.4rem + 3vw, 4rem);
+    font-weight: 500;
+    letter-spacing: -0.034em;
+    line-height: 1;
+    color: var(--ink-900);
+    margin: 0;
+    max-width: 18ch;
+  }
+  .ccta__heading .display-italic {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--lime-700);
+    letter-spacing: -0.025em;
+  }
+  .ccta__lede {
+    font-size: clamp(1.0625rem, 0.95rem + 0.45vw, 1.25rem);
+    line-height: 1.55;
+    color: var(--ink-500);
+    margin: 8px 0 12px;
+    max-width: 48ch;
+  }
+  .ccta__row {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+</style>

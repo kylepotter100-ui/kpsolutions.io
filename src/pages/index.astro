@@ -7,12 +7,17 @@ import Footer from "../components/Footer.astro";
 import Hero from "../components/home/Hero.astro";
 import Marquee from "../components/home/Marquee.astro";
 import PinnedPassage from "../components/home/PinnedPassage.astro";
-import WhoWeWorkWith from "../components/home/WhoWeWorkWith.astro";
-import CapabilityTiles from "../components/home/CapabilityTiles.astro";
-import SelectedWork from "../components/home/SelectedWork.astro";
-import ProcessCallout from "../components/home/ProcessCallout.astro";
-import ClosingCTA from "../components/home/ClosingCTA.astro";
-import { webSiteSchema, serviceSchema, type JsonLdSchema } from "../lib/schema";
+import BentoFeatures from "../components/home/BentoFeatures.astro";
+import Testimonial from "../components/home/Testimonial.astro";
+import HowItWorks from "../components/home/HowItWorks.astro";
+import FAQ from "../components/FAQ.astro";
+import ContactCTA from "../components/home/ContactCTA.astro";
+import {
+  webSiteSchema,
+  serviceSchema,
+  faqPageSchema,
+  type JsonLdSchema,
+} from "../lib/schema";
 import { capabilities } from "../lib/capabilities";
 import "../styles/homepage.css";
 
@@ -20,6 +25,35 @@ const SITE = "https://kpsolutions.io";
 const title = "KP Solutions — Bespoke software for established operators";
 const description =
   "KP Solutions builds bespoke software for established businesses that have outgrown off-the-shelf SaaS. Custom platforms, internal tools, integrations, and AI-visible web presence, scoped comprehensively with code owned by the client from day one.";
+
+// FAQ items for the homepage — answers stay in the DOM and feed the FAQPage
+// schema below for AI-engine / Google quoting.
+const faqItems = [
+  {
+    q: "How long does a bespoke build take?",
+    a: "Most projects ship inside four to eight weeks. We scope comprehensively up front so the build window is fixed before you commit — no estimates, no surprise extensions.",
+  },
+  {
+    q: "How is this priced?",
+    a: "One fixed fee, quoted after the discovery week. You see the scope, the timeline, and the number before any code is written. No retainers, no hourly billing, no scope-creep negotiations halfway through.",
+  },
+  {
+    q: "Do we own the code?",
+    a: "Yes — from day one. The repository, infrastructure, and accounts are yours throughout. No vendor lock-in, no subscription required to keep the software running, no agency holding the keys.",
+  },
+  {
+    q: "What kinds of work are a fit?",
+    a: "Custom platforms, internal tools and operations dashboards, integrations between systems that don't talk to each other, phased replacement of legacy software, and AI-visible web presence. If you're outgrowing off-the-shelf SaaS, that's the bullseye.",
+  },
+  {
+    q: "What if we already have a developer or in-house team?",
+    a: "We work alongside in-house teams regularly — sometimes scoping the work for them to build, sometimes building the hard parts so they can focus on the parts that benefit from internal knowledge. Either is fine.",
+  },
+  {
+    q: "Where are you based?",
+    a: "Loughborough, in the East Midlands. We work operator-to-operator, remotely across the UK; occasional on-site visits during discovery are normal.",
+  },
+];
 
 const schemas: JsonLdSchema[] = [
   webSiteSchema(),
@@ -30,20 +64,21 @@ const schemas: JsonLdSchema[] = [
       url: new URL(`/services#${c.id}`, SITE).href,
     }),
   ),
+  faqPageSchema(faqItems),
 ];
 ---
 
 <BaseLayout title={title} description={description} schemas={schemas}>
-  <Header heroMode="dark" />
+  <Header heroMode="light" />
   <main>
     <Hero />
     <Marquee />
     <PinnedPassage />
-    <WhoWeWorkWith />
-    <CapabilityTiles />
-    <SelectedWork />
-    <ProcessCallout />
-    <ClosingCTA />
+    <BentoFeatures />
+    <Testimonial />
+    <HowItWorks />
+    <FAQ items={faqItems} heading="Questions, answered." />
+    <ContactCTA />
   </main>
   <Footer />
 </BaseLayout>

@@ -1,20 +1,29 @@
 ---
 import Button from "../Button.astro";
+import HillsBackdrop from "./HillsBackdrop.astro";
+import HeroDashboard from "./HeroDashboard.astro";
 
 // Above-the-fold copy is server-rendered (crawler-safe; the headline is the LCP
 // element). The word-by-word + line on-load reveal is a JS enhancement gated by
 // js-reveal — no-JS and reduced-motion show everything immediately.
+//
+// Layered visual: halftone-hills SVG behind, headline + CTA stack, then the
+// dashboard mock at the bottom edge sliding under the fold. Parallax + dashboard
+// scale-on-scroll handled in reveal.ts.
 ---
 
 <section id="top" class="hero">
-  <div class="hero-bg" aria-hidden="true">
-    <div class="hero-bg-field"></div>
-    <div class="hero-bg-glow"></div>
-    <div class="hero-bg-grain"></div>
-    <div class="hero-bg-scrim"></div>
-  </div>
+  <HillsBackdrop />
 
   <div class="hero-content">
+    <a href="/contact" class="hero-pill reveal-hero" data-hero-pill>
+      <span class="hero-pill__dot" aria-hidden="true"></span>
+      Now booking — Q4 2026
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+
     <h1 class="hero-headline" data-hero-headline>
       <span class="hero-word">Software</span>
       <span class="hero-word">that</span>
@@ -25,17 +34,18 @@ import Button from "../Button.astro";
     </h1>
 
     <p class="hero-sub reveal-hero" data-hero-sub>
-      Bespoke platforms, internal tools, and integrations — plus web presence
-      engineered to be found by AI.
-    </p>
-
-    <p class="hero-principle reveal-hero" data-hero-principle>
-      Built around you. 100% owned by you.
+      KP Solutions builds bespoke platforms, internal tools, and integrations —
+      plus web presence engineered to be quoted by AI. Scoped comprehensively,
+      shipped on a fixed timeline, with the source code owned by you from day one.
     </p>
 
     <div class="hero-cta-row reveal-hero" data-hero-cta>
-      <Button href="/contact" variant="hero-primary" icon="arrow-right">Start a conversation</Button>
-      <Button href="/#work" variant="hero-secondary">See our work</Button>
+      <Button href="/contact" variant="lime-primary" icon="arrow-right">Start a conversation</Button>
+      <Button href="/work" variant="lime-secondary-on-dark">See our work</Button>
     </div>
+  </div>
+
+  <div class="hero-dash-wrap" data-hero-dash-wrap>
+    <HeroDashboard />
   </div>
 </section>

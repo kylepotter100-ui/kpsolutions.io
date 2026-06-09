@@ -1,0 +1,283 @@
+---
+// Bento features grid — 4 tiles in a 2x2 layout. Two lime "feature" tiles and
+// two dark ink tiles. Each tile carries a server-rendered heading + body for
+// AEO; the visuals are inline SVG fragments (zero JS). Stagger-reveals on
+// scroll via initBentoReveal() in reveal.ts.
+//
+// Code-tile content lives as strings in the frontmatter and is injected via
+// `set:html`, so the Astro/esbuild parser never sees colons/@ symbols inline
+// (it has been observed to misparse those in template literal positions).
+
+const ownedCodeHTML = [
+  '<span class="c-c"># your repo &middot; your cloud &middot; your call</span>',
+  '<span class="c-k">git</span> remote -v',
+  'origin  <span class="c-s">(your private repo URL)</span>',
+  '',
+  '<span class="c-k">npm</span> run deploy',
+  '<span class="c-c">&rsaquo; deploying to your Cloudflare account</span>',
+  '<span class="c-c">&rsaquo; live at your domain in under a minute</span>',
+  '<span class="c-g">&check; live in 47s</span>',
+].join("\n");
+
+const aiCodeHTML = [
+  '<span class="c-c">// JSON-LD emitted on every route</span>',
+  '{',
+  '  <span class="c-s">&quot;@type&quot;</span>: <span class="c-s">&quot;Organization&quot;</span>,',
+  '  <span class="c-s">&quot;name&quot;</span>: <span class="c-s">&quot;Your Company&quot;</span>,',
+  '  <span class="c-s">&quot;@type&quot;</span>: <span class="c-s">&quot;FAQPage&quot;</span>,',
+  '  <span class="c-s">&quot;mainEntity&quot;</span>: [ <span class="c-c">/* &hellip; */</span> ]',
+  '}',
+  '',
+  '<span class="c-g">&check; indexed by GPTBot, ClaudeBot,</span>',
+  '<span class="c-g">  PerplexityBot, Googlebot</span>',
+].join("\n");
+---
+
+<section class="bento" aria-labelledby="bento-heading">
+  <div class="shell">
+    <header class="bento__head">
+      <span class="bento__eyebrow">Why this works</span>
+      <h2 id="bento-heading" class="bento__heading">
+        Built around how you <span class="display-italic">actually</span> work.
+      </h2>
+      <p class="bento__lede">
+        Four principles that make bespoke software pay back faster than
+        off-the-shelf &mdash; and keep paying back after we hand it over.
+      </p>
+    </header>
+
+    <div class="bento__grid" data-bento-grid>
+      <!-- Tile 1 — lime, large -->
+      <article class="bento-tile bento-tile--lime bento-tile--lg">
+        <div class="bento-tile__body">
+          <h3 class="bento-tile__title">Owned by you from day one.</h3>
+          <p class="bento-tile__copy">
+            Source, infrastructure, and accounts are yours throughout the
+            build. No agency vendor lock-in. No subscription required to keep
+            the lights on.
+          </p>
+        </div>
+        <div class="bento-tile__visual bento-tile__visual--code" aria-hidden="true">
+          <pre class="bento-code" set:html={ownedCodeHTML} />
+        </div>
+      </article>
+
+      <!-- Tile 2 — dark, small -->
+      <article class="bento-tile bento-tile--ink">
+        <div class="bento-tile__body">
+          <h3 class="bento-tile__title">Comprehensive scoping.</h3>
+          <p class="bento-tile__copy">
+            One week of discovery before any code is written. You see every
+            screen, every flow, every integration before you commit.
+          </p>
+        </div>
+        <div class="bento-tile__visual" aria-hidden="true">
+          <svg viewBox="0 0 320 160" class="bento-svg">
+            <defs>
+              <linearGradient id="bento-grid-fade" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="var(--lime-500)" stop-opacity="0.9" />
+                <stop offset="100%" stop-color="var(--lime-500)" stop-opacity="0.1" />
+              </linearGradient>
+            </defs>
+            <g stroke="oklch(100% 0 0 / 0.08)" stroke-width="1">
+              <line x1="0"   y1="0" x2="0"   y2="160" />
+              <line x1="40"  y1="0" x2="40"  y2="160" />
+              <line x1="80"  y1="0" x2="80"  y2="160" />
+              <line x1="120" y1="0" x2="120" y2="160" />
+              <line x1="160" y1="0" x2="160" y2="160" />
+              <line x1="200" y1="0" x2="200" y2="160" />
+              <line x1="240" y1="0" x2="240" y2="160" />
+              <line x1="280" y1="0" x2="280" y2="160" />
+              <line x1="0" y1="0"   x2="320" y2="0"   />
+              <line x1="0" y1="40"  x2="320" y2="40"  />
+              <line x1="0" y1="80"  x2="320" y2="80"  />
+              <line x1="0" y1="120" x2="320" y2="120" />
+              <line x1="0" y1="160" x2="320" y2="160" />
+            </g>
+            <rect x="24" y="22" width="120" height="14" rx="3" fill="oklch(100% 0 0 / 0.15)" />
+            <rect x="24" y="44" width="80" height="8" rx="2" fill="oklch(100% 0 0 / 0.10)" />
+            <rect x="24" y="60" width="92" height="8" rx="2" fill="oklch(100% 0 0 / 0.10)" />
+            <rect x="24" y="76" width="64" height="8" rx="2" fill="oklch(100% 0 0 / 0.10)" />
+            <rect x="24" y="100" width="56" height="22" rx="4" fill="url(#bento-grid-fade)" />
+            <rect x="184" y="22" width="112" height="100" rx="6" fill="oklch(100% 0 0 / 0.06)" stroke="oklch(100% 0 0 / 0.08)" />
+            <rect x="196" y="34" width="60" height="8" rx="2" fill="var(--lime-500)" opacity="0.85" />
+            <rect x="196" y="50" width="88" height="6" rx="2" fill="oklch(100% 0 0 / 0.18)" />
+            <rect x="196" y="62" width="76" height="6" rx="2" fill="oklch(100% 0 0 / 0.18)" />
+            <rect x="196" y="74" width="84" height="6" rx="2" fill="oklch(100% 0 0 / 0.18)" />
+            <rect x="196" y="100" width="48" height="14" rx="3" fill="var(--lime-500)" />
+          </svg>
+        </div>
+      </article>
+
+      <!-- Tile 3 — dark, small -->
+      <article class="bento-tile bento-tile--ink">
+        <div class="bento-tile__body">
+          <h3 class="bento-tile__title">AI-visible by default.</h3>
+          <p class="bento-tile__copy">
+            Server-rendered HTML, structured data on every page, llms.txt at
+            root. So GPT, Claude, Perplexity, and Google can quote you back.
+          </p>
+        </div>
+        <div class="bento-tile__visual bento-tile__visual--code bento-tile__visual--ai" aria-hidden="true">
+          <pre class="bento-code" set:html={aiCodeHTML} />
+        </div>
+      </article>
+
+      <!-- Tile 4 — lime, large -->
+      <article class="bento-tile bento-tile--lime bento-tile--lg">
+        <div class="bento-tile__body">
+          <h3 class="bento-tile__title">Fixed fee, fixed timeline.</h3>
+          <p class="bento-tile__copy">
+            Estimates are an industry trap. We scope comprehensively, then
+            quote one number and one calendar. No mid-project surprises.
+          </p>
+        </div>
+        <div class="bento-tile__visual" aria-hidden="true">
+          <svg viewBox="0 0 320 160" class="bento-svg bento-svg--timeline">
+            <g font-family="var(--font-sans)" font-size="9" fill="var(--ink-900)">
+              <text x="22" y="38" font-weight="500" opacity="0.7">Week 1</text>
+              <text x="22" y="68" font-weight="500" opacity="0.7">Week 2</text>
+              <text x="22" y="98" font-weight="500" opacity="0.7">Week 3</text>
+              <text x="22" y="128" font-weight="500" opacity="0.7">Week 4</text>
+            </g>
+            <rect x="78" y="28" width="170" height="14" rx="3" fill="var(--ink-900)" />
+            <rect x="78" y="58" width="200" height="14" rx="3" fill="var(--ink-900)" />
+            <rect x="78" y="88" width="240" height="14" rx="3" fill="var(--ink-900)" />
+            <rect x="78" y="118" width="120" height="14" rx="3" fill="var(--ink-900)" />
+            <g font-family="var(--font-sans)" font-size="9" fill="var(--lime-200)" font-weight="500">
+              <text x="85" y="38">Listen</text>
+              <text x="85" y="68">Draft</text>
+              <text x="85" y="98">Build</text>
+              <text x="85" y="128">Confirm</text>
+            </g>
+            <line x1="174" y1="14" x2="174" y2="146" stroke="var(--ink-900)" stroke-opacity="0.18" stroke-dasharray="3 3" />
+          </svg>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bento {
+    background: var(--ink-950);
+    color: oklch(96% 0.005 95);
+    padding: clamp(72px, 8vw, 120px) 0;
+  }
+  .bento__head {
+    max-width: 720px;
+    margin: 0 0 clamp(40px, 4vw, 64px);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .bento__eyebrow {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--lime-400);
+    font-weight: 500;
+  }
+  .bento__heading {
+    font-size: clamp(2rem, 1.3rem + 2.4vw, 3.25rem);
+    font-weight: 500;
+    letter-spacing: -0.028em;
+    line-height: 1.05;
+    color: oklch(98% 0.005 95);
+    margin: 0;
+    max-width: 18ch;
+  }
+  .bento__heading .display-italic {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--lime-400);
+    letter-spacing: -0.02em;
+  }
+  .bento__lede {
+    font-size: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
+    line-height: 1.55;
+    color: oklch(78% 0.005 95);
+    max-width: 56ch;
+    margin: 0;
+  }
+
+  .bento__grid {
+    display: grid;
+    grid-template-columns: 1.45fr 1fr;
+    grid-auto-rows: minmax(320px, auto);
+    gap: 18px;
+  }
+
+  .bento-tile {
+    position: relative;
+    border-radius: 18px;
+    padding: 28px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
+    isolation: isolate;
+    border: 1px solid oklch(100% 0 0 / 0.06);
+    transition: transform 240ms var(--ease-out), border-color 240ms var(--ease-out);
+    will-change: transform, opacity;
+  }
+  .bento-tile--lime {
+    background: var(--lime-500);
+    color: var(--ink-900);
+    border-color: oklch(40% 0.18 124 / 0.18);
+  }
+  .bento-tile--ink {
+    background: var(--ink-900);
+    color: oklch(96% 0.005 95);
+  }
+  .bento-tile__body { display: flex; flex-direction: column; gap: 10px; max-width: 36ch; }
+  .bento-tile__title {
+    font-size: clamp(1.375rem, 1.1rem + 0.7vw, 1.75rem);
+    font-weight: 500;
+    letter-spacing: -0.022em;
+    line-height: 1.1;
+    margin: 0;
+  }
+  .bento-tile__copy {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    margin: 0;
+    opacity: 0.85;
+  }
+
+  .bento-tile__visual {
+    position: relative;
+    width: 100%;
+    flex: 1 1 auto;
+    min-height: 160px;
+    display: flex;
+    align-items: stretch;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .bento-tile--ink .bento-tile__visual { background: oklch(13% 0.012 95); border: 1px solid oklch(100% 0 0 / 0.06); }
+  .bento-tile--lime .bento-tile__visual { background: oklch(15% 0.012 95); }
+  .bento-svg { width: 100%; height: 100%; display: block; }
+
+  .bento-tile__visual--code { padding: 18px; }
+  .bento-code {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.6;
+    color: oklch(86% 0.005 95);
+    white-space: pre;
+    overflow: hidden;
+  }
+  .c-c { color: oklch(58% 0.005 95); font-style: italic; }
+  .c-k { color: var(--lime-400); }
+  .c-s { color: oklch(90% 0.08 80); }
+  .c-g { color: var(--lime-400); }
+
+  @media (max-width: 880px) {
+    .bento__grid { grid-template-columns: 1fr; }
+    .bento-tile { padding: 24px; min-height: 320px; }
+  }
+</style>

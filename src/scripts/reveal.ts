@@ -63,21 +63,80 @@ function initHeroOnLoad(): void {
   cascade("[data-hero-cta]", 0.4);
 }
 
-// Hero scroll parallax: background gradient lags (depth), hero content pulls
-// back (scale + fade) as the hero scrolls out. Identity at scroll 0 (LCP-safe).
+// Hero scroll parallax: hills SVG drifts up slowly (depth), hero text pulls
+// back (subtle scale + fade) as the hero scrolls out. Identity at scroll 0
+// (LCP-safe). The dashboard mock scales up on entry (initHeroDashboardScale).
 function initHeroParallax(): void {
   const hero = document.querySelector<HTMLElement>(".hero");
   if (!hero) return;
-  const field = hero.querySelector<HTMLElement>(".hero-bg-field");
+  const hills = hero.querySelector<HTMLElement>(".hills__svg");
   const content = hero.querySelector<HTMLElement>(".hero-content");
   const range = { target: hero, offset: ["start start", "end start"] } as const;
 
-  if (field) {
-    scroll(animate(field, { y: [0, 80] }, { ease: "linear" }), range);
+  if (hills) {
+    scroll(animate(hills, { y: [0, 60], scale: [1, 1.06] }, { ease: "linear" }), range);
   }
   if (content) {
-    scroll(animate(content, { scale: [1, 0.95], opacity: [1, 0.7] }, { ease: "linear" }), range);
+    scroll(animate(content, { scale: [1, 0.96], opacity: [1, 0.5] }, { ease: "linear" }), range);
   }
+}
+
+// Hero dashboard mock: scales up subtly as you scroll into the hero, then
+// pulls back as the hero scrolls out. Constant scale near scroll 0 so the
+// initial frame matches the SSR layout (no CLS/LCP shift).
+function initHeroDashboardScale(): void {
+  const wrap = document.querySelector<HTMLElement>("[data-hero-dash-wrap]");
+  if (!wrap) return;
+  const hero = document.querySelector<HTMLElement>(".hero");
+  if (!hero) return;
+  // Scroll range: from when the hero top is at the viewport top, to when the
+  // hero bottom is at the viewport top (end start). Across that range we lift
+  // the dashboard up slightly so the chassis pulls into frame, then push it
+  // back as the next section enters.
+  const range = { target: hero, offset: ["start start", "end start"] } as const;
+  scroll(animate(wrap, { y: [0, -40], scale: [1, 1.02] }, { ease: "linear" }), range);
+}
+
+// Testimonial card: lime SVG outline runs around the perimeter on an infinite
+// loop. The rect uses pathLength="100", so animating stroke-dashoffset 0→100
+// against a fixed dasharray of 30/70 draws a 30%-length lime "head" travelling
+// around the edge with a 70% gap behind it. Paused on reduce-motion.
+function initTestimonialLoadingBar(): void {
+  const rect = document.querySelector<SVGRectElement>("[data-tm-loader-rect]");
+  if (!rect) return;
+  rect.setAttribute("stroke-dasharray", "30 70");
+  animate(
+    rect,
+    { strokeDashoffset: [100, 0] },
+    { duration: 6, ease: "linear", repeat: Infinity },
+  );
+}
+
+// Bento grid: tiles fade + slide in with a small stagger as the grid enters
+// view. One-shot — uses inView so it doesn't re-fire on scrollback.
+function initBentoReveal(): void {
+  const grid = document.querySelector<HTMLElement>("[data-bento-grid]");
+  if (!grid) return;
+  const tiles = Array.from(grid.querySelectorAll<HTMLElement>(".bento-tile"));
+  if (!tiles.length) return;
+  // Pre-hide before the trigger.
+  tiles.forEach((t) => {
+    t.style.opacity = "0";
+    t.style.transform = "translateY(18px)";
+  });
+  inView(
+    grid,
+    () => {
+      tiles.forEach((t, i) => {
+        animate(
+          t,
+          { opacity: [0, 1], y: [18, 0] },
+          { duration: 0.7, delay: i * 0.08, ease: easeOut },
+        );
+      });
+    },
+    { amount: 0.15 },
+  );
 }
 
 // Pinned passage: phrases activate in reading order as the section is scroll-pinned
@@ -471,8 +530,11 @@ if (reduceMotion) {
 
   safe("initHeroOnLoad", initHeroOnLoad);
   safe("initHeroParallax", initHeroParallax);
+  safe("initHeroDashboardScale", initHeroDashboardScale);
   safe("initPinnedPassage", initPinnedPassage);
   safe("initServicesIndex", initServicesIndex);
   safe("initWhatWeBuild", initWhatWeBuild);
+  safe("initTestimonialLoadingBar", initTestimonialLoadingBar);
+  safe("initBentoReveal", initBentoReveal);
   if (location.search.includes("debug")) safe("initDebugOverlay", initDebugOverlay);
 }

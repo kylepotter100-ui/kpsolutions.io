@@ -1,0 +1,325 @@
+---
+// Hero dashboard mock — pure HTML + inline SVG, zero raster, zero JS.
+// Represents the kind of operations dashboard KP can build: KPI cards on top,
+// a sparkline area chart in the middle, a small table at the bottom. Scaled
+// on scroll by initHeroDashboardScale() in reveal.ts.
+//
+// Sits inside the hero section at the bottom edge so the top half of the
+// chassis is in-frame and the rest extends below the fold — same composition
+// as the template.
+---
+
+<div class="hero-dash" data-hero-dash aria-hidden="true">
+  <div class="hero-dash__chassis">
+    <header class="hero-dash__bar">
+      <div class="hero-dash__chrome">
+        <span class="hero-dash__dot" style="background: var(--lime-500);"></span>
+        <span class="hero-dash__dot" style="background: var(--ink-300);"></span>
+        <span class="hero-dash__dot" style="background: var(--ink-300);"></span>
+      </div>
+      <div class="hero-dash__title">Operations · Last 30 days</div>
+      <div class="hero-dash__nav">
+        <span class="hero-dash__pill is-active">Overview</span>
+        <span class="hero-dash__pill">Revenue</span>
+        <span class="hero-dash__pill">Customers</span>
+      </div>
+    </header>
+
+    <div class="hero-dash__body">
+      <div class="hero-dash__kpis">
+        <div class="hero-kpi">
+          <span class="hero-kpi__label">Total revenue</span>
+          <span class="hero-kpi__value">£42,318</span>
+          <span class="hero-kpi__delta is-up">+12.4%</span>
+        </div>
+        <div class="hero-kpi">
+          <span class="hero-kpi__label">Active customers</span>
+          <span class="hero-kpi__value">1,284</span>
+          <span class="hero-kpi__delta is-up">+3.2%</span>
+        </div>
+        <div class="hero-kpi">
+          <span class="hero-kpi__label">Conversion</span>
+          <span class="hero-kpi__value">4.6%</span>
+          <span class="hero-kpi__delta is-up">+0.8%</span>
+        </div>
+        <div class="hero-kpi">
+          <span class="hero-kpi__label">Churn</span>
+          <span class="hero-kpi__value">1.1%</span>
+          <span class="hero-kpi__delta is-down">−0.3%</span>
+        </div>
+      </div>
+
+      <div class="hero-dash__chart">
+        <div class="hero-dash__chart-head">
+          <span class="hero-dash__chart-title">Revenue over time</span>
+          <span class="hero-dash__chart-legend">
+            <span class="legend-dot" style="background: var(--lime-500);"></span>This period
+            <span class="legend-dot legend-dot--muted"></span>Previous
+          </span>
+        </div>
+        <svg viewBox="0 0 600 180" preserveAspectRatio="none" class="hero-dash__svg">
+          <defs>
+            <linearGradient id="dash-area" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--lime-500)" stop-opacity="0.45" />
+              <stop offset="100%" stop-color="var(--lime-500)" stop-opacity="0" />
+            </linearGradient>
+          </defs>
+          {/* Faint horizontal grid */}
+          <g stroke="rgba(255,255,255,0.06)" stroke-width="1">
+            <line x1="0" y1="40"  x2="600" y2="40" />
+            <line x1="0" y1="80"  x2="600" y2="80" />
+            <line x1="0" y1="120" x2="600" y2="120" />
+          </g>
+          {/* Previous period — dashed grey */}
+          <path
+            d="M 0 130 L 60 124 L 120 132 L 180 118 L 240 122 L 300 110 L 360 116 L 420 104 L 480 110 L 540 96 L 600 100"
+            fill="none"
+            stroke="rgba(255,255,255,0.22)"
+            stroke-width="1.5"
+            stroke-dasharray="4 5"
+          />
+          {/* Current period — area under */}
+          <path
+            d="M 0 120 L 60 108 L 120 116 L 180 92 L 240 100 L 300 78 L 360 84 L 420 60 L 480 72 L 540 44 L 600 52 L 600 180 L 0 180 Z"
+            fill="url(#dash-area)"
+          />
+          {/* Current period — line on top */}
+          <path
+            d="M 0 120 L 60 108 L 120 116 L 180 92 L 240 100 L 300 78 L 360 84 L 420 60 L 480 72 L 540 44 L 600 52"
+            fill="none"
+            stroke="var(--lime-500)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          {/* End marker */}
+          <circle cx="600" cy="52" r="4" fill="var(--lime-500)" />
+        </svg>
+      </div>
+
+      <div class="hero-dash__table">
+        <div class="hero-dash__table-head">
+          <span>Project</span>
+          <span>Owner</span>
+          <span>Stage</span>
+          <span>Value</span>
+        </div>
+        <div class="hero-dash__row">
+          <span>Atlas onboarding flow</span>
+          <span>Studio team</span>
+          <span class="hero-tag hero-tag--active">In build</span>
+          <span>£18,400</span>
+        </div>
+        <div class="hero-dash__row">
+          <span>Margate booking platform</span>
+          <span>Studio team</span>
+          <span class="hero-tag hero-tag--review">Review</span>
+          <span>£12,750</span>
+        </div>
+        <div class="hero-dash__row">
+          <span>Legacy CRM migration</span>
+          <span>Studio team</span>
+          <span class="hero-tag hero-tag--done">Shipped</span>
+          <span>£24,900</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .hero-dash {
+    position: relative;
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    transform-origin: 50% 100%;
+    will-change: transform;
+  }
+  .hero-dash__chassis {
+    background: oklch(13% 0.012 95);
+    border: 1px solid oklch(100% 0 0 / 0.08);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow:
+      0 40px 100px -30px oklch(0% 0 0 / 0.55),
+      0 10px 30px -15px oklch(0% 0 0 / 0.4);
+    color: oklch(96% 0.005 95);
+    font-family: var(--font-sans);
+  }
+  .hero-dash__bar {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 18px;
+    align-items: center;
+    padding: 12px 18px;
+    border-bottom: 1px solid oklch(100% 0 0 / 0.06);
+    background: oklch(9% 0.012 95);
+  }
+  .hero-dash__chrome { display: inline-flex; gap: 6px; }
+  .hero-dash__dot {
+    width: 10px; height: 10px; border-radius: 999px; display: inline-block;
+  }
+  .hero-dash__title {
+    font-size: 12.5px;
+    color: oklch(70% 0.005 95);
+    letter-spacing: -0.005em;
+    text-align: center;
+  }
+  .hero-dash__nav { display: inline-flex; gap: 6px; }
+  .hero-dash__pill {
+    font-size: 11.5px;
+    color: oklch(70% 0.005 95);
+    padding: 5px 10px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+  }
+  .hero-dash__pill.is-active {
+    color: var(--ink-900);
+    background: var(--lime-500);
+    border-color: var(--lime-500);
+    font-weight: 500;
+  }
+
+  .hero-dash__body {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    grid-template-rows: auto 1fr;
+    gap: 16px;
+  }
+  .hero-dash__kpis {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .hero-kpi {
+    background: oklch(15% 0.012 95);
+    border: 1px solid oklch(100% 0 0 / 0.05);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .hero-kpi__label {
+    font-size: 11.5px;
+    color: oklch(64% 0.005 95);
+    letter-spacing: 0.01em;
+  }
+  .hero-kpi__value {
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.018em;
+    font-variant-numeric: tabular-nums;
+    color: oklch(98% 0.005 95);
+  }
+  .hero-kpi__delta {
+    font-size: 11.5px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .hero-kpi__delta.is-up   { color: var(--lime-400); }
+  .hero-kpi__delta.is-down { color: oklch(72% 0.18 30); }
+
+  .hero-dash__chart {
+    background: oklch(15% 0.012 95);
+    border: 1px solid oklch(100% 0 0 / 0.05);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 220px;
+  }
+  .hero-dash__chart-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .hero-dash__chart-title {
+    font-size: 12.5px;
+    color: oklch(80% 0.005 95);
+    font-weight: 500;
+  }
+  .hero-dash__chart-legend {
+    font-size: 11px;
+    color: oklch(64% 0.005 95);
+    display: inline-flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .legend-dot {
+    display: inline-block;
+    width: 8px; height: 8px; border-radius: 999px;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+  .legend-dot--muted {
+    background: transparent;
+    border-bottom: 2px dashed oklch(64% 0.005 95);
+    border-radius: 0;
+    width: 14px; height: 0;
+  }
+  .hero-dash__svg { width: 100%; height: 100%; flex: 1; min-height: 140px; }
+
+  .hero-dash__table {
+    background: oklch(15% 0.012 95);
+    border: 1px solid oklch(100% 0 0 / 0.05);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .hero-dash__table-head,
+  .hero-dash__row {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 0.9fr 0.7fr;
+    gap: 10px;
+    align-items: center;
+    font-size: 12px;
+  }
+  .hero-dash__table-head {
+    font-size: 10.5px;
+    color: oklch(56% 0.005 95);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding-bottom: 6px;
+    border-bottom: 1px solid oklch(100% 0 0 / 0.05);
+  }
+  .hero-dash__row {
+    color: oklch(86% 0.005 95);
+    padding: 7px 0;
+    border-bottom: 1px solid oklch(100% 0 0 / 0.04);
+  }
+  .hero-dash__row:last-child { border-bottom: 0; }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    font-size: 10.5px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 999px;
+    width: max-content;
+  }
+  .hero-tag--active { background: oklch(80% 0.23 124 / 0.15); color: var(--lime-400); }
+  .hero-tag--review { background: oklch(80% 0.16 80 / 0.15); color: oklch(82% 0.14 80); }
+  .hero-tag--done   { background: oklch(100% 0 0 / 0.06); color: oklch(74% 0.005 95); }
+
+  @media (max-width: 768px) {
+    .hero-dash__bar { grid-template-columns: auto 1fr; padding: 10px 14px; }
+    .hero-dash__nav { display: none; }
+    .hero-dash__body {
+      grid-template-columns: 1fr;
+      padding: 14px;
+    }
+    .hero-dash__kpis { grid-template-columns: repeat(2, 1fr); }
+    .hero-dash__table-head,
+    .hero-dash__row { grid-template-columns: 1.4fr 0.8fr 0.6fr; }
+    .hero-dash__table-head > :nth-child(2),
+    .hero-dash__row > :nth-child(2) { display: none; }
+  }
+</style>

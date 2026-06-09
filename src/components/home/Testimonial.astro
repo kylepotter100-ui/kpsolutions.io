@@ -1,0 +1,196 @@
+---
+// Single-client testimonial card on a dark canvas, with a lime SVG outline
+// that runs around the perimeter on a slow infinite loop (driven by
+// initTestimonialLoadingBar in reveal.ts). Server-rendered quote + author
+// block; the loading-bar animation is the only motion.
+//
+// Quote is a working placeholder — replace with the final Potter Sanctuary
+// founder quote once approved.
+---
+
+<section class="tm" aria-labelledby="tm-heading">
+  <div class="shell">
+    <header class="tm__head">
+      <span class="tm__eyebrow">In their words</span>
+      <h2 id="tm-heading" class="tm__heading">
+        The kind of work that <span class="display-italic">earns</span> the next call.
+      </h2>
+    </header>
+
+    <article class="tm-card" data-tm-card>
+      <svg
+        class="tm-card__loader"
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <rect
+          x="0.5" y="0.5" width="99" height="99"
+          rx="3" ry="3"
+          vector-effect="non-scaling-stroke"
+          fill="none"
+          stroke="var(--lime-500)"
+          stroke-width="1.5"
+          pathLength="100"
+          data-tm-loader-rect
+        />
+      </svg>
+
+      <blockquote class="tm-card__quote">
+        <p>
+          KP scoped the whole booking platform comprehensively, built it inside
+          four weeks, and handed over the source on the day they said they
+          would. We run it ourselves now — that was always the point.
+        </p>
+      </blockquote>
+
+      <footer class="tm-card__author">
+        <div class="tm-card__avatar" aria-hidden="true">
+          <span class="tm-card__monogram">PS</span>
+        </div>
+        <div class="tm-card__meta">
+          <span class="tm-card__name">Potter Sanctuary</span>
+          <span class="tm-card__role">Residency booking platform · shipped in four weeks</span>
+        </div>
+        <span class="tm-card__brand" aria-hidden="true">
+          <svg viewBox="0 0 64 16" class="tm-card__brand-mark">
+            <text
+              x="0" y="13"
+              font-family="var(--font-display)"
+              font-style="italic"
+              font-weight="400"
+              font-size="16"
+              fill="oklch(96% 0.005 95)"
+            >Sanctuary</text>
+          </svg>
+        </span>
+      </footer>
+    </article>
+  </div>
+</section>
+
+<style>
+  .tm {
+    background: var(--ink-900);
+    color: oklch(96% 0.005 95);
+    padding: clamp(72px, 8vw, 120px) 0;
+  }
+  .tm__head {
+    margin: 0 0 clamp(36px, 4vw, 56px);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 720px;
+  }
+  .tm__eyebrow {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--lime-400);
+    font-weight: 500;
+  }
+  .tm__heading {
+    font-size: clamp(2rem, 1.3rem + 2.4vw, 3.25rem);
+    font-weight: 500;
+    letter-spacing: -0.028em;
+    line-height: 1.05;
+    color: oklch(98% 0.005 95);
+    margin: 0;
+    max-width: 22ch;
+  }
+  .tm__heading .display-italic {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--lime-400);
+    letter-spacing: -0.02em;
+  }
+
+  .tm-card {
+    position: relative;
+    max-width: 880px;
+    margin: 0 auto;
+    background: var(--ink-950);
+    border: 1px solid oklch(100% 0 0 / 0.06);
+    border-radius: 18px;
+    padding: clamp(40px, 5vw, 64px);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(28px, 3vw, 40px);
+    isolation: isolate;
+  }
+  .tm-card__loader {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    border-radius: 18px;
+    overflow: visible;
+  }
+  .tm-card > :not(.tm-card__loader) { position: relative; z-index: 2; }
+
+  .tm-card__quote {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: clamp(1.25rem, 1rem + 1vw, 1.625rem);
+    line-height: 1.4;
+    letter-spacing: -0.015em;
+    color: oklch(96% 0.005 95);
+    font-weight: 400;
+    max-width: 50ch;
+  }
+  .tm-card__quote p { margin: 0; }
+  .tm-card__quote p::before { content: "“"; color: var(--lime-400); margin-right: 0.15em; }
+  .tm-card__quote p::after  { content: "”"; color: var(--lime-400); margin-left: 0.05em; }
+
+  .tm-card__author {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 18px;
+    align-items: center;
+    padding-top: clamp(20px, 2.4vw, 28px);
+    border-top: 1px solid oklch(100% 0 0 / 0.06);
+  }
+  .tm-card__avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--lime-500), var(--lime-700));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .tm-card__monogram {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 20px;
+    color: var(--ink-900);
+    line-height: 1;
+  }
+  .tm-card__meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .tm-card__name {
+    font-weight: 500;
+    font-size: 0.9375rem;
+    color: oklch(98% 0.005 95);
+    letter-spacing: -0.01em;
+  }
+  .tm-card__role {
+    font-size: 0.8125rem;
+    color: oklch(70% 0.005 95);
+    line-height: 1.4;
+  }
+  .tm-card__brand-mark { width: 96px; height: 22px; opacity: 0.6; }
+
+  @media (max-width: 640px) {
+    .tm-card__author {
+      grid-template-columns: auto 1fr;
+      grid-template-rows: auto auto;
+      row-gap: 12px;
+    }
+    .tm-card__brand { grid-column: 1 / -1; }
+  }
+</style>

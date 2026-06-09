@@ -1,5 +1,4 @@
 ---
-import Icon from "./Icon.astro";
 import { ORG_EMAIL } from "../lib/site";
 
 const navLinks = [
@@ -14,12 +13,20 @@ const navLinks = [
   <div class="inner">
     <div class="top">
       <div>
-        <div class="wordmark">KP Solutions</div>
+        <div class="wordmark">
+          <span class="wordmark__mark" aria-hidden="true"></span>
+          KP Solutions
+        </div>
         <p class="tagline">Bespoke software for how your business actually works.</p>
       </div>
       <div class="contact">
         <a href={`mailto:${ORG_EMAIL}`} class="email">{ORG_EMAIL}</a>
-        <a href="/contact" class="btn btn-inverse cta">Start a conversation <Icon name="arrow-right" size={14} /></a>
+        <a href="/contact" class="cta">
+          Start a conversation
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
       </div>
     </div>
 
@@ -28,7 +35,7 @@ const navLinks = [
     </nav>
 
     <div class="legal">
-      <span>© 2026 KP Solutions</span>
+      <span>© 2026 KP Solutions · Loughborough, UK</span>
       <div class="legal-links">
         <a href="/privacy">Privacy</a>
         <a href="/terms">Terms</a>
@@ -38,14 +45,13 @@ const navLinks = [
 </footer>
 
 <style>
-  /* Shared deep field (also used by the dedicated-page closings) so the closing
-     CTA flows into the footer with no colour seam. */
   footer {
-    background: var(--field-deep);
-    color: var(--bone-0);
+    background: var(--ink-0);
+    color: var(--ink-900);
+    border-top: 1px solid oklch(0% 0 0 / 0.06);
   }
   .inner {
-    max-width: 1280px;
+    max-width: 1180px;
     margin: 0 auto;
     padding: 64px 32px 36px;
   }
@@ -55,24 +61,34 @@ const navLinks = [
     gap: 48px;
     align-items: end;
     padding-bottom: 44px;
-    border-bottom: 1px solid oklch(98.5% 0.008 60 / 0.16);
+    border-bottom: 1px solid oklch(0% 0 0 / 0.06);
   }
   .wordmark {
-    font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
     font-weight: 500;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.028em;
     line-height: 1;
-    color: var(--bone-0);
+    color: var(--ink-900);
+  }
+  .wordmark__mark {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    background: var(--lime-500);
+    box-shadow: inset 0 0 0 1px oklch(40% 0.18 124 / 0.18);
   }
   .tagline {
     font-family: var(--font-display);
     font-style: italic;
-    font-weight: 300;
+    font-weight: 400;
     font-size: clamp(1.05rem, 0.9rem + 0.6vw, 1.375rem);
     letter-spacing: -0.018em;
-    line-height: 1.2;
-    color: oklch(96% 0.012 60 / 0.74);
-    margin: 14px 0 0;
+    line-height: 1.25;
+    color: var(--ink-500);
+    margin: 16px 0 0;
     max-width: 26ch;
   }
   .contact {
@@ -80,41 +96,56 @@ const navLinks = [
     flex-direction: column;
     align-items: flex-start;
     gap: 22px;
-    padding-bottom: 8px;
+    padding-bottom: 4px;
   }
   .email {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 500;
-    color: var(--bone-0);
+    color: var(--ink-900);
     text-decoration: underline;
-    text-decoration-color: oklch(96% 0.012 60 / 0.35);
+    text-decoration-color: var(--lime-500);
     text-underline-offset: 0.3em;
-    text-decoration-thickness: 1px;
+    text-decoration-thickness: 2px;
     display: inline-flex;
     align-items: center;
-    min-height: 44px;
+    min-height: 36px;
   }
-  .cta { padding: 15px 24px; font-size: 14px; }
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.003em;
+    color: var(--ink-900);
+    background: var(--lime-500);
+    text-decoration: none;
+    border: 1px solid var(--lime-500);
+    transition: background 180ms var(--ease-out), border-color 180ms var(--ease-out);
+  }
+  .cta:hover { background: var(--lime-400); border-color: var(--lime-400); }
 
   .links {
     padding: 32px 0;
     display: flex;
     flex-wrap: wrap;
     gap: 14px 40px;
-    border-bottom: 1px solid oklch(98.5% 0.008 60 / 0.16);
+    border-bottom: 1px solid oklch(0% 0 0 / 0.06);
   }
   .links a {
-    font-size: 15px;
+    font-size: 14.5px;
     font-weight: 500;
-    color: var(--bone-0);
+    color: var(--ink-700);
     text-decoration: none;
     letter-spacing: -0.005em;
     transition: color 160ms var(--ease-out);
     display: inline-flex;
     align-items: center;
-    min-height: 44px;
+    min-height: 36px;
   }
-  .links a:hover { color: var(--ochre-300); }
+  .links a:hover { color: var(--lime-700); }
 
   .legal {
     display: flex;
@@ -124,7 +155,7 @@ const navLinks = [
     gap: 24px;
     flex-wrap: wrap;
     font-size: 13px;
-    color: oklch(96% 0.012 60 / 0.72);
+    color: var(--ink-400);
     letter-spacing: -0.003em;
   }
   .legal-links { display: flex; gap: 24px; }
@@ -133,10 +164,12 @@ const navLinks = [
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    min-height: 44px;
+    min-height: 36px;
+    transition: color 160ms var(--ease-out);
   }
+  .legal-links a:hover { color: var(--ink-700); }
 
   @media (max-width: 960px) {
-    .top { grid-template-columns: 1fr; gap: 40px; }
+    .top { grid-template-columns: 1fr; gap: 40px; align-items: start; }
   }
 </style>

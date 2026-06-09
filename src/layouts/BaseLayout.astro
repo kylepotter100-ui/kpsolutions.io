@@ -50,10 +50,10 @@ const jsonLd: JsonLdSchema[] = [organizationSchema(), ...schemas];
     <link rel="canonical" href={canonicalURL} />
 
     {/* Self-hosted fonts — preload the two above-the-fold faces only
-        (hero headline weight + the Boska display italic). @font-face
+        (hero headline weight + the Instrument Serif display italic). @font-face
         lives in src/styles/tokens.css; woff2 files in public/fonts/. */}
-    <link rel="preload" href="/fonts/Switzer-Medium.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/Boska-LightItalic.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/Geist-Medium.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/InstrumentSerif-Italic.woff2" as="font" type="font/woff2" crossorigin />
 
     {/* Open Graph */}
     <meta property="og:type" content={ogType} />

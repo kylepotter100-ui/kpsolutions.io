@@ -113,6 +113,70 @@ html.js-reveal .reveal-stagger.is-in > *:nth-child(6) { transition-delay: 400ms;
   border-color: var(--bone-0);
 }
 
+/* ── Lime variants (site-replication aesthetic) ─────────────── */
+.btn-lime-primary,
+.btn-lime-secondary {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  padding: 16px 26px;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 180ms var(--ease-out), color 180ms var(--ease-out), border-color 180ms var(--ease-out);
+}
+.btn-lime-primary {
+  background: var(--lime-500);
+  color: var(--ink-900);
+  border-color: var(--lime-500);
+}
+.btn-lime-primary:hover {
+  background: var(--lime-400);
+  border-color: var(--lime-400);
+  color: var(--ink-900);
+}
+.btn-lime-secondary {
+  background: transparent;
+  color: var(--ink-900);
+  border-color: oklch(0% 0 0 / 0.18);
+}
+.btn-lime-secondary:hover {
+  background: var(--ink-900);
+  color: var(--ink-0);
+  border-color: var(--ink-900);
+}
+
+/* On a dark canvas (e.g. hero with hills backdrop), the secondary stays
+   readable: text reads bone, hover flips to lime fill. */
+.btn-lime-secondary-on-dark {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  padding: 16px 26px;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--ink-900);
+  border: 1px solid oklch(0% 0 0 / 0.2);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  line-height: 1;
+  transition: background 180ms var(--ease-out), color 180ms var(--ease-out), border-color 180ms var(--ease-out);
+}
+.btn-lime-secondary-on-dark:hover {
+  background: var(--lime-500);
+  border-color: var(--lime-500);
+  color: var(--ink-900);
+}
+
 /* ── Underlined link with arrow ────────────────────────────── */
 .link-arrow {
   font-size: 14px;

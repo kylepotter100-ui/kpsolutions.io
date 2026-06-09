@@ -1,131 +1,113 @@
 /* ============================================================
-   Homepage — page-specific surfaces. Shared primitives (shells,
-   buttons, reveal, link-arrow, brand-field, section-heading)
-   live in ui.css. Ported from designs/styles.css (homepage slice).
+   Homepage — site-replication aesthetic (lime + ink).
+   Shared primitives (shells, buttons, reveal, link-arrow,
+   brand-field, section-heading) still live in ui.css.
    ============================================================ */
 
 /* ── Hero ──────────────────────────────────────────────────── */
 .hero {
   position: relative;
-  min-height: 65vh;
+  min-height: 92vh;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-end;
   overflow: hidden;
-  background: oklch(13% 0.035 22);
-  color: var(--bone-0);
+  background: var(--ink-0);
+  color: var(--ink-900);
   isolation: isolate;
+  padding-top: clamp(96px, 12vh, 140px);
 }
-.hero-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
-.hero-bg-field {
-  position: absolute;
-  inset: 0;
-  /* Oversized so the slow drift never reveals an edge. */
-  background-size: 130% 130%;
-  background-position: 50% 50%;
-  background-image:
-    radial-gradient(95% 70% at 78% 18%, oklch(46% 0.090 48) 0%, transparent 55%),
-    radial-gradient(75% 90% at 12% 96%, oklch(28% 0.085 22) 0%, transparent 60%),
-    radial-gradient(60% 60% at 60% 60%, oklch(22% 0.060 28) 0%, transparent 70%),
-    linear-gradient(180deg, oklch(18% 0.045 26) 0%, oklch(11% 0.030 22) 100%);
-  animation: hero-drift 35s ease-in-out infinite alternate;
-}
-@keyframes hero-drift {
-  from { background-position: 42% 46%; }
-  to { background-position: 58% 54%; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .hero-bg-field { animation: none; background-position: 50% 50%; }
-}
-.hero-bg-glow {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(45% 35% at 82% 12%, oklch(68% 0.110 60 / 0.22) 0%, transparent 70%);
-  mix-blend-mode: screen;
-}
-/* Hero grain "baked" to a single seamless tiled texture (inline SVG data URI,
-   stitchTiles) — rasterized once over a 160px tile and repeated, instead of a
-   full-bleed feTurbulence pass. Same generator/params as the export. */
-.hero-bg-grain {
-  position: absolute;
-  inset: 0;
-  opacity: 0.14;
-  mix-blend-mode: overlay;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22160%22%20height%3D%22160%22%3E%3Cfilter%20id%3D%22g%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%220.9%22%20numOctaves%3D%222%22%20seed%3D%227%22%20stitchTiles%3D%22stitch%22%2F%3E%3CfeColorMatrix%20values%3D%220%200%200%200%200.95%200%200%200%200%200.85%200%200%200%200%200.75%200%200%200%200.45%200%22%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20filter%3D%22url(%23g)%22%2F%3E%3C%2Fsvg%3E");
-  background-repeat: repeat;
-  background-size: 160px 160px;
-}
-.hero-bg-scrim {
-  position: absolute;
-  inset: 0;
-  background:
-    /* top scrim — guarantees nav/logo legibility over a bright video frame */
-    linear-gradient(180deg, oklch(8% 0.020 22 / 0.55) 0%, oklch(8% 0.020 22 / 0.18) 9%, transparent 20%),
-    /* bottom-up scrim for headline + CTA */
-    linear-gradient(180deg, transparent 0%, transparent 45%, oklch(11% 0.030 22 / 0.55) 100%),
-    /* gentle vignette */
-    radial-gradient(110% 75% at 50% 50%, transparent 50%, oklch(8% 0.020 22 / 0.45) 100%);
-  pointer-events: none;
-}
+
 .hero-content {
   position: relative;
   z-index: 2;
   width: 100%;
-  padding: var(--section-py) 32px;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 32px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  max-width: 1280px;
-  transform-origin: 50% 100%;
+  align-items: center;
+  text-align: center;
+  gap: 24px;
   will-change: transform, opacity;
 }
-.hero-headline {
-  font-size: clamp(2.75rem, 1.2rem + 6.8vw, 7.5rem);
-  line-height: 0.94;
+
+.hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 12px;
+  font-size: 12.5px;
   font-weight: 500;
-  letter-spacing: -0.038em;
+  letter-spacing: -0.002em;
+  color: var(--ink-700);
+  background: oklch(100% 0 0 / 0.55);
+  border: 1px solid oklch(0% 0 0 / 0.08);
+  border-radius: 999px;
+  text-decoration: none;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transition: border-color 180ms var(--ease-out), color 180ms var(--ease-out);
+}
+.hero-pill:hover { border-color: var(--lime-500); color: var(--ink-900); }
+.hero-pill__dot {
+  width: 7px; height: 7px; border-radius: 999px;
+  background: var(--lime-500);
+  box-shadow: 0 0 0 3px oklch(80% 0.23 124 / 0.25);
+}
+
+.hero-headline {
+  font-size: clamp(2.75rem, 1.4rem + 6.5vw, 6.75rem);
+  line-height: 0.95;
+  font-weight: 500;
+  letter-spacing: -0.04em;
   margin: 0;
-  max-width: 16ch;
-  color: var(--bone-0);
+  max-width: 14ch;
+  color: var(--ink-900);
   text-wrap: balance;
 }
 .hero-italic {
   font-family: var(--font-display);
   font-style: italic;
-  font-weight: 300;
-  letter-spacing: -0.04em;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--lime-700);
 }
 .hero-sub {
-  font-size: clamp(1.0625rem, 0.85rem + 0.55vw, 1.3125rem);
-  line-height: 1.5;
-  max-width: 56ch;
-  margin: 0;
-  color: oklch(96% 0.014 60 / 0.86);
+  font-size: clamp(1.0625rem, 0.9rem + 0.55vw, 1.25rem);
+  line-height: 1.55;
+  max-width: 58ch;
+  margin: 4px auto 0;
+  color: var(--ink-500);
   font-weight: 400;
   text-wrap: pretty;
 }
-.hero-principle {
-  font-size: clamp(1.0625rem, 0.9rem + 0.45vw, 1.25rem);
-  line-height: 1.5;
-  color: oklch(96% 0.014 60 / 0.92);
-  font-weight: 400;
-  margin: 4px 0;
-  max-width: 52ch;
-}
 .hero-cta-row {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   flex-wrap: wrap;
+  justify-content: center;
   margin-top: 12px;
+}
+
+.hero-dash-wrap {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1180px;
+  margin: clamp(40px, 6vw, 80px) auto 0;
+  padding: 0 32px;
+  /* Slide the dashboard so the bottom third sits below the fold — the rest of
+     the chassis is revealed as you scroll the next section into view. */
+  transform: translateY(8%);
 }
 
 /* Per-word headline units — inline-block so the type-assembly transform applies. */
 .hero-word { display: inline-block; transform-origin: 50% 50%; }
-/* On-load: under js-reveal words start faint (JS sets the random scatter transform
-   inline, then animates to identity — no CSS scatter to flash). Faint-not-hidden
-   keeps the headline readable as the LCP candidate. No-JS shows final; reduced-motion
-   force-shows. */
+.hero-headline .hero-italic { display: inline-block; }
 html.js-reveal .hero-headline[data-hero-headline] .hero-word {
   opacity: 0.3;
 }
@@ -141,75 +123,12 @@ html.js-reveal .reveal-hero {
   }
 }
 
-/* ── Pinned passage (Apple-style manifesto) ────────────────── */
-.pinned {
-  position: relative;
-  height: 120vh;
-  background: var(--bone-50);
-}
-/* The passage is a ~58vh gradient "spotlight" panel, viewport-centred (top:21vh + 58vh +
-   21vh = 100vh) on the flat section, while the taller section scrolls past to drive the
-   phrase highlight. min-height:58vh + flex-centre yields the ~96px framed margin around the
-   text. Mobile / reduced-motion drop the pin (below) and render it content-sized. */
-.pinned-content {
-  position: sticky;
-  top: 21vh;
-  min-height: 58vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: clamp(40px, 5vw, 64px) 32px;
-  background: radial-gradient(80% 70% at 50% 50%, oklch(97% 0.012 55) 0%, var(--bone-0) 75%);
-  border-radius: clamp(20px, 3vw, 32px);
-}
-.pinned-passage {
-  font-family: var(--font-sans);
-  font-weight: 400;
-  font-size: clamp(1.625rem, 1.2rem + 1.9vw, 2.5rem);
-  line-height: 1.4;
-  letter-spacing: -0.018em;
-  max-width: 62ch;
-  padding-inline: clamp(24px, 6vw, 96px);
-  text-align: center;
-  text-wrap: pretty;
-  color: var(--bone-400);
-  margin: 0 auto;
-}
-/* Activating phrases: constant weight (no reflow → CLS-safe); reveal via color
-   + opacity only. Default = activated (no-JS/crawler); js-reveal starts muted. */
-.pinned-passage .activate {
-  font-weight: 600;
-  color: var(--ox-500);
-  opacity: 1;
-  transition: color 400ms var(--ease-out), opacity 400ms var(--ease-out);
-}
-html.js-reveal .pinned-passage .activate { color: var(--bone-400); opacity: 0.5; }
-html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opacity: 1; }
-@media (prefers-reduced-motion: reduce) {
-  html.js-reveal .pinned-passage .activate { color: var(--ox-500); opacity: 1; }
-  /* No pin when motion is reduced: the gradient panel sits content-sized in normal flow,
-     every phrase already active. */
-  .pinned { height: auto; }
-  .pinned-content { position: static; min-height: 0; }
-}
-@media (max-width: 768px) {
-  /* Mobile pins too (same mechanic + pace as desktop): the panel stays a centred ~58vh
-     spotlight; smaller radius/padding so it sits comfortably near full width. */
-  .pinned { height: 120vh; }
-  .pinned-content { padding: clamp(28px, 7vw, 48px) 20px; border-radius: clamp(16px, 4vw, 24px); }
-  .pinned-passage {
-    font-size: clamp(1.25rem, 1.05rem + 1.2vw, 1.625rem);
-    padding-inline: clamp(20px, 8vw, 40px);
-    max-width: 40ch;
-  }
-}
-
-/* ── Marquee strip ─────────────────────────────────────────── */
+/* ── Marquee strip — lime line on near-black ──────────────── */
 .marquee {
-  background: var(--bone-50);
-  border-top: 1px solid var(--bone-200);
-  border-bottom: 1px solid var(--bone-200);
-  height: 80px;
+  background: var(--ink-950);
+  border-top: 1px solid oklch(100% 0 0 / 0.05);
+  border-bottom: 1px solid oklch(100% 0 0 / 0.05);
+  height: 64px;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -218,7 +137,7 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   display: flex;
   flex-wrap: nowrap;
   width: max-content;
-  animation: marquee-scroll 70s linear infinite;
+  animation: marquee-scroll 60s linear infinite;
   will-change: transform;
 }
 .marquee-row {
@@ -236,12 +155,16 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   white-space: nowrap;
   font-family: var(--font-sans);
   font-weight: 500;
-  font-size: clamp(0.9375rem, 0.85rem + 0.3vw, 1.0625rem);
-  letter-spacing: -0.01em;
-  color: var(--ox-700);
+  font-size: clamp(0.875rem, 0.82rem + 0.2vw, 1rem);
+  letter-spacing: -0.005em;
+  color: oklch(78% 0.005 95);
   padding: 0 8px;
 }
-.marquee-star { color: var(--ochre-500); margin: 0 28px; font-size: 0.85em; }
+.marquee-star {
+  color: var(--lime-500);
+  margin: 0 28px;
+  font-size: 0.85em;
+}
 @keyframes marquee-scroll {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
@@ -251,338 +174,72 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
   .marquee-track .marquee-row[aria-hidden="true"] { display: none; }
 }
 
-/* ── Process callout text ──────────────────────────────────── */
-.process-callout__text {
-  font-size: clamp(1.375rem, 1rem + 1.1vw, 1.875rem);
-  font-weight: 500;
-  letter-spacing: -0.022em;
-  line-height: 1.2;
-  color: var(--ox-900);
-  margin: 0;
-  max-width: 24ch;
-}
-.process-callout__muted { color: var(--bone-500); font-weight: 400; }
-/* ── Final CTA — full-bleed conviction moment ──────────────── */
-.closing-cta { padding: var(--section-py) 0; }
-.closing-cta--bright { background: var(--bone-50); color: var(--ox-900); }
-.closing-cta__inner { max-width: 880px; }
-.closing-cta__eyebrow {
-  font-size: 12px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--ochre-700);
-  margin: 0 0 24px;
-}
-.closing-cta__title {
-  font-size: clamp(2.5rem, 1.5rem + 3.4vw, 4.5rem);
-  font-weight: 500;
-  letter-spacing: -0.035em;
-  line-height: 0.98;
-  margin: 0;
-  color: var(--ox-900);
-  max-width: 16ch;
-}
-.closing-cta--bright .closing-cta__title .display-italic { color: var(--ochre-700); }
-.closing-cta__sub {
-  font-size: 18px;
-  line-height: 1.55;
-  color: var(--ox-700);
-  margin: 32px 0 56px;
-  max-width: 42ch;
-}
-
-/* ── Full-width screenshot placeholder ─────────────────────── */
-.screenshot-placeholder {
+/* ── Pinned passage — scroll-fill black-to-white on near-black ── */
+.pinned {
   position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  background: var(--bone-50);
-  border: 1px solid var(--bone-200);
-  box-shadow:
-    0 28px 70px -22px oklch(17% 0.04 22 / 0.20),
-    0 8px 20px -10px oklch(17% 0.04 22 / 0.10);
+  height: 160vh;
+  background: var(--ink-900);
+  color: oklch(98% 0.005 95);
 }
-/* On phones the 16/9 letterbox crushes the tall single-column mobile capture
-   to a tiny strip — give it a large portrait frame so the rolling screenshot
-   fills the screen. */
-@media (max-width: 700px) {
-  .screenshot-placeholder { aspect-ratio: auto; height: 80vh; }
-}
-.screenshot-placeholder__surface {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(55% 65% at 70% 30%, oklch(54% 0.095 50 / 0.45) 0%, transparent 60%),
-    radial-gradient(85% 100% at 15% 95%, oklch(28% 0.085 22 / 0.55) 0%, transparent 65%),
-    linear-gradient(170deg, oklch(26% 0.075 28) 0%, oklch(14% 0.040 22) 100%);
-}
-.screenshot-placeholder__grain {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.5;
-  mix-blend-mode: multiply;
-  pointer-events: none;
-}
-.screenshot-placeholder__url {
-  position: absolute;
-  top: 24px;
-  right: 24px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  color: oklch(96% 0.012 60 / 0.55);
-  z-index: 3;
-}
-
-/* ── "What we build" — content-height centred pinned scrollytelling ── */
-/* Base (no-JS / crawler / mobile / reduced-motion): a static interleaved list —
-   heading + hairline, then each service (name then its three sub-sections) fully
-   expanded in normal flow. The content-height centred pin + collapse choreography
-   is layered only when reveal.ts adds [data-wwb-active] on desktop. */
-.wwb { position: relative; background: var(--bone-50); color: var(--ox-900); }
-.wwb__inner { padding-block: var(--section-py); }
-.wwb__heading { margin: 0 0 clamp(18px, 2vh, 28px); }
-.wwb__rule { height: 1px; background: oklch(22% 0.06 22 / 0.16); margin-bottom: clamp(36px, 5vw, 64px); }
-.wwb-service { margin-bottom: clamp(44px, 6vw, 80px); }
-.wwb-service:last-child { margin-bottom: 0; }
-.wwb-service__name {
-  font-size: clamp(1.6rem, 1.1rem + 1.8vw, 2.4rem);
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  line-height: 1.05;
-  color: var(--ox-900);
-  margin: 0 0 clamp(20px, 2.4vw, 30px);
-}
-.wwb-service__name .display-italic { color: var(--ochre-700); }
-.wwb-sub { margin-bottom: clamp(22px, 2.6vw, 30px); }
-.wwb-sub:last-child { margin-bottom: 0; }
-.wwb-sub__label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: var(--ochre-700);
-  margin: 0 0 9px;
-}
-.wwb-sub__body {
-  margin: 0;
-  font-size: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
-  line-height: 1.5;
-  max-width: 46ch;
-  color: var(--ox-900);
-}
-
-/* JS-on (all widths): a content-height card pinned in a 100vh sticky frame. The H2
-   heading and the service name are top-anchored, so they stay FIXED (no drift). The
-   subs collapse their own height on scroll (JS animates max-height / opacity), so the
-   survivors flow up and the block shrinks from the bottom; the stage height is set in
-   JS to hug the live content. Services overlay (absolute inset:0) and cross-fade. The
-   outer height is forced in JS (pure scroll distance). Mobile stacks the name above the
-   subs (single column); reduced-motion keeps the static list (no js-reveal). */
-/* Compact, content-height pin centred in the viewport. Height hugs the fixed stage and the
-   sticky `top` is set in JS to (viewport − pinHeight)/2, so the card sits centred and the
-   heading holds a constant Y on every service swap (no drift). overflow:hidden clips the
-   index numeral and any collapsing overflow. */
-html.js-reveal .wwb[data-wwb-active] .wwb__pin {
+.pinned-content {
   position: sticky;
-  top: 0; /* JS overrides with the centred offset; this is the no-JS-timing fallback */
-  overflow: hidden;
-  display: block;
-  z-index: 2;
-  background: var(--bone-50);
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(40px, 5vw, 64px) 32px;
 }
-html.js-reveal .wwb[data-wwb-active] .wwb__inner {
-  width: 100%;
-  padding-block: clamp(16px, 3vh, 32px) 0;
-}
-html.js-reveal .wwb[data-wwb-active] .wwb__heading { margin-bottom: clamp(14px, 1.8vh, 20px); }
-html.js-reveal .wwb[data-wwb-active] .wwb__rule { margin-bottom: clamp(26px, 3.6vh, 44px); }
-html.js-reveal .wwb[data-wwb-active] .wwb__stage { position: relative; }
-html.js-reveal .wwb[data-wwb-active] .wwb-service {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: 38% 62%;
-  gap: clamp(28px, 4vw, 64px);
-  align-items: start; /* name + first sub share the top edge; the name stays fixed */
+.pinned-passage {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: clamp(1.625rem, 1.2rem + 2.2vw, 3rem);
+  line-height: 1.25;
+  letter-spacing: -0.024em;
+  max-width: 24ch;
+  text-align: left;
+  text-wrap: balance;
+  color: oklch(98% 0.005 95);
   margin: 0;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 380ms cubic-bezier(0.22, 1, 0.36, 1);
 }
-html.js-reveal .wwb[data-wwb-active] .wwb-service.is-active {
-  opacity: 1;
-  pointer-events: auto;
+/* Default + no-JS + reduced-motion: every activatable phrase reads lime
+   (already activated). Crawler-safe; nothing fades in. */
+.pinned-passage .activate {
+  color: var(--lime-400);
+  font-weight: 500;
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  transition: color 280ms var(--ease-out);
 }
-html.js-reveal .wwb[data-wwb-active] .wwb-service__name { margin: 0; }
-/* Optical alignment: the big service name (line-height 1.05) and the tiny uppercase first
-   label start their boxes at the same top, but the cap-heights differ. A small calibrated
-   nudge pulls the first label up to the name's cap-height. Exposed as a var for one-line
-   tuning; disabled on mobile where the name stacks above the subs (no cap-height race). */
-html.js-reveal .wwb[data-wwb-active] .wwb-service > [data-wwb-sub]:first-child .wwb-sub__label {
-  margin-top: var(--wwb-label-nudge, -2px);
+/* JS-on: spans render in muted ink-700 until scroll progress activates them.
+   `--fill` is set per-span by initPinnedPassageFill in reveal.ts; the activated
+   class is also toggled so the muted state has a CSS-only fallback. */
+html.js-reveal .pinned-passage .activate {
+  color: oklch(38% 0.005 95);
+  transition: color 320ms var(--ease-out);
 }
-/* Each sub owns its spacing via padding-bottom (so it collapses with the box, not a
-   leftover margin); JS animates max-height + opacity to 0. Last sub (Outcome) has no
-   trailing space, so the collapsed block hugs it. */
-html.js-reveal .wwb[data-wwb-active] .wwb-sub {
-  margin: 0;
-  padding-bottom: clamp(20px, 2.4vw, 28px);
-  overflow: hidden;
-  will-change: max-height, opacity;
-}
-html.js-reveal .wwb[data-wwb-active] .wwb-sub:last-child { padding-bottom: 0; }
-html.js-reveal .wwb[data-wwb-active] .wwb-sub__body { max-width: 54ch; }
-@media (max-width: 768px) {
-  /* Phone: the name can't sit beside the subs — stack it on top, single column. */
-  html.js-reveal .wwb[data-wwb-active] .wwb-service {
-    grid-template-columns: 1fr;
-    gap: clamp(8px, 3vw, 18px);
-    --wwb-label-nudge: 0px; /* name stacks above the subs — no cap-height race */
-    /* Single column ⇒ two implicit rows (name, subs). Without this, align-content falls
-       back to `stretch`, which splits the fixed stage's surplus height across both rows —
-       so as the subs collapse the name row inflates and pushes the subs DOWN (sinking /
-       centring). Packing the rows to the top keeps the subs top-anchored, so survivors
-       rise and the Outcome hugs the top, matching desktop's single-row behaviour. */
-    align-content: start;
-  }
-  html.js-reveal .wwb[data-wwb-active] .wwb-sub__body { max-width: none; }
-}
-
-/* ── Desktop: the service names accumulate down the left column (passed dim, active full).
-   Strictly additive — the right-column collapse mechanic, pin, pace, and handoff are
-   untouched. ── */
-@media (min-width: 769px) {
-  /* Move the crossfade off the article (so names can persist) onto the subs only. */
-  html.js-reveal .wwb[data-wwb-active] .wwb-service { opacity: 1; transition: none; }
-  html.js-reveal .wwb[data-wwb-active] .wwb-service:not(.is-active) { pointer-events: none; }
-  html.js-reveal .wwb[data-wwb-active] .wwb-subs {
-    opacity: 0;
-    transition: opacity 380ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  html.js-reveal .wwb[data-wwb-active] .wwb-service.is-active .wwb-subs { opacity: 1; }
-
-  /* Names sit permanently in their stack slot via translateY (paint-only transform —
-     doesn't affect the grid layout, so the subs in column 2 stay top-anchored to the
-     stage top). Opacity drives the upcoming → passed → active state. --svc-y is set per
-     article by reveal.ts at measure-time as the cumulative sum of preceding actual nameH
-     + gaps, so single-line names don't inherit a wrapped name's slot height. */
-  html.js-reveal .wwb[data-wwb-active] .wwb-service__name {
-    opacity: 0;
-    transform: translateY(var(--svc-y, 0));
-    transition: opacity 380ms cubic-bezier(0.22, 1, 0.36, 1);
-    --wwb-label-nudge: 0; /* names no longer share a row with the first sub label */
-  }
-  html.js-reveal .wwb[data-wwb-active] .wwb-service.is-passed .wwb-service__name { opacity: 0.4; }
-  html.js-reveal .wwb[data-wwb-active] .wwb-service.is-active .wwb-service__name { opacity: 1; }
-}
-
-/* ── Process callout — dark inverted moment ────────────────── */
-.process-callout {
-  border-top: 1px solid var(--bone-200);
-  border-bottom: 1px solid var(--bone-200);
-}
-.process-callout--dark {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  background: oklch(13% 0.025 22);
-  border-color: oklch(96% 0.012 60 / 0.12);
-}
-/* Animated oxblood gradient layer — same recipe + drift as the hero. */
-.process-callout__field {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background-size: 130% 130%;
-  background-position: 50% 50%;
-  background-image:
-    radial-gradient(95% 70% at 78% 18%, oklch(46% 0.090 48) 0%, transparent 55%),
-    radial-gradient(75% 90% at 12% 96%, oklch(28% 0.085 22) 0%, transparent 60%),
-    radial-gradient(60% 60% at 60% 60%, oklch(22% 0.060 28) 0%, transparent 70%),
-    linear-gradient(180deg, oklch(18% 0.045 26) 0%, oklch(11% 0.030 22) 100%);
-  animation: hero-drift 35s ease-in-out infinite alternate;
+html.js-reveal .pinned-passage .activate.is-active {
+  color: var(--lime-400);
 }
 @media (prefers-reduced-motion: reduce) {
-  .process-callout__field { animation: none; background-position: 50% 50%; }
+  html.js-reveal .pinned-passage .activate {
+    color: var(--lime-400);
+  }
+  .pinned { height: auto; }
+  .pinned-content { position: static; height: auto; min-height: 60vh; }
 }
-.process-callout--dark .process-callout__text { color: var(--bone-0); }
-.process-callout--dark .process-callout__muted { color: oklch(96% 0.012 60 / 0.6); }
-.process-callout--dark .link-arrow { color: var(--bone-0); }
-.process-callout--dark .link-arrow:hover { color: var(--ochre-300); }
-
-/* ── Who we work with — light cards on a dark section ──────── */
-.who { background: var(--ox-900); color: var(--bone-0); padding: var(--section-py) 0; }
-.who__heading { color: var(--bone-0); margin-bottom: clamp(32px, 4vw, 52px); }
-.who-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.who-card {
-  position: relative;
-  background: var(--bone-0);
-  border: 1px solid oklch(96% 0.012 60 / 0.10);
-  padding: 48px;
-  overflow: hidden;
-  transition: border-color 200ms var(--ease-out), transform 200ms var(--ease-out);
-  will-change: transform;
+@media (max-width: 768px) {
+  .pinned { height: 140vh; }
+  .pinned-passage {
+    font-size: clamp(1.375rem, 1.1rem + 1.4vw, 1.875rem);
+    max-width: 18ch;
+  }
 }
-.who-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(120% 120% at 100% 0%, oklch(72% 0.145 72 / 0.10) 0%, transparent 60%);
-  opacity: 0;
-  transition: opacity 200ms var(--ease-out);
-  pointer-events: none;
-}
-.who-card:hover { border-color: var(--ochre-500); transform: translateY(-2px); }
-.who-card:hover::before { opacity: 1; }
-.who-card__title {
-  position: relative;
-  font-family: var(--font-sans);
-  font-weight: 600;
-  font-size: 1.5rem;
-  letter-spacing: -0.018em;
-  color: var(--ox-900);
-  margin: 0 0 14px;
-}
-.who-card__desc {
-  position: relative;
-  font-size: clamp(1rem, 0.94rem + 0.2vw, 1.0625rem);
-  line-height: 1.55;
-  color: var(--ox-700);
-  margin: 0;
-  max-width: 42ch;
-}
-@media (prefers-reduced-motion: reduce) { .who-card:hover { transform: none; } }
-
-/* ── Selected work — title link ────────────────────────────── */
-.work-title-link {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 12px;
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 300;
-  font-size: clamp(2rem, 1.2rem + 2.4vw, 3rem);
-  letter-spacing: -0.028em;
-  line-height: 1.05;
-  color: var(--ox-900);
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  padding-bottom: 4px;
-  transition: border-color 180ms var(--ease-out), color 180ms var(--ease-out);
-}
-.work-title-link:hover { color: var(--ox-700); border-bottom-color: var(--ochre-700); }
-.work-title-link svg { align-self: center; }
 
 /* ── Mobile / narrow ───────────────────────────────────────── */
 @media (max-width: 960px) {
-  .hero-content { padding: var(--section-py-tight) 32px; gap: 28px; }
-  .hero-cta-row { flex-direction: column; align-items: flex-start; gap: 14px; }
-  .who-grid { grid-template-columns: 1fr; }
-  .who-card { padding: 32px; }
+  .hero { min-height: auto; padding-top: clamp(72px, 14vh, 112px); }
+  .hero-content { gap: 20px; }
+  .hero-cta-row { gap: 10px; }
+  .hero-dash-wrap { transform: translateY(4%); margin-top: 40px; padding: 0 20px; }
 }

@@ -36,38 +36,38 @@ const { items, heading = "Common questions." } = Astro.props;
 
 <style>
   .faq {
-    padding: 120px 0;
-    background: var(--bone-0);
-    border-top: 1px solid var(--bone-200);
+    padding: clamp(72px, 8vw, 120px) 0;
+    background: var(--ink-0);
+    border-top: 1px solid oklch(0% 0 0 / 0.06);
   }
   .faq__heading {
     font-size: clamp(2rem, 1.3rem + 2.4vw, 3.25rem);
     font-weight: 500;
     letter-spacing: -0.028em;
-    line-height: 1.02;
-    color: var(--ox-900);
+    line-height: 1.05;
+    color: var(--ink-900);
     margin: 0 0 48px;
     max-width: 18ch;
   }
-  .faq__list { border-top: 1px solid var(--bone-200); }
-  .faq__item { border-bottom: 1px solid var(--bone-200); }
+  .faq__list { border-top: 1px solid oklch(0% 0 0 / 0.08); }
+  .faq__item { border-bottom: 1px solid oklch(0% 0 0 / 0.08); }
 
   .faq__q {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 24px;
-    padding: 28px 0;
+    padding: 26px 0;
     cursor: pointer;
     list-style: none;
-    font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+    font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
     font-weight: 500;
     letter-spacing: -0.018em;
-    color: var(--ox-900);
+    color: var(--ink-900);
     transition: color 160ms var(--ease-out);
   }
   .faq__q::-webkit-details-marker { display: none; }
-  .faq__q:hover { color: var(--ox-700); }
+  .faq__q:hover { color: var(--lime-700); }
 
   /* plus → minus toggle */
   .faq__icon { position: relative; width: 16px; height: 16px; flex-shrink: 0; }
@@ -84,9 +84,9 @@ const { items, heading = "Common questions." } = Astro.props;
 
   .faq__a { padding: 0 0 28px; max-width: 62ch; }
   .faq__a p {
-    font-size: 17px;
+    font-size: 16px;
     line-height: 1.6;
-    color: var(--bone-500);
+    color: var(--ink-500);
     margin: 0;
     max-width: none;
   }

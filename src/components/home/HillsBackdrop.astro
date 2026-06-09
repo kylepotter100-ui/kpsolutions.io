@@ -1,0 +1,98 @@
+---
+// Halftone-hills backdrop — pure inline SVG. Two layered lime hills on a cream
+// canvas with a position-modulated dot pattern that thickens toward the bottom
+// (the visual signature of the site-replication aesthetic). Zero raster, zero
+// JS, sharp at any DPR. Sits behind the hero content with pointer-events off.
+//
+// Layers (back → front):
+//   1. cream background (set on the SVG itself)
+//   2. lime gradient halo behind the hills
+//   3. far hill (rounded mound, lighter lime)
+//   4. dot pattern overlaid on the far hill via clip-path
+//   5. near hill (a second mound forward + offset, darker lime)
+//   6. dot pattern overlaid on the near hill via clip-path
+//   7. top scrim that fades the cream into the page header
+---
+
+<div class="hills" aria-hidden="true">
+  <svg
+    class="hills__svg"
+    viewBox="0 0 1600 900"
+    preserveAspectRatio="xMidYMid slice"
+    role="presentation"
+  >
+    <defs>
+      {/* Dot grid — small filled circles, repeats 24×24 px. The hills fill is
+          tinted lime/ink and the dots are dark ink, so where the dots overlap
+          a hill the dot reads as a halftone screen. */}
+      <pattern id="hills-dots" width="14" height="14" patternUnits="userSpaceOnUse">
+        <circle cx="3.5" cy="3.5" r="1.4" fill="currentColor" />
+      </pattern>
+
+      {/* Vertical gradient mask: dots dense at the bottom of each hill, fade
+          to nothing at the crest. Applied per-hill via the use element's mask. */}
+      <linearGradient id="hill-fade" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#000" stop-opacity="0" />
+        <stop offset="40%" stop-color="#000" stop-opacity="0.35" />
+        <stop offset="100%" stop-color="#000" stop-opacity="0.95" />
+      </linearGradient>
+      <mask id="far-hill-mask">
+        <rect x="0" y="0" width="1600" height="900" fill="url(#hill-fade)" />
+      </mask>
+      <mask id="near-hill-mask">
+        <rect x="0" y="0" width="1600" height="900" fill="url(#hill-fade)" />
+      </mask>
+
+      {/* Hill shapes — wide soft curves. Far hill peaks higher; near hill is
+          shorter, in front, and offset right so the silhouettes overlap. */}
+      <path
+        id="far-hill"
+        d="M -200 720 C 240 360, 700 320, 1000 480 S 1500 720, 1900 540 L 1900 1000 L -200 1000 Z"
+      />
+      <path
+        id="near-hill"
+        d="M -200 820 C 320 600, 800 560, 1200 720 S 1700 820, 1900 740 L 1900 1000 L -200 1000 Z"
+      />
+
+      {/* Soft lime halo behind the silhouettes — pushes the top of the hills
+          toward the lime accent without making the cream sky lime. */}
+      <radialGradient id="lime-halo" cx="50%" cy="80%" r="70%">
+        <stop offset="0%" stop-color="var(--lime-300)" stop-opacity="0.65" />
+        <stop offset="55%" stop-color="var(--lime-200)" stop-opacity="0.3" />
+        <stop offset="100%" stop-color="var(--ink-0)" stop-opacity="0" />
+      </radialGradient>
+    </defs>
+
+    {/* Cream sky */}
+    <rect width="1600" height="900" fill="var(--ink-0)" />
+    {/* Lime halo */}
+    <rect width="1600" height="900" fill="url(#lime-halo)" />
+
+    {/* Far hill */}
+    <use href="#far-hill" fill="var(--lime-400)" />
+    <g style="color: var(--ink-900);" mask="url(#far-hill-mask)">
+      <use href="#far-hill" fill="url(#hills-dots)" />
+    </g>
+
+    {/* Near hill (darker, in front) */}
+    <use href="#near-hill" fill="var(--lime-600)" />
+    <g style="color: var(--ink-900);" mask="url(#near-hill-mask)">
+      <use href="#near-hill" fill="url(#hills-dots)" />
+    </g>
+  </svg>
+</div>
+
+<style>
+  .hills {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .hills__svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+</style>

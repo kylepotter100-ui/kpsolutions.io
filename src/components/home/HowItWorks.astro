@@ -1,0 +1,184 @@
+---
+// 3-step vertical timeline. Template-fidelity structure with KP language.
+// Each step is a server-rendered article with a numbered lime dot, a
+// connecting hairline, a heading, and body copy. Scroll-reveals via the
+// existing .reveal class (one-shot inView trigger in reveal.ts).
+
+const steps = [
+  {
+    n: "01",
+    label: "Listen",
+    title: "We start by understanding the work.",
+    body: "A scoping week before any code is written. We sit with the people who'll actually use the thing, map the current process end-to-end, and surface the constraints that don't show up in a brief.",
+  },
+  {
+    n: "02",
+    label: "Draft and build",
+    title: "You see it before you commit.",
+    body: "Every screen, every flow, every integration is drawn and confirmed before the build week. Then we ship — one fixed fee, one fixed calendar, no scope-creep negotiations halfway through.",
+  },
+  {
+    n: "03",
+    label: "Confirm and own",
+    title: "We hand over the keys.",
+    body: "Source code, infrastructure, accounts — yours. We document what we built, train your team, and stay on call for the launch window. After that, you decide whether to keep us around.",
+  },
+];
+---
+
+<section class="hiw" aria-labelledby="hiw-heading">
+  <div class="shell">
+    <header class="hiw__head reveal">
+      <span class="hiw__eyebrow">How it works</span>
+      <h2 id="hiw-heading" class="hiw__heading">
+        Three phases. Four weeks. <span class="display-italic">One number.</span>
+      </h2>
+      <p class="hiw__lede">
+        We've stripped the process down to the parts that actually move the
+        work forward. No discovery deck theatre, no retainer drift.
+      </p>
+    </header>
+
+    <ol class="hiw__list">
+      {steps.map((s) => (
+        <li class="hiw__step reveal">
+          <div class="hiw__rail" aria-hidden="true">
+            <div class="hiw__dot">{s.n}</div>
+            <div class="hiw__line"></div>
+          </div>
+          <div class="hiw__body">
+            <span class="hiw__label">{s.label}</span>
+            <h3 class="hiw__title">{s.title}</h3>
+            <p class="hiw__copy">{s.body}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .hiw {
+    background: var(--ink-0);
+    color: var(--ink-900);
+    padding: clamp(72px, 8vw, 120px) 0;
+  }
+  .hiw__head {
+    max-width: 720px;
+    margin: 0 0 clamp(48px, 5vw, 72px);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .hiw__eyebrow {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--lime-700);
+    font-weight: 500;
+  }
+  .hiw__heading {
+    font-size: clamp(2rem, 1.3rem + 2.4vw, 3.25rem);
+    font-weight: 500;
+    letter-spacing: -0.028em;
+    line-height: 1.05;
+    color: var(--ink-900);
+    margin: 0;
+    max-width: 22ch;
+  }
+  .hiw__heading .display-italic {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--lime-700);
+    letter-spacing: -0.02em;
+  }
+  .hiw__lede {
+    font-size: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
+    line-height: 1.55;
+    color: var(--ink-500);
+    max-width: 56ch;
+    margin: 0;
+  }
+
+  .hiw__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 840px;
+  }
+  .hiw__step {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: clamp(20px, 3vw, 36px);
+    padding: clamp(32px, 4vw, 48px) 0;
+  }
+  .hiw__step:first-child { padding-top: 0; }
+  .hiw__step:last-child  { padding-bottom: 0; }
+  .hiw__step:last-child .hiw__line { display: none; }
+
+  .hiw__rail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+  .hiw__dot {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    background: var(--lime-500);
+    color: var(--ink-900);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    border: 1px solid oklch(40% 0.18 124 / 0.18);
+  }
+  .hiw__line {
+    flex: 1 1 auto;
+    width: 1px;
+    background: linear-gradient(180deg, var(--lime-500) 0%, oklch(80% 0.23 124 / 0.18) 100%);
+    margin-top: 12px;
+    min-height: 32px;
+  }
+
+  .hiw__body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 4px;
+  }
+  .hiw__label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--lime-700);
+    font-weight: 500;
+  }
+  .hiw__title {
+    font-size: clamp(1.375rem, 1.1rem + 0.8vw, 1.875rem);
+    font-weight: 500;
+    letter-spacing: -0.024em;
+    line-height: 1.15;
+    color: var(--ink-900);
+    margin: 0;
+    max-width: 22ch;
+  }
+  .hiw__copy {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--ink-500);
+    margin: 0;
+    max-width: 56ch;
+  }
+
+  @media (max-width: 640px) {
+    .hiw__step { grid-template-columns: 40px 1fr; gap: 18px; }
+    .hiw__dot { width: 36px; height: 36px; font-size: 11px; }
+  }
+</style>
