@@ -17,18 +17,18 @@ import "../styles/process.css";
 const SITE = "https://kpsolutions.io";
 const title = "Process — KP Solutions";
 const description =
-  "The Four Week Build. Brief on Monday. Live four Fridays later. Fixed fee. Code owned by you.";
+  "How we build — discovery, design, build, and launch. Scoped comprehensively, fixed fee, code owned by you, with a ninety-day post-launch guarantee.";
 
-// Drawn from existing process copy (the four weeks, what's included, cost,
+// Drawn from existing process copy (the four phases, what's included, cost,
 // why-it-works) — no invented claims.
 const faqItems: FaqItem[] = [
   {
-    q: "What happens in the first week?",
-    a: "Discovery and architecture. A ninety-minute call with no slides, the brief written in your words and signed off, the data model drafted on paper, and a fixed-fee proposal within forty-eight hours.",
+    q: "What happens first?",
+    a: "Discovery and architecture. A 30-minute call to see if we can help, then the brief written in your words and signed off, the data model drafted on paper, and a fixed-fee proposal within forty-eight hours.",
   },
   {
     q: "When do I see something real?",
-    a: "By day three of week two a live staging URL goes up, and you watch the build as it happens. Real screens, not wireframes.",
+    a: "Early on. A live staging URL goes up so you watch the build as it happens — real screens, not wireframes.",
   },
   {
     q: "What do I get at handover?",
@@ -36,11 +36,11 @@ const faqItems: FaqItem[] = [
   },
   {
     q: "How is it priced?",
-    a: "Every engagement is a fixed fee, scoped in week one and agreed before week two begins. No retainers, no monthly invoices, no scope-creep clauses.",
+    a: "Every engagement is a fixed fee, scoped up front and agreed before any build work begins. No retainers, no monthly invoices, no scope-creep clauses.",
   },
   {
-    q: "Why four weeks?",
-    a: "The constraint is the point. It rules out the discovery phase that produces nothing and the replatform that ships eighteen months late, and it forces scope to be set in week one and respected throughout.",
+    q: "Why a fixed scope?",
+    a: "A tight, fixed scope is the constraint that makes the rest possible. It rules out the discovery phase that produces nothing and the replatform that ships eighteen months late, and it keeps scope set up front and respected throughout.",
   },
   {
     q: "Who actually does the work?",
@@ -50,9 +50,9 @@ const faqItems: FaqItem[] = [
 
 const schemas: JsonLdSchema[] = [
   serviceSchema({
-    name: "The Four Week Build",
+    name: "How we build",
     description:
-      "A fixed four-week build cycle: discovery and architecture, design, build, then launch and handover. Fixed fee, code owned by you, with a ninety-day post-launch guarantee.",
+      "Four phases — discovery and architecture, design, build, then launch and handover. Scoped comprehensively, fixed fee, code owned by you, with a ninety-day post-launch guarantee.",
     url: `${SITE}/process`,
     serviceType: "Custom software development",
   }),
