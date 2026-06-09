@@ -304,6 +304,12 @@ html.js-reveal .pinned-passage .activate.is-active { color: var(--ox-500); opaci
     0 28px 70px -22px oklch(17% 0.04 22 / 0.20),
     0 8px 20px -10px oklch(17% 0.04 22 / 0.10);
 }
+/* On phones the 16/9 letterbox crushes the tall single-column mobile capture
+   to a tiny strip — give it a large portrait frame so the rolling screenshot
+   fills the screen. */
+@media (max-width: 700px) {
+  .screenshot-placeholder { aspect-ratio: auto; height: 80vh; }
+}
 .screenshot-placeholder__surface {
   position: absolute;
   inset: 0;
