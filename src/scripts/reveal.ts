@@ -104,6 +104,38 @@ function initPinnedPassage(): void {
   );
 }
 
+// /services index strip — scroll-spy. Observes each [data-svc-section] in
+// the page and toggles `.is-active` on the matching `a[data-svc-index]`
+// link, so the index numeral lifts and a top accent rule draws in as you
+// scroll the corresponding section into view. Class-toggle only — no
+// motion, so reduced-motion is unaffected.
+function initServicesIndex(): void {
+  const links = Array.from(
+    document.querySelectorAll<HTMLElement>("a[data-svc-index]"),
+  );
+  if (!links.length) return;
+  const linkById = new Map(links.map((a) => [a.dataset.svcIndex ?? "", a]));
+
+  const setActive = (id: string) => {
+    for (const link of links) {
+      link.classList.toggle("is-active", (link.dataset.svcIndex ?? "") === id);
+    }
+  };
+
+  inView(
+    "[data-svc-section]",
+    (target) => {
+      const el =
+        target instanceof Element
+          ? target
+          : (target as IntersectionObserverEntry).target;
+      const id = (el as HTMLElement).id;
+      if (id && linkById.has(id)) setActive(id);
+    },
+    { amount: 0.4 },
+  );
+}
+
 // "What we build" — pinned scroll-collapse. Runs on BOTH desktop and mobile (one
 // shared clock, so the pace matches). Each service shows its three subs (Challenge /
 // Offer / Outcome) at rest; as the service scrolls, the earlier subs collapse their
@@ -440,6 +472,7 @@ if (reduceMotion) {
   safe("initHeroOnLoad", initHeroOnLoad);
   safe("initHeroParallax", initHeroParallax);
   safe("initPinnedPassage", initPinnedPassage);
+  safe("initServicesIndex", initServicesIndex);
   safe("initWhatWeBuild", initWhatWeBuild);
   if (location.search.includes("debug")) safe("initDebugOverlay", initDebugOverlay);
 }

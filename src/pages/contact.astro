@@ -6,7 +6,6 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import ContactHero from "../components/contact/ContactHero.astro";
 import ContactMain from "../components/contact/ContactMain.astro";
-import ContactNext from "../components/contact/ContactNext.astro";
 import ContactNote from "../components/contact/ContactNote.astro";
 import { breadcrumbSchema, type JsonLdSchema } from "../lib/schema";
 import "../styles/contact.css";
@@ -14,7 +13,7 @@ import "../styles/contact.css";
 const SITE = "https://kpsolutions.io";
 const title = "Start a conversation — KP Solutions";
 const description =
-  "A 90-minute call to understand what you're working with. No slides, no discovery deck. A written proposal within 48 hours.";
+  "A 30-minute call to see if we can help. No slides, no discovery deck. A written proposal within 48 hours.";
 
 const schemas: JsonLdSchema[] = [
   breadcrumbSchema([
@@ -29,8 +28,11 @@ const schemas: JsonLdSchema[] = [
   <main>
     <ContactHero />
     <ContactMain />
-    <ContactNext />
     <ContactNote />
   </main>
   <Footer />
 </BaseLayout>
+
+<script>
+  import "../scripts/reveal.ts";
+</script>

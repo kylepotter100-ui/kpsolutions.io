@@ -1,0 +1,26 @@
+---
+// Bordered Phase 01–04 strip, mirroring ServicesIndex. data-svc-index hooks
+// reuse the shared initServicesIndex scroll-spy (toggles .is-active on the
+// link whose phase section is in view).
+const items = [
+  { id: "discovery", num: "01", label: "Discovery & Architecture" },
+  { id: "design", num: "02", label: "Design" },
+  { id: "build", num: "03", label: "Build" },
+  { id: "launch", num: "04", label: "Launch & Handover" },
+];
+---
+
+<nav class="reveal process-index" aria-label="Build phases">
+  <div class="process-index__frame">
+    <div class="process-index__grid">
+      {
+        items.map((it) => (
+          <a href={`#${it.id}`} data-svc-index={it.id} class="process-index__link">
+            <span class="process-index__num">{it.num}</span>
+            <span class="process-index__label">{it.label}</span>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</nav>

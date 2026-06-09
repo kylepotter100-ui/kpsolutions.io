@@ -16,13 +16,13 @@ const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
 function validate(vals: Values): Errors {
   const e: Errors = {};
-  if (!vals.name.trim()) e.name = "Please tell me what to call you.";
+  if (!vals.name.trim()) e.name = "Please tell us what to call you.";
   if (!vals.email.trim()) {
-    e.email = "I need an email address to reply.";
+    e.email = "We need an email address to reply.";
   } else if (!EMAIL_RE.test(vals.email.trim())) {
     e.email = "That doesn't look like a valid email.";
   }
-  if (!vals.problem.trim()) e.problem = "Tell me what you're working with — even a sentence.";
+  if (!vals.problem.trim()) e.problem = "Tell us what you're working with — even a sentence.";
   return e;
 }
 
@@ -160,8 +160,8 @@ export default function ContactForm() {
           Brief <span className="contact-italic">received</span>.
         </h2>
         <p className="contact-form__success-body">
-          I'll be in touch within 48 hours — Monday to Thursday, GMT. If your situation needs
-          anything sooner, the direct email is {ORG_EMAIL}.
+          We'll be in touch within 48 hours, Monday to Sunday — a message sent on Friday will be
+          answered by Monday. If your situation needs anything sooner, the direct email is {ORG_EMAIL}.
         </p>
       </div>
     );
@@ -185,13 +185,13 @@ export default function ContactForm() {
       />
       <ContactField
         id="problem" label="What's the operational problem?" required textarea rows={5}
-        hint="Tell me what's broken, who's affected, and what you've already tried."
+        hint="Tell us what's broken, who's affected, and what you've already tried."
         value={values.problem} error={touched.problem && errors.problem}
         onValue={setField("problem")} onBlur={blurField("problem")}
       />
       <ContactField
         id="anything" label="Anything else?" textarea rows={3}
-        hint="Optional — context, constraints, anything you'd want me to know before the call."
+        hint="Optional — context, constraints, anything you'd want us to know before the call."
         value={values.anything} onValue={setField("anything")} onBlur={blurField("anything")}
       />
 
@@ -200,7 +200,7 @@ export default function ContactForm() {
           {submitting ? "Sending…" : "Send brief"}
           {!submitting && <Icon name="arrow-right" size={14} />}
         </button>
-        <span className="contact-form__small-note">I'll reply within 48 hours, Mon–Thu, GMT.</span>
+        <span className="contact-form__small-note">We reply within 48 hours, Monday to Sunday — a Friday message lands by Monday.</span>
       </div>
       {submitError && <p className="contact-form__error" role="alert">{submitError}</p>}
     </form>

@@ -1,15 +1,9 @@
 ---
 import ContactForm from "./ContactForm.tsx";
-import ContactAside from "./ContactAside.astro";
 ---
 
 <section class="contact-main">
-  <div class="shell-wide contact-main__grid">
-    <div class="contact-main__form-col">
-      <ContactForm client:load />
-    </div>
-    <div class="contact-main__aside-col">
-      <ContactAside />
-    </div>
+  <div class="shell">
+    <ContactForm client:load />
   </div>
 </section>

@@ -1,25 +1,31 @@
 ---
+// One build phase, mirroring the Services two-column kinetic layout. Left:
+// Phase 0N eyebrow + serif-italic name + description. Right: a kinetic cycler
+// rotating the phase's outcomes in large display type (pure CSS; reduced-motion
+// renders them as a static checklist). `data-svc-section` + the id let the
+// shared initServicesIndex scroll-spy light the matching phase in the index.
 interface Props {
+  id: string;
   marker: string;
   name: string;
   italicWord?: string;
   description: string;
   outcomes: string[];
 }
-const { marker, name, italicWord, description, outcomes } = Astro.props;
+const { id, marker, name, italicWord, description, outcomes } = Astro.props;
 const parts = italicWord ? name.split(italicWord) : null;
 ---
 
-<section class="process-week">
-  <div class="shell-tight">
-    <div class="reveal process-week__text">
-      <div class="process-week__marker">Week {marker}</div>
-      <h2 class="process-week__name">
+<section id={id} class="process-phase" data-svc-section>
+  <div class="process-phase__inner">
+    <div class="process-phase__text reveal">
+      <p class="process-phase__marker">Phase {marker}</p>
+      <h2 class="process-phase__name">
         {
           parts ? (
             <Fragment>
               {parts[0]}
-              <span class="process-week__italic">{italicWord}</span>
+              <span class="process-phase__italic">{italicWord}</span>
               {parts[1]}
             </Fragment>
           ) : (
@@ -27,17 +33,18 @@ const parts = italicWord ? name.split(italicWord) : null;
           )
         }.
       </h2>
-      <p class="process-week__body">{description}</p>
-      <ul class="process-week__outcomes">
+      <p class="process-phase__body">{description}</p>
+    </div>
+
+    <div class="process-phase__kinetic reveal">
+      <p class="process-phase__overline">What you get</p>
+      <div class="process-phase__cycler" aria-label="Outcomes">
         {
-          outcomes.map((o) => (
-            <li class="process-week__outcome">
-              <span class="process-week__outcome-mark">—</span>
-              <span>{o}</span>
-            </li>
+          outcomes.map((o, i) => (
+            <span class="process-phase__cycler-word" style={`--i:${i}`}>{o}</span>
           ))
         }
-      </ul>
+      </div>
     </div>
   </div>
 </section>

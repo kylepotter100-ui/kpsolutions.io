@@ -1,10 +1,10 @@
 /* ============================================================
-   /process — mirrors the /services design language. Reuses
-   .hero-bg-* from homepage.css (imported by process.astro).
+   /services — page-specific surfaces. Reuses .hero-bg-* and
+   .pinned* primitives from homepage.css (imported by services.astro).
    ============================================================ */
 
-/* ── Hero (oxblood, matches ServicesHero) ──────────────────── */
-.process-hero {
+/* ── Services hero (oxblood, matches homepage hero treatment) ── */
+.services-hero {
   position: relative;
   min-height: 70vh;
   display: flex;
@@ -14,7 +14,7 @@
   color: var(--bone-0);
   isolation: isolate;
 }
-.process-hero__content {
+.services-hero__content {
   position: relative;
   z-index: 2;
   width: 100%;
@@ -27,7 +27,7 @@
   transform-origin: 50% 100%;
   will-change: transform, opacity;
 }
-.process-hero__eyebrow {
+.services-hero__eyebrow {
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 500;
@@ -36,7 +36,7 @@
   color: var(--ochre-300);
   margin: 0;
 }
-.process-hero__title {
+.services-hero__title {
   font-size: clamp(2.5rem, 1.3rem + 5.2vw, 6rem);
   line-height: 0.96;
   font-weight: 500;
@@ -46,13 +46,13 @@
   color: var(--bone-0);
   text-wrap: balance;
 }
-.process-hero__italic {
+.services-hero__italic {
   font-family: var(--font-display);
   font-style: italic;
   font-weight: 300;
   letter-spacing: -0.04em;
 }
-.process-hero__sub {
+.services-hero__sub {
   font-size: clamp(1.0625rem, 0.85rem + 0.55vw, 1.3125rem);
   line-height: 1.5;
   max-width: 54ch;
@@ -61,32 +61,40 @@
   font-weight: 400;
   text-wrap: pretty;
 }
-.process-hero__cta { margin-top: 8px; }
+.services-hero__cta { margin-top: 8px; }
 
-.process-hero .hero-word { display: inline-block; transform-origin: 50% 50%; }
-html.js-reveal .process-hero__title[data-hero-headline] .hero-word { opacity: 0.3; }
-html.js-reveal .process-hero .reveal-hero { opacity: 0; transform: translateY(10px); }
+/* Per-word headline units — same as homepage so initHeroOnLoad fires. */
+.services-hero .hero-word { display: inline-block; transform-origin: 50% 50%; }
+html.js-reveal .services-hero__title[data-hero-headline] .hero-word { opacity: 0.3; }
+html.js-reveal .services-hero .reveal-hero { opacity: 0; transform: translateY(10px); }
 @media (prefers-reduced-motion: reduce) {
-  html.js-reveal .process-hero__title[data-hero-headline] .hero-word,
-  html.js-reveal .process-hero .reveal-hero {
+  html.js-reveal .services-hero__title[data-hero-headline] .hero-word,
+  html.js-reveal .services-hero .reveal-hero {
     opacity: 1 !important;
     transform: none !important;
   }
 }
 
-/* ── Phase index — bordered strip with scroll-spy ──────────── */
-.process-index { background: var(--bone-0); padding: 24px 0; }
-.process-index__frame { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
-.process-index__grid {
+/* ── Services index — bordered numbered strip with scroll-spy ── */
+.services-index {
+  background: var(--bone-0);
+  padding: 24px 0;
+}
+.services-index__frame {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+.services-index__grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 0;
   border: 1px solid var(--bone-200);
   border-radius: 6px;
   overflow: hidden;
   background: var(--bone-0);
 }
-.process-index__link {
+.services-index__link {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -97,8 +105,8 @@ html.js-reveal .process-hero .reveal-hero { opacity: 0; transform: translateY(10
   border-left: 1px solid var(--bone-200);
   transition: color 200ms var(--ease-out), background-color 200ms var(--ease-out);
 }
-.process-index__link:first-child { border-left: none; }
-.process-index__link::before {
+.services-index__link:first-child { border-left: none; }
+.services-index__link::before {
   content: "";
   position: absolute;
   top: 0;
@@ -110,7 +118,7 @@ html.js-reveal .process-hero .reveal-hero { opacity: 0; transform: translateY(10
   transform-origin: left center;
   transition: transform 320ms var(--ease-out);
 }
-.process-index__num {
+.services-index__num {
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 500;
@@ -119,22 +127,24 @@ html.js-reveal .process-hero .reveal-hero { opacity: 0; transform: translateY(10
   color: var(--ochre-700);
   transition: color 200ms var(--ease-out);
 }
-.process-index__label {
+.services-index__label {
   font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 500;
   letter-spacing: -0.005em;
   line-height: 1.3;
 }
-.process-index__link:hover { color: var(--ochre-700); background: var(--bone-50); }
-.process-index__link.is-active { background: var(--bone-50); }
-.process-index__link.is-active::before { transform: scaleX(1); }
-.process-index__link.is-active .process-index__num { color: var(--ox-900); }
+.services-index__link:hover { color: var(--ochre-700); background: var(--bone-50); }
+.services-index__link.is-active { background: var(--bone-50); }
+.services-index__link.is-active::before { transform: scaleX(1); }
+.services-index__link.is-active .services-index__num { color: var(--ox-900); }
 
-/* ── Phase sections (two-column kinetic) ───────────────────── */
-.process-phase { background: var(--bone-0); border-bottom: 1px solid var(--bone-200); }
-.process-phase:nth-of-type(even) { background: var(--bone-50); }
-.process-phase__inner {
+/* ── Service category sections (two-column kinetic layout) ──── */
+.services-cat { background: var(--bone-0); border-bottom: 1px solid var(--bone-200); }
+.services-cat:last-of-type { border-bottom: none; }
+.services-cat--alt { background: var(--bone-50); }
+
+.services-cat__inner {
   max-width: 1180px;
   margin: 0 auto;
   padding: 112px 32px;
@@ -143,17 +153,24 @@ html.js-reveal .process-hero .reveal-hero { opacity: 0; transform: translateY(10
   gap: 96px;
   align-items: center;
 }
-.process-phase__text { display: flex; flex-direction: column; gap: 24px; max-width: 46ch; }
-.process-phase__marker {
+
+/* Left text column */
+.services-cat__text {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 46ch;
+}
+.services-cat__eyebrow {
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   color: var(--ochre-700);
   margin: 0;
 }
-.process-phase__name {
+.services-cat__title {
   font-size: clamp(2rem, 1.3rem + 2.4vw, 3.25rem);
   font-weight: 500;
   letter-spacing: -0.03em;
@@ -163,13 +180,13 @@ html.js-reveal .process-hero .reveal-hero { opacity: 0; transform: translateY(10
   max-width: 16ch;
   text-wrap: balance;
 }
-.process-phase__italic {
+.services-cat__italic {
   font-family: var(--font-display);
   font-style: italic;
   font-weight: 300;
   letter-spacing: -0.04em;
 }
-.process-phase__body {
+.services-cat__body {
   font-size: 17px;
   line-height: 1.6;
   color: var(--bone-500);
@@ -177,14 +194,16 @@ html.js-reveal .process-hero .reveal-hero { opacity: 0; transform: translateY(10
   max-width: 46ch;
   text-wrap: pretty;
 }
-.process-phase__kinetic {
+
+/* Right kinetic column */
+.services-cat__kinetic {
   display: flex;
   flex-direction: column;
   gap: 20px;
   align-items: flex-start;
   justify-content: center;
 }
-.process-phase__overline {
+.services-cat__overline {
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 500;
@@ -192,15 +211,18 @@ html.js-reveal .process-hero .reveal-hero { opacity: 0; transform: translateY(10
   letter-spacing: 0.16em;
   color: var(--ochre-700);
   margin: 0;
+  max-width: 28ch;
 }
-.process-phase__cycler {
+.services-cat__cycler {
   position: relative;
   width: 100%;
-  min-height: clamp(160px, 24vh, 220px);
+  /* Reserve vertical room so the cycler fills the right column even when
+     short words are showing — keeps section heights stable. */
+  min-height: clamp(180px, 28vh, 260px);
   display: flex;
   align-items: center;
 }
-.process-phase__cycler-word {
+.services-cat__cycler-word {
   position: absolute;
   inset-block: 0;
   inset-inline-start: 0;
@@ -209,30 +231,34 @@ html.js-reveal .process-hero .reveal-hero { opacity: 0; transform: translateY(10
   font-family: var(--font-display);
   font-style: italic;
   font-weight: 300;
-  font-size: clamp(2.25rem, 1.5rem + 3vw, 4rem);
+  font-size: clamp(2.5rem, 1.6rem + 3.6vw, 4.75rem);
   line-height: 1.05;
   letter-spacing: -0.035em;
   color: var(--ox-900);
   opacity: 0;
   transform: translateY(14px);
-  /* 3 outcomes × 3s = 9s loop; each word's slot = its --i × 3s. */
-  animation: proc-rotate 9s linear infinite;
-  animation-delay: calc(var(--i) * 3s);
+  /* 5 words × 2.5s each = 12.5s loop. Each word's window is its --i × 2.5s.
+     Each word is visible for ~1.9s; the remaining 0.6s is the cross-fade. */
+  animation: svc-rotate 12.5s linear infinite;
+  animation-delay: calc(var(--i) * 2.5s);
   will-change: opacity, transform;
 }
-@keyframes proc-rotate {
-  0%, 38%, 100% { opacity: 0; transform: translateY(14px); }
-  6%, 27%       { opacity: 1; transform: translateY(0); }
-  33%           { opacity: 0; transform: translateY(-14px); }
+@keyframes svc-rotate {
+  0%, 80%, 100% { opacity: 0; transform: translateY(14px); }
+  4%, 16%       { opacity: 1; transform: translateY(0); }
+  20%           { opacity: 0; transform: translateY(-14px); }
 }
+
+/* Reduced-motion: render the cycler as a static stacked list (no absolute
+   positioning, no animation) — still all five words visible. */
 @media (prefers-reduced-motion: reduce) {
-  .process-phase__cycler {
+  .services-cat__cycler {
     min-height: 0;
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
   }
-  .process-phase__cycler-word {
+  .services-cat__cycler-word {
     position: static;
     opacity: 1;
     transform: none;
@@ -241,19 +267,19 @@ html.js-reveal .process-hero .reveal-hero { opacity: 0; transform: translateY(10
   }
 }
 
-/* ── Closing (shared deep field; matches the footer + other pages) ── */
-.process-closing {
+/* ── Services closing (richer than the previous build-closing) ── */
+.services-closing {
   position: relative;
   padding: var(--section-py) 0;
   background: var(--field-deep);
   color: var(--bone-0);
 }
-.process-closing__inner {
+.services-closing__inner {
   max-width: 720px;
   margin: 0 auto;
   padding: 0 32px;
 }
-.process-closing__title {
+.services-closing__title {
   font-size: clamp(2.5rem, 1.5rem + 3.4vw, 4.5rem);
   font-weight: 500;
   letter-spacing: -0.035em;
@@ -263,28 +289,32 @@ html.js-reveal .process-hero .reveal-hero { opacity: 0; transform: translateY(10
   max-width: 14ch;
   text-wrap: balance;
 }
-.process-closing__italic {
+.services-closing__italic {
   font-family: var(--font-display);
   font-style: italic;
   font-weight: 300;
   letter-spacing: -0.04em;
 }
-.process-closing__body {
+.services-closing__body {
   font-size: 18px;
   line-height: 1.55;
   color: oklch(96% 0.014 60 / 0.84);
   margin: 32px 0 56px;
-  max-width: 42ch;
+  max-width: 44ch;
 }
 
 /* ── Mobile / narrow ───────────────────────────────────────── */
 @media (max-width: 960px) {
-  .process-hero { min-height: 60vh; }
-  .process-index__grid { grid-template-columns: 1fr 1fr; }
-  .process-index__link:nth-child(odd) { border-left: none; }
-  .process-index__link:nth-child(even) { border-left: 1px solid var(--bone-200); }
-  .process-index__link:nth-child(n+3) { border-top: 1px solid var(--bone-200); }
-  .process-phase__inner { grid-template-columns: 1fr; gap: 40px; padding: 80px 32px; }
-  .process-phase__cycler { min-height: clamp(130px, 20vh, 180px); }
-  .process-closing { padding: 96px 0; }
+  .services-hero { min-height: 60vh; }
+  .services-index__grid { grid-template-columns: 1fr 1fr; }
+  .services-index__link:nth-child(odd) { border-left: none; }
+  .services-index__link:nth-child(even) { border-left: 1px solid var(--bone-200); }
+  .services-index__link:nth-child(n+3) { border-top: 1px solid var(--bone-200); }
+  .services-cat__inner {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    padding: 80px 32px;
+  }
+  .services-cat__cycler { min-height: clamp(140px, 22vh, 200px); }
+  .services-closing { padding: 96px 0; }
 }

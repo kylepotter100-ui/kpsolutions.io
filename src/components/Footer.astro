@@ -4,9 +4,8 @@ import { ORG_EMAIL } from "../lib/site";
 
 const navLinks = [
   { label: "Work", href: "/work" },
-  { label: "Build", href: "/build" },
+  { label: "Services", href: "/services" },
   { label: "Process", href: "/process" },
-  { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
 ---
@@ -39,40 +38,42 @@ const navLinks = [
 </footer>
 
 <style>
+  /* Shared deep field (also used by the dedicated-page closings) so the closing
+     CTA flows into the footer with no colour seam. */
   footer {
-    background: var(--ox-900);
+    background: var(--field-deep);
     color: var(--bone-0);
   }
   .inner {
     max-width: 1280px;
     margin: 0 auto;
-    padding: 120px 32px 40px;
+    padding: 64px 32px 36px;
   }
   .top {
     display: grid;
     grid-template-columns: 1.6fr 1fr;
-    gap: 64px;
+    gap: 48px;
     align-items: end;
-    padding-bottom: 80px;
-    border-bottom: 1px solid oklch(98.5% 0.008 60 / 0.18);
+    padding-bottom: 44px;
+    border-bottom: 1px solid oklch(98.5% 0.008 60 / 0.16);
   }
   .wordmark {
-    font-size: clamp(3.5rem, 2rem + 5vw, 6.5rem);
+    font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
     font-weight: 500;
-    letter-spacing: -0.035em;
-    line-height: 0.95;
+    letter-spacing: -0.03em;
+    line-height: 1;
     color: var(--bone-0);
   }
   .tagline {
     font-family: var(--font-display);
     font-style: italic;
     font-weight: 300;
-    font-size: clamp(1.5rem, 1rem + 1.3vw, 2.25rem);
-    letter-spacing: -0.022em;
-    line-height: 1.15;
-    color: oklch(96% 0.012 60 / 0.78);
-    margin: 24px 0 0;
-    max-width: 24ch;
+    font-size: clamp(1.05rem, 0.9rem + 0.6vw, 1.375rem);
+    letter-spacing: -0.018em;
+    line-height: 1.2;
+    color: oklch(96% 0.012 60 / 0.74);
+    margin: 14px 0 0;
+    max-width: 26ch;
   }
   .contact {
     display: flex;
@@ -96,11 +97,11 @@ const navLinks = [
   .cta { padding: 15px 24px; font-size: 14px; }
 
   .links {
-    padding: 48px 0;
+    padding: 32px 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 16px 40px;
-    border-bottom: 1px solid oklch(98.5% 0.008 60 / 0.18);
+    gap: 14px 40px;
+    border-bottom: 1px solid oklch(98.5% 0.008 60 / 0.16);
   }
   .links a {
     font-size: 15px;

@@ -181,6 +181,14 @@
   --section-py: clamp(72px, 7vw, 104px);        /* major content sections */
   --section-py-tight: clamp(56px, 5.5vw, 80px); /* slim callout band */
 
+  /* Shared warm-oxblood "deep field" — the page-bottom surface. One recipe for
+     the footer AND every dedicated-page closing CTA, so the closing flows into
+     the footer with no colour seam. */
+  --field-deep:
+    radial-gradient(70% 120% at 10% 0%, oklch(30% 0.080 28) 0%, transparent 55%),
+    radial-gradient(60% 110% at 92% 100%, oklch(24% 0.070 22) 0%, transparent 60%),
+    linear-gradient(180deg, oklch(16% 0.040 24) 0%, oklch(13% 0.028 22) 100%);
+
   /* Content widths */
   --measure-narrow:  32rem;
   --measure-default: 44rem;

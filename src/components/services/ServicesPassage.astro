@@ -1,0 +1,20 @@
+---
+// Reuses the homepage's pinned passage primitives (.pinned + .pinned-content +
+// .pinned-passage + .activate) and the existing initPinnedPassage driver in
+// reveal.ts — phrases activate by scroll progress, CLS-safe (color/opacity
+// only). No-JS + reduced-motion render with every phrase already activated.
+---
+
+<section class="pinned" data-pinned aria-label="The five shapes of bespoke software">
+  <div class="pinned-content">
+    <p class="pinned-passage">
+      Five shapes of bespoke software —
+      <span class="activate" data-activate-at="0.18">custom platforms</span>,
+      <span class="activate" data-activate-at="0.32">internal tools</span>,
+      <span class="activate" data-activate-at="0.46">AI-visible web presence</span>,
+      <span class="activate" data-activate-at="0.6">integrations</span>,
+      <span class="activate" data-activate-at="0.74">legacy replacement</span> —
+      <span class="activate" data-activate-at="0.86">one operator, brief to launch</span>.
+    </p>
+  </div>
+</section>
