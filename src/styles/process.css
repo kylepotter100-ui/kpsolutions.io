@@ -241,116 +241,14 @@ html.js-reveal .process-hero .reveal-hero { opacity: 0; transform: translateY(10
   }
 }
 
-/* Shared process titles */
-.process-section-title {
-  font-size: clamp(2rem, 1.3rem + 2.4vw, 3.25rem);
-  font-weight: 500;
-  letter-spacing: -0.03em;
-  line-height: 1.02;
-  margin: 0 0 48px;
-  color: var(--ox-900);
-  max-width: 18ch;
-  text-wrap: balance;
-}
-.process-italic {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 300;
-  letter-spacing: -0.04em;
-}
-.process-prose {
-  font-size: 17px;
-  line-height: 1.65;
-  color: var(--ox-900);
-  margin: 0 0 22px;
-  max-width: 60ch;
-  text-wrap: pretty;
-}
-.process-prose:last-child { margin-bottom: 0; }
-
-/* What's included */
-.process-included { padding: var(--section-py) 0; background: var(--bone-50); }
-.process-included__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 64px;
-  padding-top: 32px;
-  border-top: 1px solid var(--bone-200);
-}
-.process-included__col { display: flex; flex-direction: column; gap: 16px; }
-.process-included__label {
-  font-size: 11px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--ochre-700);
-}
-.process-included__list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; }
-.process-included__item {
-  font-size: 15px;
-  line-height: 1.45;
-  color: var(--ox-900);
-  letter-spacing: -0.005em;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--bone-200);
-}
-.process-included__item:last-child { border-bottom: none; }
-
-/* What it costs */
-.process-cost {
-  padding: var(--section-py-tight) 0;
-  background: var(--bone-0);
-  border-top: 1px solid var(--bone-200);
-  border-bottom: 1px solid var(--bone-200);
-}
-.process-cost__inner { max-width: 720px; margin: 0 auto; }
-.process-cost__label {
-  font-size: 11px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--ochre-700);
-  margin-bottom: 18px;
-}
-.process-cost__statement {
-  font-size: clamp(1.5rem, 1.05rem + 1.3vw, 2.25rem);
-  font-weight: 500;
-  letter-spacing: -0.025em;
-  line-height: 1.15;
-  color: var(--ox-900);
-  margin: 0 0 22px;
-  max-width: 26ch;
-  text-wrap: balance;
-}
-.process-cost__note { font-size: 16px; line-height: 1.6; color: var(--bone-500); margin: 0; max-width: 56ch; }
-
-/* Why it works */
-.process-why { padding: var(--section-py) 0; background: var(--bone-0); }
-.process-why__inner { max-width: 720px; margin: 0 auto; }
-.process-why .process-section-title { max-width: 14ch; }
-
-/* ── Closing (oxblood, matches ServicesClosing) ────────────── */
+/* ── Closing (shared deep field; matches the footer + other pages) ── */
 .process-closing {
   position: relative;
   padding: var(--section-py) 0;
-  background: var(--ox-900);
+  background: var(--field-deep);
   color: var(--bone-0);
-  overflow: hidden;
-  isolation: isolate;
-}
-.process-closing::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background:
-    radial-gradient(60% 70% at 18% 18%, oklch(46% 0.090 48 / 0.55) 0%, transparent 60%),
-    radial-gradient(70% 80% at 82% 88%, oklch(28% 0.085 22 / 0.45) 0%, transparent 65%);
-  pointer-events: none;
 }
 .process-closing__inner {
-  position: relative;
-  z-index: 1;
   max-width: 720px;
   margin: 0 auto;
   padding: 0 32px;
@@ -388,9 +286,5 @@ html.js-reveal .process-hero .reveal-hero { opacity: 0; transform: translateY(10
   .process-index__link:nth-child(n+3) { border-top: 1px solid var(--bone-200); }
   .process-phase__inner { grid-template-columns: 1fr; gap: 40px; padding: 80px 32px; }
   .process-phase__cycler { min-height: clamp(130px, 20vh, 180px); }
-  .process-included { padding: 80px 0; }
-  .process-included__grid { grid-template-columns: 1fr; gap: 40px; }
-  .process-cost { padding: 64px 0; }
-  .process-why { padding: 80px 0; }
   .process-closing { padding: 96px 0; }
 }

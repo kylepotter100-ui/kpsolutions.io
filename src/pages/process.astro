@@ -7,9 +7,6 @@ import Footer from "../components/Footer.astro";
 import ProcessHero from "../components/process/ProcessHero.astro";
 import ProcessIndex from "../components/process/ProcessIndex.astro";
 import ProcessWeeks from "../components/process/ProcessWeeks.astro";
-import ProcessIncluded from "../components/process/ProcessIncluded.astro";
-import ProcessCost from "../components/process/ProcessCost.astro";
-import ProcessWhy from "../components/process/ProcessWhy.astro";
 import ProcessClosing from "../components/process/ProcessClosing.astro";
 import FAQ, { type FaqItem } from "../components/FAQ.astro";
 import { serviceSchema, breadcrumbSchema, faqPageSchema, type JsonLdSchema } from "../lib/schema";
@@ -73,9 +70,6 @@ const schemas: JsonLdSchema[] = [
     <ProcessHero />
     <ProcessIndex />
     <ProcessWeeks />
-    <ProcessIncluded />
-    <ProcessCost />
-    <ProcessWhy />
     <FAQ items={faqItems} />
     <ProcessClosing />
   </main>

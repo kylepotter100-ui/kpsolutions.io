@@ -38,12 +38,10 @@ const navLinks = [
 </footer>
 
 <style>
-  /* Warm oxblood field rather than a flat black slab — softer, less intense. */
+  /* Shared deep field (also used by the dedicated-page closings) so the closing
+     CTA flows into the footer with no colour seam. */
   footer {
-    background:
-      radial-gradient(70% 120% at 10% 0%, oklch(30% 0.080 28) 0%, transparent 55%),
-      radial-gradient(60% 110% at 92% 100%, oklch(24% 0.070 22) 0%, transparent 60%),
-      linear-gradient(180deg, oklch(16% 0.040 24) 0%, oklch(13% 0.028 22) 100%);
+    background: var(--field-deep);
     color: var(--bone-0);
   }
   .inner {
