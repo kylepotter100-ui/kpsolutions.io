@@ -1,4 +1,6 @@
 ---
+import Button from "../Button.astro";
+
 // Oxblood hero matching the homepage treatment (hero-bg-field/glow/grain/scrim
 // from homepage.css). Headline uses .hero-word units so the existing on-load
 // stagger in reveal.ts (initHeroOnLoad) fires via the data-hero-* hooks.
@@ -28,5 +30,9 @@
     <p class="services-hero__sub reveal-hero" data-hero-sub>
       Fixed fee. Scoped to your project. Code owned by you from day one.
     </p>
+
+    <div class="services-hero__cta reveal-hero" data-hero-cta>
+      <Button href="/contact" variant="hero-primary" icon="arrow-right">Start a conversation</Button>
+    </div>
   </div>
 </section>

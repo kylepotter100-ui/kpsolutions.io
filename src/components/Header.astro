@@ -6,11 +6,11 @@ interface Props {
   // bar is now persistently dark, so the value is intentionally ignored.
   heroMode?: "dark" | "light";
 }
+// Three centred links; Contact is a standalone cream pill on the right.
 const navItems = [
   { label: "Work", href: "/work" },
   { label: "Services", href: "/services" },
   { label: "Process", href: "/process" },
-  { label: "Contact", href: "/contact" },
 ];
 ---
 
@@ -22,6 +22,8 @@ const navItems = [
       {navItems.map((it) => <a href={it.href} class="nav-link">{it.label}</a>)}
     </nav>
 
+    <a href="/contact" class="nav-cta">Contact</a>
+
     <button class="nav-mobile-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-sheet">
       <span class="icon-open"><Icon name="menu" size={22} /></span>
       <span class="icon-close"><Icon name="x" size={22} /></span>
@@ -31,6 +33,7 @@ const navItems = [
   <div class="nav-mobile-sheet" id="mobile-sheet">
     <div class="sheet-inner">
       {navItems.map((it) => <a href={it.href} class="sheet-link">{it.label}</a>)}
+      <a href="/contact" class="sheet-link sheet-link--cta">Contact</a>
     </div>
   </div>
 </header>
@@ -66,6 +69,7 @@ const navItems = [
   }
 
   .bar {
+    position: relative;
     max-width: 1280px;
     margin: 0 auto;
     padding: 8px 32px;
@@ -88,7 +92,34 @@ const navItems = [
     transition: color 200ms var(--ease-out);
   }
 
-  .nav-desktop { display: flex; gap: 36px; align-items: center; }
+  /* Optically centred in the bar regardless of logo / CTA widths. */
+  .nav-desktop {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 36px;
+    align-items: center;
+  }
+
+  /* Contact — cream pill on the right so it stands out against the dark bar. */
+  .nav-cta {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    color: var(--ox-900);
+    background: var(--bone-0);
+    text-decoration: none;
+    padding: 10px 22px;
+    border-radius: var(--radius-pill);
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    border: 1px solid var(--bone-0);
+    transition: background 180ms var(--ease-out), color 180ms var(--ease-out), border-color 180ms var(--ease-out);
+  }
+  .nav-cta:hover { background: var(--ochre-300); border-color: var(--ochre-300); color: var(--ox-900); }
   .nav-link {
     position: relative;
     font-family: var(--font-sans);
@@ -168,9 +199,20 @@ const navItems = [
     transition: color 200ms var(--ease-out);
   }
   .sheet-link:hover { color: var(--ochre-500); }
+  .sheet-link--cta {
+    align-self: flex-start;
+    margin-top: 8px;
+    color: var(--ox-900);
+    background: var(--bone-0);
+    padding: 12px 24px;
+    border-radius: var(--radius-pill);
+    font-size: 18px;
+  }
+  .sheet-link--cta:hover { background: var(--ochre-300); color: var(--ox-900); }
 
   @media (max-width: 960px) {
     .nav-desktop { display: none; }
+    .nav-cta { display: none; }
     .nav-mobile-btn { display: inline-flex; }
   }
   @media (min-width: 961px) {

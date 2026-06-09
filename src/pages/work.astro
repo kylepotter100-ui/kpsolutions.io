@@ -6,6 +6,7 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import CaseHero from "../components/work/CaseHero.astro";
 import CaseMeta from "../components/work/CaseMeta.astro";
+import CaseClosing from "../components/work/CaseClosing.astro";
 import { caseStudies } from "../lib/work";
 import { articleSchema, breadcrumbSchema, type JsonLdSchema } from "../lib/schema";
 import "../styles/work.css";
@@ -48,6 +49,7 @@ const schemas: JsonLdSchema[] = [
         ))
       }
     </section>
+    <CaseClosing />
   </main>
   <Footer />
 </BaseLayout>
