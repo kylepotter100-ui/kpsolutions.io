@@ -28,10 +28,12 @@ export function organizationSchema(): JsonLdSchema {
     email: ORG_EMAIL,
     address: {
       "@type": "PostalAddress",
+      addressLocality: "Loughborough",
       addressRegion: "East Midlands",
       addressCountry: "GB",
     },
     areaServed: [
+      { "@type": "AdministrativeArea", name: "Loughborough" },
       { "@type": "AdministrativeArea", name: "East Midlands" },
       { "@type": "Country", name: "United Kingdom" },
     ],
