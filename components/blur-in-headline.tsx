@@ -11,9 +11,10 @@ export function BlurInHeadline(): ReactNode {
   const [scrollProgress, setScrollProgress] = useState(1);
   const words = headline.split(" ");
 
-  // The site scrolls through Lenis (components/smooth-scroll.tsx), so raw
-  // window scroll events are unreliable on touch. Progress is sampled on
-  // animation frames instead, only while the section is near the viewport.
+  // Phase 8's rAF poll froze on iOS Safari during touch momentum scroll
+  // (the OS suspends rAF callbacks). Scroll/touchmove events still fire,
+  // so we drive progress off those and use a single rAF per burst to
+  // collapse multi-event frames.
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -23,46 +24,37 @@ export function BlurInHeadline(): ReactNode {
 
     setScrollProgress(0);
 
-    let rafId: number | null = null;
-    let lastProgress = -1;
+    let pending = false;
 
-    const tick = () => {
+    const compute = () => {
+      pending = false;
       const rect = container.getBoundingClientRect();
       const windowHeight = window.innerHeight;
-
       const startOffset = windowHeight * 0.9;
       const endOffset = windowHeight * 0.25;
-
       const progress = Math.min(
         1,
         Math.max(0, (startOffset - rect.top) / (startOffset - endOffset))
       );
-
-      if (progress !== lastProgress) {
-        lastProgress = progress;
-        setScrollProgress(progress);
-      }
-
-      rafId = requestAnimationFrame(tick);
+      setScrollProgress(progress);
     };
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting) {
-          if (rafId === null) rafId = requestAnimationFrame(tick);
-        } else if (rafId !== null) {
-          cancelAnimationFrame(rafId);
-          rafId = null;
-        }
-      },
-      { rootMargin: "100% 0px" }
-    );
+    const schedule = () => {
+      if (pending) return;
+      pending = true;
+      requestAnimationFrame(compute);
+    };
 
-    observer.observe(container);
+    document.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("touchmove", schedule, { passive: true });
+
+    compute();
 
     return () => {
-      observer.disconnect();
-      if (rafId !== null) cancelAnimationFrame(rafId);
+      document.removeEventListener("scroll", schedule);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("touchmove", schedule);
     };
   }, []);
 
