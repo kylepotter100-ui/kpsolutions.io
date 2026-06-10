@@ -18,16 +18,24 @@ const fadeInScale = {
   visible: { opacity: 1, scale: 1, filter: "blur(0px)" },
 };
 
-const logos: LogoItem[] = [
-  { node: <Image src="/mock-logos/acmecorp.svg" alt="Acme Corp" width={120} height={32} className="h-[1em] w-auto" /> },
-  { node: <Image src="/mock-logos/altshift.svg" alt="Altshift" width={120} height={32} className="h-[1em] w-auto" /> },
-  { node: <Image src="/mock-logos/biosynthesis.svg" alt="Biosynthesis" width={120} height={32} className="h-[1em] w-auto" /> },
-  { node: <Image src="/mock-logos/boltshift.svg" alt="Boltshift" width={120} height={32} className="h-[1em] w-auto" /> },
-  { node: <Image src="/mock-logos/capsule.svg" alt="Capsule" width={120} height={32} className="h-[1em] w-auto" /> },
-  { node: <Image src="/mock-logos/catalog.svg" alt="Catalog" width={120} height={32} className="h-[1em] w-auto" /> },
-  { node: <Image src="/mock-logos/cloudwatch.svg" alt="Cloudwatch" width={120} height={32} className="h-[1em] w-auto" /> },
-  { node: <Image src="/mock-logos/commandr.svg" alt="Commandr" width={120} height={32} className="h-[1em] w-auto" /> },
+const tickerPhrases = [
+  "Code 100% owned by you",
+  "Timeline agreed up front",
+  "Built custom to you",
+  "Fixed fee, never an estimate",
+  "Zero vendor lock-in",
+  "Built for how you actually work",
 ];
+
+const logos: LogoItem[] = tickerPhrases.map((phrase) => ({
+  node: (
+    <span className="inline-flex items-center gap-[56px] whitespace-nowrap font-medium tracking-tight text-black/70">
+      {phrase}
+      <span className="text-accent text-[0.6em]" aria-hidden="true">✦</span>
+    </span>
+  ),
+  title: phrase,
+}));
 
 const PARALLAX_INTENSITY = 20;
 
@@ -166,7 +174,7 @@ export function Hero(): ReactNode {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 1, ease }}
       >
-        <LogoLoop logos={logos} speed={60} logoHeight={42} gap={124} />
+        <LogoLoop logos={logos} speed={60} logoHeight={28} gap={56} />
       </motion.div>
     </section>
   );
