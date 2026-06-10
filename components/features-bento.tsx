@@ -1,10 +1,19 @@
 "use client";
 
-import { motion, type Transition } from "motion/react";
-import { CircleCheck } from "lucide-react";
-import type { ReactNode } from "react";
+import { AnimatePresence, motion, type Transition } from "motion/react";
+import { CircleCheck, Zap } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
 
 const EASE = [0.23, 1, 0.32, 1] as const;
+
+const ROTATING_WORDS = [
+  "Dashboards",
+  "admin portals",
+  "analytics",
+  "booking management",
+  "AI visibility",
+  "automation",
+];
 
 const cardAnimation = {
   initial: { opacity: 0, y: 40 },
@@ -59,7 +68,35 @@ function DecorativeCircles(): ReactNode {
   );
 }
 
-function BespokeSoftwareCard(): ReactNode {
+function WordRotator(): ReactNode {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setIndex((i) => (i + 1) % ROTATING_WORDS.length);
+    }, 2500);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <div className="relative mt-3 h-5 overflow-hidden" aria-live="polite">
+      <AnimatePresence mode="wait">
+        <motion.span
+          key={ROTATING_WORDS[index]}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.3, ease: EASE }}
+          className="absolute left-0 text-sm font-medium text-white"
+        >
+          {ROTATING_WORDS[index]}
+        </motion.span>
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function GuidedOnboardingCard(): ReactNode {
   return (
     <motion.div
       {...cardAnimation}
@@ -68,10 +105,10 @@ function BespokeSoftwareCard(): ReactNode {
     >
       <div className="relative z-10 text-center mb-6 transition-transform duration-500 ease-out group-hover:scale-105">
         <h3 className="text-2xl md:text-4xl font-medium text-neutral-900 leading-tight mb-3">
-          Bespoke Software
+          Guided Onboarding For Every Project
         </h3>
         <p className="text-neutral-700 text-sm">
-          Custom platforms and internal tools designed for your operation, with the code owned entirely by you
+          We get you and your team up to speed at launch, with step-by-step walkthroughs you keep afterwards
         </p>
       </div>
 
@@ -79,16 +116,15 @@ function BespokeSoftwareCard(): ReactNode {
         <PhoneMockup variant="full">
           <div className="absolute inset-0 bg-phone-screen pt-14 px-5">
             <h4 className="text-3xl font-medium text-neutral-900 leading-none tracking-tight mt-4">
-              Your platform
+              Your workspace
             </h4>
             <h4 className="text-3xl font-medium text-neutral-900 leading-none tracking-tight mb-4">
-              is live!
+              is ready!
             </h4>
             <p className="text-sm text-neutral-500 leading-snug mb-8">
-              Bookings, clients, and payments — one place, built around you.
+              Invite your team and start collaborating instantly.
             </p>
 
-            {/* Project Card */}
             <div className="relative bg-linear-to-br from-accent via-accent/80 to-accent/50 rounded-2xl p-4 h-52 shadow-xl overflow-hidden">
               <ProjectCardContent />
             </div>
@@ -124,16 +160,16 @@ function ProjectCardContent(): ReactNode {
 
       <div className="relative z-10 flex items-start justify-between gap-3 h-full">
         <div>
-          <p className="text-base font-semibold text-neutral-900">Potter</p>
-          <p className="text-base font-semibold text-neutral-900">Sanctuary</p>
+          <p className="text-base font-semibold text-neutral-900">Project</p>
+          <p className="text-base font-semibold text-neutral-900">Alpha</p>
         </div>
         <CircleCheck className="opacity-25 text-black" aria-hidden="true" />
       </div>
 
       <div className="absolute bottom-3 left-5 flex items-center gap-2 text-neutral-700 text-xs tracking-widest" aria-hidden="true">
-        <span>KPS</span>
+        <span>PRJ</span>
         <span>•</span>
-        <span>2025</span>
+        <span>2026</span>
         <span>•</span>
         <span>LIVE</span>
       </div>
@@ -141,7 +177,7 @@ function ProjectCardContent(): ReactNode {
   );
 }
 
-function ModernizationCard(): ReactNode {
+function RealtimeDataCard(): ReactNode {
   return (
     <motion.div
       {...cardAnimation}
@@ -150,11 +186,12 @@ function ModernizationCard(): ReactNode {
     >
       <div className="relative z-10 max-w-48 transition-transform duration-500 ease-out group-hover:scale-105">
         <h3 className="text-xl md:text-2xl whitespace-nowrap font-medium text-card-foreground leading-tight mb-3">
-          Modernization
+          Real-time Data
         </h3>
         <p className="text-card-foreground-muted text-sm">
-          We replace the tangle of legacy systems with one platform — one source of truth, one team on the hook for it
+          Monitor metrics, analytics, and team activity instantly
         </p>
+        <WordRotator />
       </div>
 
       <div className="relative md:absolute mt-8 md:mt-0 md:right-12 md:top-1/2 md:-translate-y-1/2 flex items-center justify-center transition-transform duration-500 ease-out group-hover:scale-105 self-center md:self-auto">
@@ -163,30 +200,30 @@ function ModernizationCard(): ReactNode {
         <PhoneMockup variant="compact">
           <div className="absolute inset-0 bg-phone-screen pt-9 px-3">
             <div className="bg-white rounded-full px-2 py-1.5 mb-3 flex items-center gap-1.5 border border-neutral-200">
-              <span className="text-neutral-400 text-xs">Search records...</span>
+              <span className="text-neutral-400 text-xs">Search projects...</span>
             </div>
-            <p className="text-xs text-neutral-500 mb-0.5">Systems replaced</p>
-            <p className="text-xl font-medium text-neutral-900 mb-3">One platform</p>
+            <p className="text-xs text-neutral-500 mb-0.5">Active projects</p>
+            <p className="text-xl font-medium text-neutral-900 mb-3">24 running</p>
 
             <div className="flex gap-1.5 mb-4">
               <span className="bg-accent text-black text-xs px-2.5 py-1 rounded-full">
-                Bookings
+                Deploy
               </span>
-              <span className="text-neutral-400 text-xs px-2 py-1">Clients</span>
-              <span className="text-neutral-400 text-xs px-2 py-1">Invoices</span>
+              <span className="text-neutral-400 text-xs px-2 py-1">Build</span>
+              <span className="text-neutral-400 text-xs px-2 py-1">Test</span>
             </div>
           </div>
         </PhoneMockup>
 
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 bg-neutral-900 rounded-2xl px-5 py-3 shadow-xl z-20 whitespace-nowrap">
           <div className="flex items-center gap-2 mb-0.5">
-            <span className="text-neutral-400 text-xs">Source of truth</span>
+            <span className="text-neutral-400 text-xs">Build status</span>
             <span className="text-neutral-500 text-xs">ⓘ</span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-lg font-medium text-white">One place</span>
+            <span className="text-lg font-medium text-white">All passing</span>
             <span className="text-xs font-medium text-accent bg-accent/20 px-2 py-0.5 rounded">
-              ✓ synced
+              ✓ 100%
             </span>
           </div>
         </div>
@@ -195,7 +232,7 @@ function ModernizationCard(): ReactNode {
   );
 }
 
-function IntegrationsCard(): ReactNode {
+function AIAutomationCard(): ReactNode {
   return (
     <motion.div
       {...cardAnimation}
@@ -204,21 +241,25 @@ function IntegrationsCard(): ReactNode {
     >
       <div className="transition-transform duration-500 ease-out group-hover:scale-110">
         <h3 className="text-2xl md:text-3xl font-medium text-card-foreground leading-tight mb-1">
-          Integrations &
+          AI
         </h3>
         <h3 className="text-2xl md:text-3xl font-medium text-card-foreground leading-tight mb-5">
           Automation
         </h3>
       </div>
 
-      <p className="text-card-foreground-muted text-sm transition-transform duration-500 ease-out group-hover:scale-105">
-        We connect what&apos;s broken and automate what&apos;s manual. Information moves itself — your team spends its time on the decisions that actually need a person.
+      <p className="text-card-foreground-muted text-sm leading-relaxed transition-transform duration-500 ease-out group-hover:scale-105">
+        Where AI genuinely earns its keep — drafting, triage, lookups, follow-ups — woven in quietly. Your team focuses on the work that actually needs a person.
       </p>
+
+      <div className="mt-6 text-accent text-2xl transition-transform duration-500 ease-out group-hover:scale-110" aria-hidden="true">
+        ✦
+      </div>
     </motion.div>
   );
 }
 
-function AIVisibleCard(): ReactNode {
+function BuiltToGrowCard(): ReactNode {
   return (
     <motion.div
       {...cardAnimation}
@@ -227,25 +268,20 @@ function AIVisibleCard(): ReactNode {
     >
       <div className="mb-auto transition-transform duration-500 ease-out group-hover:scale-105">
         <h3 className="text-xl md:text-2xl font-medium text-neutral-900 leading-tight mb-2">
-          AI-visible Web Presence
+          Built to grow with you
         </h3>
         <p className="text-neutral-700 text-sm">
-          Your customers ask ChatGPT, Claude, and Perplexity who to hire. We build sites engineered to be found, understood, and recommended by AI.
+          Your platform scales as your business scales — no replatforming, no migrations, no surprises
         </p>
       </div>
 
       <div className="flex flex-col gap-2 mt-6 transition-transform duration-500 ease-out group-hover:scale-[1.02]">
         <div className="flex items-center justify-between bg-background rounded-xl p-3">
           <div className="flex items-center gap-2">
-            <span className="text-lg" aria-hidden="true">✦</span>
-            <span className="text-foreground font-medium text-sm">Structured for AI search</span>
+            <Zap className="size-5 text-accent" aria-hidden="true" />
+            <span className="text-foreground font-medium">99.9% Uptime</span>
           </div>
-        </div>
-        <div className="flex items-center justify-between bg-background rounded-xl p-3">
-          <div className="flex items-center gap-2">
-            <span className="text-lg" aria-hidden="true">✦</span>
-            <span className="text-foreground font-medium text-sm">Found where competitors aren&apos;t</span>
-          </div>
+          <span className="text-black text-sm font-medium">+0.2%</span>
         </div>
       </div>
     </motion.div>
@@ -257,12 +293,12 @@ export function FeaturesBento(): ReactNode {
     <section id="capabilities" className="w-full px-6 mb-32 bg-background scroll-mt-24">
       <div className="max-w-5xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-[1fr_1.5fr] gap-4">
-          <BespokeSoftwareCard />
-          <ModernizationCard />
+          <GuidedOnboardingCard />
+          <RealtimeDataCard />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <IntegrationsCard />
-            <AIVisibleCard />
+            <AIAutomationCard />
+            <BuiltToGrowCard />
           </div>
         </div>
       </div>
