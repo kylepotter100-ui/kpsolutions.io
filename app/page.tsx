@@ -11,8 +11,8 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 export const metadata: Metadata = createMetadata({
-  title: "React Bits Pro - SaaS Template",
-  description: `Welcome to ${siteConfig.name}. ${siteConfig.description}`,
+  title: "Software that fits how you work",
+  description: siteConfig.description,
   path: "/",
 });
 

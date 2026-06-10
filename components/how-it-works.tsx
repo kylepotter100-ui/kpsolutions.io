@@ -66,7 +66,8 @@ export function HowItWorks(): ReactNode {
   return (
     <section
       ref={containerRef}
-      className="relative w-full bg-background"
+      id="how-it-works"
+      className="relative w-full bg-background scroll-mt-24"
     >
       <div className="mx-auto grid max-w-5xl gap-12 px-6 py-20 sm:py-28 lg:grid-cols-2 lg:gap-20">
         <div className="lg:sticky lg:top-48 lg:h-fit lg:self-start">
