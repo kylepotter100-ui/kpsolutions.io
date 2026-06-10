@@ -1,5 +1,6 @@
+import { ContactForm } from "@/components/contact-form";
 import { createMetadata } from "@/lib/metadata";
-import { ArrowLeft, Mail } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
@@ -12,8 +13,8 @@ export const metadata: Metadata = createMetadata({
 
 export default function ContactPage(): ReactNode {
   return (
-    <main id="main-content" className="flex min-h-screen flex-1 flex-col items-center justify-center bg-background px-6 py-32">
-      <div className="mx-auto w-full max-w-2xl text-center">
+    <main id="main-content" className="flex min-h-screen flex-1 flex-col items-center bg-background px-6 pb-24 pt-40">
+      <div className="mx-auto w-full max-w-xl text-center">
         <h1 className="text-5xl font-medium tracking-tight text-foreground sm:text-6xl">
           Start a{" "}
           <span className="italic font-serif text-accent">conversation</span>
@@ -24,15 +25,21 @@ export default function ContactPage(): ReactNode {
           deck. A written proposal within 48 hours.
         </p>
 
-        <a
-          href="mailto:kyle.potter@kpsolutions.io"
-          className="mt-10 inline-flex items-center gap-3 rounded-xl bg-foreground px-8 py-4 text-base font-semibold text-background transition-colors hover:bg-foreground/90"
-        >
-          <Mail className="h-5 w-5" aria-hidden="true" />
-          kyle.potter@kpsolutions.io
-        </a>
+        <div className="mt-12 rounded-2xl bg-frame p-6 shadow-sm sm:p-8">
+          <ContactForm />
+        </div>
 
-        <p className="mt-12 text-base text-muted-foreground">
+        <p className="mt-8 text-sm text-muted-foreground">
+          Prefer email?{" "}
+          <a
+            href="mailto:kyle.potter@kpsolutions.io"
+            className="font-medium text-foreground underline-offset-4 hover:underline"
+          >
+            kyle.potter@kpsolutions.io
+          </a>
+        </p>
+
+        <p className="mt-10 text-base text-muted-foreground">
           If bespoke isn&apos;t the right answer for your situation,{" "}
           <span className="italic font-serif text-foreground">
             we&apos;ll tell you
@@ -42,7 +49,7 @@ export default function ContactPage(): ReactNode {
 
         <a
           href="/"
-          className="mt-16 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+          className="mt-14 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />
           Back to home
