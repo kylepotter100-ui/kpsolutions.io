@@ -20,6 +20,11 @@
 # production
 /build
 
+# legacy build dirs (astro era + cloudflare workers local dev)
+/.astro/
+/.wrangler/
+/dist/
+
 # misc
 .DS_Store
 *.pem
