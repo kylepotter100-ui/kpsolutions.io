@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
+import Image from "next/image";
 import { useState, type ReactNode } from "react";
 
 const testimonials = [
@@ -9,7 +10,7 @@ const testimonials = [
       "Before working with KP Solutions I was manually messaging with clients to manage my diary and had no way to manage bookings effectively. Now my entire business is automated, the admin portal allows me to engage with customers effectively and I can focus on what matters. Flawless service end-to-end",
     name: "The Potter Sanctuary",
     title: "Bookings & client management platform",
-    monogram: "PS",
+    logo: "/sanctuary-logo.png",
     color: "#a8d946",
     company: "The Potter Sanctuary",
   },
@@ -55,15 +56,19 @@ export function Testimonials(): ReactNode {
                 style={{ cursor: 'pointer' }}
               >
                 <div
-                  className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full transition-colors duration-500 sm:h-12 sm:w-12 lg:h-16 lg:w-16"
+                  className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full transition-colors duration-500 sm:h-10 sm:w-10 lg:h-12 lg:w-12"
                   style={{
                     backgroundColor:
                       activeIndex === index ? testimonial.color : undefined,
                   }}
                 >
-                  <span className="font-serif text-base font-semibold italic tracking-tight text-black sm:text-lg lg:text-2xl">
-                    {testimonial.monogram}
-                  </span>
+                  <Image
+                    src={testimonial.logo}
+                    alt={testimonial.name}
+                    width={64}
+                    height={90}
+                    className="h-full w-full object-contain p-1.5 [filter:brightness(0)_invert(1)]"
+                  />
                 </div>
 
                 {activeIndex === index && (
