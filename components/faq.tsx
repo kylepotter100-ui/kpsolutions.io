@@ -23,7 +23,7 @@ const faqs = [
   {
     question: "How is it priced?",
     answer:
-      "Every engagement is a fixed fee, scoped up front and agreed before any build work begins. No retainers, no monthly invoices, no scope-creep clauses.",
+      "Every build is a fixed fee, scoped up front and agreed before any work begins, with no scope-creep clauses. After launch, optional retainers are available if you want a long-term partner for changes, updates, and ongoing support.",
   },
   {
     question: "Why a fixed scope?",

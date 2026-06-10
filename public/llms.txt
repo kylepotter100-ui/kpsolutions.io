@@ -8,5 +8,5 @@
 - [What we build](https://kpsolutions.io/#capabilities): The four shapes of bespoke software — custom platforms, modernization & replacement, integrations & automation, and AI-visible web presence.
 - [Client story](https://kpsolutions.io/#testimonials): The Potter Sanctuary — a bookings and client-management platform with an operator admin portal.
 - [Process](https://kpsolutions.io/#how-it-works): How we build — discovery, design, build, and launch; scoped comprehensively, fixed fee, code owned by you.
-- [Pricing](https://kpsolutions.io/#pricing): One fixed fee, agreed before any build work begins. No retainers, no per-seat fees, no lock-in.
+- [Pricing](https://kpsolutions.io/#pricing): One fixed fee, agreed before any build work begins. No per-seat fees, no lock-in. Optional retainers available for post-launch support, changes, and ongoing partnership.
 - [Contact](https://kpsolutions.io/contact): How to start a conversation about a project.

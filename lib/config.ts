@@ -72,7 +72,7 @@ export const pricingConfig = {
   // Section is replaced by a single "How we price" panel in Phase 2c.
   title: "How we price",
   description:
-    "One fixed fee, scoped up front and agreed before any build work begins. No retainers, no monthly invoices, no scope-creep clauses.",
+    "One fixed fee, scoped up front and agreed before any build work begins. No scope-creep clauses on the build. Optional retainers afterwards if you want a long-term partner.",
   billingNote: "",
 };
 

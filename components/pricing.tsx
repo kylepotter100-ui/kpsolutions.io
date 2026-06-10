@@ -9,8 +9,9 @@ const principles = [
   "Timeline agreed up front — you know the date before we start",
   "Code 100% owned by you, from day one",
   "No per-seat fees, ever",
-  "No retainers, no monthly invoices, no scope-creep clauses",
+  "No scope-creep clauses on the fixed-fee build",
   "Zero vendor lock-in — the source repository transfers to your organisation",
+  "Optional retainers afterwards if you want a long-term partner for changes and updates",
 ];
 
 const ease = [0.23, 1, 0.32, 1] as const;
