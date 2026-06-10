@@ -8,54 +8,40 @@ const headline =
 
 export function BlurInHeadline(): ReactNode {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(1);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const words = headline.split(" ");
 
-  // Phase 8's rAF poll froze on iOS Safari during touch momentum scroll
-  // (the OS suspends rAF callbacks). Scroll/touchmove events still fire,
-  // so we drive progress off those and use a single rAF per burst to
-  // collapse multi-event frames.
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
     const container = containerRef.current;
     if (!container) return;
 
-    setScrollProgress(0);
+    let ticking = false;
 
-    let pending = false;
+    const handleScroll = () => {
+      if (ticking) return;
+      ticking = true;
 
-    const compute = () => {
-      pending = false;
-      const rect = container.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      const startOffset = windowHeight * 0.9;
-      const endOffset = windowHeight * 0.25;
-      const progress = Math.min(
-        1,
-        Math.max(0, (startOffset - rect.top) / (startOffset - endOffset))
-      );
-      setScrollProgress(progress);
+      requestAnimationFrame(() => {
+        const rect = container.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        
+        const startOffset = windowHeight * 0.9;
+        const endOffset = windowHeight * 0.25;
+        
+        const progress = Math.min(
+          1,
+          Math.max(0, (startOffset - rect.top) / (startOffset - endOffset))
+        );
+        
+        setScrollProgress(progress);
+        ticking = false;
+      });
     };
 
-    const schedule = () => {
-      if (pending) return;
-      pending = true;
-      requestAnimationFrame(compute);
-    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
 
-    document.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("touchmove", schedule, { passive: true });
-
-    compute();
-
-    return () => {
-      document.removeEventListener("scroll", schedule);
-      window.removeEventListener("scroll", schedule);
-      window.removeEventListener("touchmove", schedule);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
@@ -68,7 +54,7 @@ export function BlurInHeadline(): ReactNode {
           {words.map((word, index) => {
             const wordStart = index / words.length;
             const wordEnd = wordStart + 1 / words.length;
-
+            
             const wordProgress = Math.min(
               1,
               Math.max(0, (scrollProgress - wordStart) / (wordEnd - wordStart))
@@ -80,7 +66,7 @@ export function BlurInHeadline(): ReactNode {
               <span
                 key={index}
                 className="mr-2 inline-block lg:mr-3"
-                style={{
+                style={{ 
                   opacity,
                   filter: `blur(${blur}px)`,
                   transition: "opacity 75ms, filter 75ms",
