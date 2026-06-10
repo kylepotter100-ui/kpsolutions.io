@@ -8,13 +8,17 @@ const headline =
 
 export function BlurInHeadline(): ReactNode {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const [scrollProgress, setScrollProgress] = useState(1);
   const words = headline.split(" ");
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!window.matchMedia("(min-width: 851px)").matches) return;
+
     const container = containerRef.current;
     if (!container) return;
 
+    setScrollProgress(0);
     let ticking = false;
 
     const handleScroll = () => {
