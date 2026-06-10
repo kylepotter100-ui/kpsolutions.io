@@ -8,21 +8,21 @@ import type { ReactNode } from "react";
 const steps = [
   {
     icon: CalendarCheck,
-    title: "Schedule kickoff",
+    title: "Discovery and scoping",
     description:
-      "Align on scope, structure, and timeline. Whether it's a quick setup or a full migration, we'll take it from there.",
+      "A thirty-minute call to see if we can help. Then the brief is written in your words, the data model drafted on paper, and a fixed-fee proposal lands inside forty-eight hours.",
   },
   {
     icon: Users,
-    title: "Real-time collaboration",
+    title: "Design and build",
     description:
-      "Work alongside our team with full visibility. Every step follows best practices and thorough QA to ensure quality.",
+      "Real screens, not wireframes. A live staging URL goes up so you watch the build as it happens — operator UI, the AEO layer, and the edge cases handled in lockstep, not skipped.",
   },
   {
     icon: Rocket,
-    title: "Launch and scale",
+    title: "Launch and handover",
     description:
-      "Go live with confidence. Our AI continuously learns and improves, helping your team scale effortlessly.",
+      "Production cutover with you on the call. The source repository transfers to your organisation, a runbook lands in your inbox, and a ninety-day post-launch guarantee starts the moment you are live.",
   },
 ];
 
@@ -74,17 +74,17 @@ export function HowItWorks(): ReactNode {
             How it works
           </h2>
           <p className="mt-6 max-w-md text-lg leading-relaxed text-foreground/60">
-            Your platform, configured by experts and launched on an{" "}
-            <span className="font-medium text-foreground">Enterprise plan</span>
-            , ready to grow with you.
+            Scoped comprehensively. Fixed fee. Code{" "}
+            <span className="font-medium text-foreground">owned by you</span>,
+            from day one.
           </p>
           <motion.a
-            href="#"
+            href="/contact"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             className="mt-8 inline-flex items-center rounded-xl bg-foreground px-6 py-3 text-sm font-semibold text-background transition-colors hover:bg-foreground/90"
           >
-            Schedule kickoff
+            Start a conversation
           </motion.a>
         </div>
 
