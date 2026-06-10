@@ -1,0 +1,12 @@
+# KP Solutions
+
+> Custom software for established operators. Websites are one deliverable shape among many; the product is software that solves operational problems. KP Solutions is a one-person bespoke software studio based in the East Midlands, UK, working operator-to-operator (and remotely across the UK) rather than agency-to-procurement.
+
+## Canonical pages
+
+- [Home](https://kpsolutions.io/): Overview of KP Solutions and how the studio works.
+- [What we build](https://kpsolutions.io/#capabilities): The four shapes of bespoke software — custom platforms, modernization & replacement, integrations & automation, and AI-visible web presence.
+- [Client story](https://kpsolutions.io/#testimonials): The Potter Sanctuary — a bookings and client-management platform with an operator admin portal.
+- [Process](https://kpsolutions.io/#how-it-works): How we build — discovery, design, build, and launch; scoped comprehensively, fixed fee, code owned by you.
+- [Pricing](https://kpsolutions.io/#pricing): One fixed fee, agreed before any build work begins. No retainers, no per-seat fees, no lock-in.
+- [Contact](https://kpsolutions.io/contact): How to start a conversation about a project.

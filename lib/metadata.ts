@@ -5,7 +5,6 @@ export const siteConfig = {
   description:
     "KP Solutions builds bespoke software for established businesses that have outgrown off-the-shelf SaaS. Custom platforms, internal tools, integrations, and AI-visible web presence, scoped comprehensively with code owned by the client from day one.",
   url: "https://kpsolutions.io",
-  // og-default.png lands via `git checkout main -- public/og-default.png` in Phase 4.
   ogImage: "/og-default.png",
   creator: "@kpsolutions",
   authors: [
@@ -77,11 +76,8 @@ export const baseMetadata: Metadata = {
     images: [siteConfig.ogImage],
     creator: siteConfig.creator,
   },
-  icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon-16x16.png",
-    apple: "/apple-icon.png",
-  },
+  // app/icon.svg is auto-wired by Next; the explicit entries here pointed at
+  // files that don't exist in public/.
   manifest: "/site.webmanifest",
 };
 
