@@ -1,30 +1,36 @@
 {
-  "name": "kpsolutions.io",
-  "type": "module",
-  "version": "0.0.1",
-  "engines": {
-    "node": ">=22.12.0"
-  },
+  "name": "template-baseline",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx,.mjs",
+    "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx,.mjs --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,mjs,json,css,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mjs,json,css,md}\"",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^13.5.4",
-    "@astrojs/preact": "^5.1.3",
-    "@astrojs/sitemap": "^3.7.3",
-    "@tailwindcss/vite": "^4.3.0",
-    "astro": "^6.3.7",
-    "motion": "^12.40.0",
-    "preact": "^10.29.2",
-    "tailwindcss": "^4.3.0"
+    "lenis": "^1.3.17",
+    "lucide-react": "^0.562.0",
+    "motion": "^12.23.26",
+    "next": "16.1.1",
+    "next-themes": "^0.4.6",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
   },
   "devDependencies": {
-    "@resvg/resvg-js": "^2.6.2",
-    "satori": "^0.26.0",
-    "wawoff2": "^2.0.1",
-    "wrangler": "^4.94.0"
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.1",
+    "prettier": "^3.7.4",
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }

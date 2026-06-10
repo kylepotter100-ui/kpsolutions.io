@@ -1,0 +1,16 @@
+{
+  "name": "KP Solutions",
+  "short_name": "KP Solutions",
+  "description": "Bespoke software for established businesses — custom platforms, internal tools, integrations, and AI-visible web presence. Fixed fee, code owned by you.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#a8d946",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
