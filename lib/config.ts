@@ -1,27 +1,30 @@
 /**
  * ============================================================================
- * SITE CONFIGURATION
+ * KP SOLUTIONS — site configuration
  * ============================================================================
- * 
- * Customize your landing page by editing the values below.
- * All text, links, and settings are centralized here for easy editing.
+ *
+ * Copy lives here where possible. Some sections still hold their copy inside
+ * the component file (hero, faq, testimonials, how-it-works) — Phase 1 edits
+ * both this file and those component constants. A later refactor could
+ * centralise everything; out of scope for the content migration.
  */
 
 export const siteConfig = {
   // Brand
-  name: "Circular",
-  tagline: "Build Faster, Ship with Confidence",
-  description: "The modern platform for teams who want to move fast without breaking things",
-  
+  name: "KP Solutions",
+  tagline: "Software that fits how you work",
+  description:
+    "KP Solutions builds bespoke software for established businesses that have outgrown off-the-shelf SaaS. Custom platforms, internal tools, integrations, and AI-visible web presence, scoped comprehensively with code owned by the client from day one.",
+
   // URLs
-  url: "https://example.com",
-  twitter: "@circular",
-  
-  // Navigation
+  url: "https://kpsolutions.io",
+  twitter: "@kpsolutions",
+
+  // Navigation — restructured fully in Phase 3
   nav: {
     cta: {
-      text: "Try for free",
-      href: "#",
+      text: "Start a conversation",
+      href: "/contact",
     },
     signIn: {
       text: "Sign in",
@@ -31,78 +34,84 @@ export const siteConfig = {
 };
 
 export const heroConfig = {
-  badge: "Now Available",
+  badge: "Now booking",
   headline: {
-    line1: "Build Faster",
-    line2: "Ship with",
-    accent: "Confidence",
+    line1: "Software that fits",
+    line2: "how you",
+    accent: "work",
   },
-  subheadline: "The modern platform for teams who want to move fast without breaking things",
+  subheadline:
+    "Bespoke platforms, internal tools, and integrations — plus web presence engineered to be found by AI. Built around you, owned entirely by you.",
   cta: {
-    text: "Get Started",
-    href: "#",
+    text: "Start a conversation",
+    href: "/contact",
   },
 };
 
 export const blurHeadlineConfig = {
-  text: "Modern teams use our platform to elevate every customer touchpoint, blending human expertise with AI capabilities in a unified system that drives continuous improvement across all channels.",
+  text: "KP Solutions builds bespoke software for businesses that want their tools to fit how they actually work — whether you're just starting out, growing fast, or finally moving on from off-the-shelf SaaS. Custom platforms, internal tools, integrations, and AI-visible web presence.",
 };
 
 export const testimonialsConfig = {
-  title: "Trusted by teams worldwide",
-  autoplayInterval: 10000, // milliseconds
+  // One real client today; plural phrasing would read dishonest.
+  title: "Client story",
+  autoplayInterval: 10000, // unused once Phase 2b removes autorotation
 };
 
 export const howItWorksConfig = {
   title: "How it works",
-  description: "Your platform, configured by experts and launched on an Enterprise plan, ready to grow with you.",
+  description:
+    "Scoped comprehensively. Fixed fee. Code owned by you, from day one.",
   cta: {
-    text: "Schedule kickoff",
-    href: "#",
+    text: "Start a conversation",
+    href: "/contact",
   },
 };
 
 export const pricingConfig = {
-  title: "Simple, transparent pricing",
-  description: "Choose the plan that works best for your team. All plans include a 14-day free trial.",
-  billingNote: "Billed annually",
+  // Section is replaced by a single "How we price" panel in Phase 2c.
+  title: "How we price",
+  description:
+    "One fixed fee, scoped up front and agreed before any build work begins. No retainers, no monthly invoices, no scope-creep clauses.",
+  billingNote: "",
 };
 
 export const faqConfig = {
-  title: "Everything you need to know",
-  description: "Can't find the answer you're looking for? Reach out!",
+  title: "Questions, answered",
+  description:
+    "If something here doesn't cover what you need, the fastest answer is a thirty-minute call.",
   cta: {
     primary: {
-      text: "Get Started",
-      href: "#",
+      text: "Start a conversation",
+      href: "/contact",
     },
     secondary: {
-      text: "Contact Support",
-      href: "#",
+      text: "Read the process",
+      href: "#how-it-works",
     },
   },
 };
 
 export const footerConfig = {
+  // Waitlist form is removed in Phase 3b; copy here describes the replacement.
   cta: {
-    headline: "Start building something amazing today",
-    placeholder: "Enter your email",
-    button: "Join Waitlist",
+    headline: "Tell us about the work that doesn't fit the tools you have.",
+    placeholder: "",
+    button: "Start a conversation",
   },
-  copyright: `© ${new Date().getFullYear()} Circular. All rights reserved.`,
+  copyright: `© ${new Date().getFullYear()} KP Solutions · Loughborough, UK`,
 };
 
 /**
  * ============================================================================
  * FEATURE FLAGS
  * ============================================================================
- * 
- * Toggle features on/off without touching component code.
  */
 
 export const features = {
   smoothScroll: true,
-  testimonialAutoplay: true,
+  // Disabled once Phase 2b reduces the testimonial carousel to a single entry.
+  testimonialAutoplay: false,
   parallaxHero: true,
   blurInHeadline: true,
 };
@@ -111,9 +120,6 @@ export const features = {
  * ============================================================================
  * THEME CONFIGURATION
  * ============================================================================
- * 
- * Colors are defined in globals.css using CSS custom properties.
- * This config controls which theme features are enabled.
  */
 
 export const themeConfig = {

@@ -1,25 +1,31 @@
 import type { Metadata } from "next";
 
 export const siteConfig = {
-  name: "React Bits Pro - SaaS Template",
+  name: "KP Solutions — Bespoke software for established operators",
   description:
-    "A modern, accessible landing page template built with Next.js, Tailwind CSS, and TypeScript.",
-  url: "https://example.com",
-  ogImage: "/og-image.png",
-  creator: "@yourhandle",
+    "KP Solutions builds bespoke software for established businesses that have outgrown off-the-shelf SaaS. Custom platforms, internal tools, integrations, and AI-visible web presence, scoped comprehensively with code owned by the client from day one.",
+  url: "https://kpsolutions.io",
+  // og-default.png lands via `git checkout main -- public/og-default.png` in Phase 4.
+  ogImage: "/og-default.png",
+  creator: "@kpsolutions",
   authors: [
     {
-      name: "Your Name",
-      url: "https://example.com",
+      name: "KP Solutions",
+      url: "https://kpsolutions.io",
     },
   ],
   keywords: [
-    "landing page",
-    "template",
-    "Next.js",
-    "React",
-    "Tailwind CSS",
-    "TypeScript",
+    "bespoke software",
+    "custom software development",
+    "internal tools",
+    "operations dashboards",
+    "systems integration",
+    "legacy software replacement",
+    "AI-visible web presence",
+    "AEO",
+    "Loughborough",
+    "East Midlands",
+    "United Kingdom",
   ],
 } as const;
 
