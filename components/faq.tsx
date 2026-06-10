@@ -6,29 +6,34 @@ import { useState, type ReactNode } from "react";
 
 const faqs = [
   {
-    question: "How does the 14-day free trial work?",
+    question: "What happens first?",
     answer:
-      "Start using our platform immediately with full access to all features. No credit card required. At the end of your trial, choose a plan that fits your needs or continue with our free tier.",
+      "Discovery and architecture. A 30-minute call to see if we can help, then the brief written in your words and signed off, the data model drafted on paper, and a fixed-fee proposal within forty-eight hours.",
   },
   {
-    question: "Can I switch plans at any time?",
+    question: "When do I see something real?",
     answer:
-      "Absolutely! You can upgrade or downgrade your plan at any time. When upgrading, you'll get immediate access to new features. When downgrading, changes take effect at your next billing cycle.",
+      "Early on. A live staging URL goes up so you watch the build as it happens — real screens, not wireframes.",
   },
   {
-    question: "What integrations do you support?",
+    question: "What do I get at handover?",
     answer:
-      "We integrate with all major platforms including Slack, Zendesk, Salesforce, HubSpot, Intercom, and 50+ other tools. Our API also allows custom integrations for enterprise customers.",
+      "Production cutover with you on the call, the source repository transferred to your organisation, a runbook, a Loom walkthrough, and a ninety-day post-launch guarantee that starts the moment you are live.",
   },
   {
-    question: "How secure is my data?",
+    question: "How is it priced?",
     answer:
-      "Security is our top priority. We use bank-level encryption (AES-256), are SOC 2 Type II certified, and GDPR compliant. All data is stored in secure, redundant data centers with 99.99% uptime.",
+      "Every engagement is a fixed fee, scoped up front and agreed before any build work begins. No retainers, no monthly invoices, no scope-creep clauses.",
   },
   {
-    question: "Do you offer dedicated support?",
+    question: "Why a fixed scope?",
     answer:
-      "All plans include email support with 24-hour response times. Premium plans get priority support with 4-hour response times. Enterprise customers receive a dedicated success manager and phone support.",
+      "A tight, fixed scope is the constraint that makes the rest possible. It rules out the discovery phase that produces nothing and the replatform that ships eighteen months late, and it keeps scope set up front and respected throughout.",
+  },
+  {
+    question: "Who actually does the work?",
+    answer:
+      "One person, operator to operator. Decisions are made on the call, not in a status report, with no account managers or hand-offs in between.",
   },
 ];
 
@@ -115,28 +120,28 @@ export function FAQ(): ReactNode {
             Frequently Asked Questions
           </span>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-            Everything you need to know
+            Questions, answered
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground sm:text-lg">
-            Can&apos;t find the answer you&apos;re looking for? Reach out!
+            If something here doesn&apos;t cover what you need, the fastest answer is a thirty-minute call.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <motion.a
-              href="#"
+              href="/contact"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="inline-flex items-center rounded-xl bg-foreground px-6 py-2.5 text-sm font-semibold text-background transition-colors hover:bg-foreground/90"
             >
-              Get Started
+              Start a conversation
             </motion.a>
             <motion.a
-              href="#"
+              href="#how-it-works"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="inline-flex items-center rounded-xl border border-border bg-frame px-6 py-2.5 text-sm font-semibold text-foreground transition-colors"
             >
-              Contact Support
+              Read the process
             </motion.a>
           </div>
         </motion.div>

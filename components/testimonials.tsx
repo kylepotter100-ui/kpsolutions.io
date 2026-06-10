@@ -75,7 +75,7 @@ export function Testimonials(): ReactNode {
           transition={{ duration: 0.4 }}
           className="mb-16 text-4xl leading-tight font-medium text-neutral-900 sm:text-5xl lg:mb-20 lg:text-6xl dark:text-neutral-50"
         >
-          Trusted by teams worldwide
+          Client story
         </motion.h2>
 
         <div className="mb-16 grid gap-8 lg:mb-20 lg:grid-cols-2 lg:gap-12">
