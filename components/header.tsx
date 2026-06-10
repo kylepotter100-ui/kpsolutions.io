@@ -12,7 +12,7 @@ const menus = {
     { label: "AI-visible web presence", description: "Found and recommended by AI search", href: "/#capabilities" },
   ],
   resources: [
-    { label: "Case Studies", description: "The Potter Sanctuary, in their words", href: "/#testimonials" },
+    { label: "Case Studies", description: "See how others succeed", href: "/#testimonials" },
     { label: "Our process", description: "Discovery to handover, fixed fee", href: "/#how-it-works" },
     { label: "How we price", description: "One fixed fee, agreed up front", href: "/#pricing" },
   ],

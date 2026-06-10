@@ -6,7 +6,7 @@ import { useState, type ReactNode } from "react";
 const testimonials = [
   {
     quote:
-      "Before working with KP Solutions I was manually messaging with clients to manage my diary and had no way to manage bookings effectively. Not my entire business is automated, the admin portal allows me to engage with customers effectively and I can focus on what matters. Flawless service end-to-end",
+      "Before working with KP Solutions I was manually messaging with clients to manage my diary and had no way to manage bookings effectively. Now my entire business is automated, the admin portal allows me to engage with customers effectively and I can focus on what matters. Flawless service end-to-end",
     name: "The Potter Sanctuary",
     title: "Bookings & client management platform",
     monogram: "PS",
@@ -55,13 +55,13 @@ export function Testimonials(): ReactNode {
                 style={{ cursor: 'pointer' }}
               >
                 <div
-                  className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full transition-colors duration-500 sm:h-16 sm:w-16 lg:h-20 lg:w-20"
+                  className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full transition-colors duration-500 sm:h-12 sm:w-12 lg:h-16 lg:w-16"
                   style={{
                     backgroundColor:
                       activeIndex === index ? testimonial.color : undefined,
                   }}
                 >
-                  <span className="font-serif text-xl font-semibold italic tracking-tight text-black sm:text-2xl lg:text-3xl">
+                  <span className="font-serif text-base font-semibold italic tracking-tight text-black sm:text-lg lg:text-2xl">
                     {testimonial.monogram}
                   </span>
                 </div>
