@@ -11,41 +11,59 @@ export function BlurInHeadline(): ReactNode {
   const [scrollProgress, setScrollProgress] = useState(1);
   const words = headline.split(" ");
 
+  // The site scrolls through Lenis (components/smooth-scroll.tsx), so raw
+  // window scroll events are unreliable on touch. Progress is sampled on
+  // animation frames instead, only while the section is near the viewport.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (!window.matchMedia("(min-width: 851px)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const container = containerRef.current;
     if (!container) return;
 
     setScrollProgress(0);
-    let ticking = false;
 
-    const handleScroll = () => {
-      if (ticking) return;
-      ticking = true;
+    let rafId: number | null = null;
+    let lastProgress = -1;
 
-      requestAnimationFrame(() => {
-        const rect = container.getBoundingClientRect();
-        const windowHeight = window.innerHeight;
-        
-        const startOffset = windowHeight * 0.9;
-        const endOffset = windowHeight * 0.25;
-        
-        const progress = Math.min(
-          1,
-          Math.max(0, (startOffset - rect.top) / (startOffset - endOffset))
-        );
-        
+    const tick = () => {
+      const rect = container.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      const startOffset = windowHeight * 0.9;
+      const endOffset = windowHeight * 0.25;
+
+      const progress = Math.min(
+        1,
+        Math.max(0, (startOffset - rect.top) / (startOffset - endOffset))
+      );
+
+      if (progress !== lastProgress) {
+        lastProgress = progress;
         setScrollProgress(progress);
-        ticking = false;
-      });
+      }
+
+      rafId = requestAnimationFrame(tick);
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          if (rafId === null) rafId = requestAnimationFrame(tick);
+        } else if (rafId !== null) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+      },
+      { rootMargin: "100% 0px" }
+    );
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    observer.observe(container);
+
+    return () => {
+      observer.disconnect();
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   return (
@@ -58,7 +76,7 @@ export function BlurInHeadline(): ReactNode {
           {words.map((word, index) => {
             const wordStart = index / words.length;
             const wordEnd = wordStart + 1 / words.length;
-            
+
             const wordProgress = Math.min(
               1,
               Math.max(0, (scrollProgress - wordStart) / (wordEnd - wordStart))
@@ -70,7 +88,7 @@ export function BlurInHeadline(): ReactNode {
               <span
                 key={index}
                 className="mr-2 inline-block lg:mr-3"
-                style={{ 
+                style={{
                   opacity,
                   filter: `blur(${blur}px)`,
                   transition: "opacity 75ms, filter 75ms",
