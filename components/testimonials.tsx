@@ -1,17 +1,25 @@
 "use client";
 
-import { motion } from "motion/react";
-import type { ReactNode } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { useState, type ReactNode } from "react";
 
-const testimonial = {
-  quote:
-    "Before working with KP Solutions I was manually messaging with clients to manage my diary and had no way to manage bookings effectively. Not my entire business is automated, the admin portal allows me to engage with customers effectively and I can focus on what matters. Flawless service end-to-end",
-  name: "The Potter Sanctuary",
-  title: "Bookings & client management platform",
-  monogram: "PS",
-};
+const testimonials = [
+  {
+    quote:
+      "Before working with KP Solutions I was manually messaging with clients to manage my diary and had no way to manage bookings effectively. Not my entire business is automated, the admin portal allows me to engage with customers effectively and I can focus on what matters. Flawless service end-to-end",
+    name: "The Potter Sanctuary",
+    title: "Bookings & client management platform",
+    monogram: "PS",
+    color: "#a8d946",
+    company: "The Potter Sanctuary",
+  },
+];
+
+const companies = [{ name: "The Potter Sanctuary" }];
 
 export function Testimonials(): ReactNode {
+  const [activeIndex, setActiveIndex] = useState(0);
+
   return (
     <section
       id="testimonials"
@@ -28,41 +36,121 @@ export function Testimonials(): ReactNode {
           Client story
         </motion.h2>
 
-        <div className="grid gap-10 lg:grid-cols-[auto_1fr] lg:gap-16">
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            whileInView={{ scale: 1, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="flex flex-row items-center gap-5 lg:flex-col lg:items-start lg:gap-6"
-          >
-            <div
-              className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-accent sm:h-24 sm:w-24"
-              aria-hidden="true"
-            >
-              <span className="font-serif text-2xl font-semibold italic tracking-tight text-black sm:text-3xl">
-                {testimonial.monogram}
-              </span>
-            </div>
-            <div>
-              <div className="text-base font-medium text-neutral-900 sm:text-lg dark:text-neutral-100">
-                {testimonial.name}
-              </div>
-              <div className="text-sm text-neutral-600 dark:text-neutral-400">
-                {testimonial.title}
-              </div>
-            </div>
-          </motion.div>
+        <div className="mb-16 grid gap-8 lg:mb-20 lg:grid-cols-2 lg:gap-12">
+          <div className="flex items-center justify-start gap-4 lg:gap-6" role="tablist" aria-label="Client stories">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={index}
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{
+                  scale: activeIndex === index ? 1.1 : 0.9,
+                  opacity: activeIndex === index ? 1 : 0.6,
+                }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+                className="relative"
+                role="tab"
+                aria-selected={activeIndex === index}
+                tabIndex={activeIndex === index ? 0 : -1}
+                onClick={() => setActiveIndex(index)}
+                style={{ cursor: 'pointer' }}
+              >
+                <div
+                  className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full transition-colors duration-500 sm:h-16 sm:w-16 lg:h-20 lg:w-20"
+                  style={{
+                    backgroundColor:
+                      activeIndex === index ? testimonial.color : undefined,
+                  }}
+                >
+                  <span className="font-serif text-xl font-semibold italic tracking-tight text-black sm:text-2xl lg:text-3xl">
+                    {testimonial.monogram}
+                  </span>
+                </div>
 
-          <motion.blockquote
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-xl leading-relaxed text-neutral-700 sm:text-2xl dark:text-neutral-300"
-          >
-            &ldquo;{testimonial.quote}&rdquo;
-          </motion.blockquote>
+                {activeIndex === index && (
+                  <svg
+                    className="absolute -inset-2 h-[calc(100%+16px)] w-[calc(100%+16px)] -rotate-90"
+                    viewBox="0 0 100 100"
+                    aria-hidden="true"
+                  >
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="48"
+                      fill="none"
+                      stroke={testimonial.color}
+                      strokeWidth="1.5"
+                      opacity="0.2"
+                    />
+                    <motion.circle
+                      key={`progress-${activeIndex}`}
+                      cx="50"
+                      cy="50"
+                      r="48"
+                      fill="none"
+                      stroke={testimonial.color}
+                      strokeWidth="1.5"
+                      strokeDasharray={`${2 * Math.PI * 48}`}
+                      initial={{ strokeDashoffset: 2 * Math.PI * 48 }}
+                      animate={{ strokeDashoffset: 0 }}
+                      transition={{ duration: 10, ease: "linear" }}
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                )}
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="flex flex-col justify-center" role="tabpanel" aria-live="polite">
+            <AnimatePresence mode="wait">
+              {testimonials[activeIndex] && (
+                <motion.div
+                  key={activeIndex}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <blockquote className="mb-6 text-xl leading-relaxed text-neutral-700 dark:text-neutral-300">
+                    &ldquo;{testimonials[activeIndex].quote}&rdquo;
+                  </blockquote>
+                  <div className="text-base font-medium text-neutral-900 sm:text-lg dark:text-neutral-100">
+                    {testimonials[activeIndex].name},{" "}
+                    <span className="text-neutral-600 dark:text-neutral-400">
+                      {testimonials[activeIndex].title}
+                    </span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between gap-6 lg:gap-8">
+          {companies.map((company, index) => {
+            const isActive = testimonials[activeIndex]?.company === company.name;
+            return (
+              <motion.div
+                key={company.name}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                animate={{ scale: isActive ? 1.1 : 1 }}
+                className="flex items-center"
+              >
+                <span
+                  className={`text-lg font-semibold tracking-tight transition-colors duration-300 sm:text-xl ${
+                    isActive
+                      ? "text-neutral-900 dark:text-white"
+                      : "text-neutral-400 dark:text-neutral-600"
+                  }`}
+                >
+                  {company.name}
+                </span>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
