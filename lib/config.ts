@@ -114,6 +114,10 @@ export const features = {
   testimonialAutoplay: false,
   parallaxHero: true,
   blurInHeadline: true,
+  // The site sets no cookies today, so the consent banner stays off. Flip to
+  // true when adding analytics: the banner gates the script on consent stored
+  // under the kp-cookie-consent localStorage key (see /cookies).
+  analytics: false,
 };
 
 /**

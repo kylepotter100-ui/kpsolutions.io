@@ -1,3 +1,4 @@
+import { CookieBanner } from "@/components/cookie-banner";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { Providers } from "@/components/providers";
@@ -77,6 +78,7 @@ export default function RootLayout({
           <SkipToContent />
           {children}
           <Footer />
+          <CookieBanner />
         </Providers>
       </body>
     </html>
