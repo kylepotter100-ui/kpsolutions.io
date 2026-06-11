@@ -146,7 +146,6 @@ export function ProcessContent(): ReactNode {
       <BlurInHeadline
         text="Every engagement starts with a conversation, not a contract. We talk through what you're working with, agree what the build needs to do, and write the brief in your words before anything is committed."
         ssrVisible
-        pinned
       />
 
       <div className="mx-auto max-w-5xl px-6 pb-24">

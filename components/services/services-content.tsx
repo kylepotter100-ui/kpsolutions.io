@@ -32,7 +32,6 @@ export function ServicesContent(): ReactNode {
       <BlurInHeadline
         text="Software built around how your business actually works — not how a vendor assumed it should. Code owned entirely by you, scoped comprehensively, delivered on a timeline agreed up front."
         ssrVisible
-        pinned
       />
 
       <div className="mx-auto max-w-5xl px-6 pb-24">

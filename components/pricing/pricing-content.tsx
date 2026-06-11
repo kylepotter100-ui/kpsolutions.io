@@ -52,7 +52,6 @@ export function PricingContent(): ReactNode {
       <BlurInHeadline
         text="No estimates that quietly become invoices. No per-seat fees. No retainers as a precondition. The build is one number, agreed up front, with the code owned entirely by you from day one."
         ssrVisible
-        pinned
       />
 
       <section className="px-6 py-16">
