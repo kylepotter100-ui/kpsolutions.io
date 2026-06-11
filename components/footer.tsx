@@ -5,10 +5,10 @@ import type { ReactNode } from "react";
 
 const footerLinks = {
   menu: [
-    { label: "What we build", href: "/#capabilities" },
-    { label: "Case studies", href: "/#testimonials" },
-    { label: "Our process", href: "/#how-it-works" },
-    { label: "How we price", href: "/#pricing" },
+    { label: "What we build", href: "/services" },
+    { label: "Case studies", href: "/work" },
+    { label: "Our process", href: "/process" },
+    { label: "How we price", href: "/pricing" },
   ],
   company: [
     { label: "Contact", href: "/contact" },
@@ -16,6 +16,11 @@ const footerLinks = {
   ],
   social: [
     { label: "LinkedIn", href: "#" },
+  ],
+  legal: [
+    { label: "Privacy", href: "/privacy" },
+    { label: "Terms", href: "/terms" },
+    { label: "Cookies", href: "/cookies" },
   ],
 };
 
@@ -96,7 +101,19 @@ export function Footer(): ReactNode {
             </nav>
           </div>
 
-          <div className="mt-16 pt-6">
+          <div className="mt-16 pt-6 flex flex-col items-center gap-3">
+            <nav aria-label="Legal">
+              <ul className="flex items-center gap-2 text-sm text-neutral-900/70">
+                {footerLinks.legal.map((link, i) => (
+                  <li key={link.label} className="flex items-center gap-2">
+                    {i > 0 && <span aria-hidden="true">·</span>}
+                    <a href={link.href} className="hover:text-neutral-900 transition-colors">
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
             <p className="text-sm text-neutral-900/50 text-center">
               © {new Date().getFullYear()} KP Solutions · Loughborough, UK
             </p>

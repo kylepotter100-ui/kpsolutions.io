@@ -79,7 +79,7 @@ export const pricingConfig = {
 export const faqConfig = {
   title: "Questions, answered",
   description:
-    "If something here doesn't cover what you need, the fastest answer is a thirty-minute call.",
+    "If something here doesn't cover what you need, the fastest answer is a 30-minute call.",
   cta: {
     primary: {
       text: "Start a conversation",
@@ -114,6 +114,10 @@ export const features = {
   testimonialAutoplay: false,
   parallaxHero: true,
   blurInHeadline: true,
+  // The site sets no cookies today, so the consent banner stays off. Flip to
+  // true when adding analytics: the banner gates the script on consent stored
+  // under the kp-cookie-consent localStorage key (see /cookies).
+  analytics: false,
 };
 
 /**

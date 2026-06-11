@@ -52,7 +52,7 @@ export function Pricing(): ReactNode {
             <h3 className="text-xl font-semibold text-foreground">Fixed fee</h3>
 
             <p className="mt-2 text-sm text-muted-foreground">
-              Scoped in discovery, proposed within forty-eight hours, agreed
+              Scoped in discovery, proposed within 48 hours, agreed
               before a line of code is written.
             </p>
 

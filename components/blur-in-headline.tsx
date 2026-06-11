@@ -1,19 +1,34 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 
-const headline =
+const defaultHeadline =
   "KP Solutions builds bespoke software for businesses that want their tools to fit how they actually work — whether you're just starting out, growing fast, or finally moving on from off-the-shelf SaaS. Custom platforms, internal tools, integrations, and AI-visible web presence.";
 
-export function BlurInHeadline(): ReactNode {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const words = headline.split(" ");
+type BlurInHeadlineProps = {
+  text?: string;
+  ssrVisible?: boolean;
+};
 
-  useEffect(() => {
+export function BlurInHeadline({
+  text = defaultHeadline,
+  ssrVisible = false,
+}: BlurInHeadlineProps = {}): ReactNode {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const mountTopRef = useRef<number | null>(null);
+  const [scrollProgress, setScrollProgress] = useState(ssrVisible ? 1 : 0);
+  const words = text.split(" ");
+
+  useLayoutEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+
+    // Where the section sits at load decides where the reveal begins: progress
+    // is exactly 0 on first paint even when the section is already partially in
+    // view (inner pages mount it just below a compact hero). Sections mounting
+    // below the fold keep the original 0.9·vh threshold via min().
+    mountTopRef.current = container.getBoundingClientRect().top;
 
     let ticking = false;
 
@@ -24,15 +39,18 @@ export function BlurInHeadline(): ReactNode {
       requestAnimationFrame(() => {
         const rect = container.getBoundingClientRect();
         const windowHeight = window.innerHeight;
-        
-        const startOffset = windowHeight * 0.9;
+
         const endOffset = windowHeight * 0.25;
-        
+        const startOffset = Math.max(
+          Math.min(windowHeight * 0.9, mountTopRef.current ?? Infinity),
+          endOffset + windowHeight * 0.3
+        );
+
         const progress = Math.min(
           1,
           Math.max(0, (startOffset - rect.top) / (startOffset - endOffset))
         );
-        
+
         setScrollProgress(progress);
         ticking = false;
       });

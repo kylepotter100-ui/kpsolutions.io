@@ -1,8 +1,15 @@
+import { CookieBanner } from "@/components/cookie-banner";
+import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { Providers } from "@/components/providers";
 import { SkipToContent } from "@/components/skip-to-content";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { baseMetadata } from "@/lib/metadata";
+import {
+  JsonLd,
+  organizationSchema,
+  professionalServiceSchema,
+} from "@/lib/schema";
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
@@ -42,6 +49,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background font-sans text-foreground antialiased`}
       >
+        <JsonLd schema={organizationSchema()} />
+        <JsonLd schema={professionalServiceSchema()} />
         <Providers>
           {/* Fixed frame */}
           <div className="site-frame site-frame--top" aria-hidden="true" />
@@ -68,6 +77,8 @@ export default function RootLayout({
           
           <SkipToContent />
           {children}
+          <Footer />
+          <CookieBanner />
         </Providers>
       </body>
     </html>

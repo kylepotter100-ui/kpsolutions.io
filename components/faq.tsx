@@ -3,39 +3,7 @@
 import { motion, AnimatePresence } from "motion/react";
 import { ChevronDown } from "lucide-react";
 import { useState, type ReactNode } from "react";
-
-const faqs = [
-  {
-    question: "What happens first?",
-    answer:
-      "Discovery and architecture. A 30-minute call to see if we can help, then the brief written in your words and signed off, the data model drafted on paper, and a fixed-fee proposal within forty-eight hours.",
-  },
-  {
-    question: "When do I see something real?",
-    answer:
-      "Early on. A live staging URL goes up so you watch the build as it happens — real screens, not wireframes.",
-  },
-  {
-    question: "What do I get at handover?",
-    answer:
-      "Production cutover with you on the call, the source repository transferred to your organisation, a runbook, a Loom walkthrough, and a ninety-day post-launch guarantee that starts the moment you are live.",
-  },
-  {
-    question: "How is it priced?",
-    answer:
-      "Every build is a fixed fee, scoped up front and agreed before any work begins, with no scope-creep clauses. After launch, optional retainers are available if you want a long-term partner for changes, updates, and ongoing support.",
-  },
-  {
-    question: "Why a fixed scope?",
-    answer:
-      "A tight, fixed scope is the constraint that makes the rest possible. It rules out the discovery phase that produces nothing and the replatform that ships eighteen months late, and it keeps scope set up front and respected throughout.",
-  },
-  {
-    question: "Who actually does the work?",
-    answer:
-      "One person, operator to operator. Decisions are made on the call, not in a status report, with no account managers or hand-offs in between.",
-  },
-];
+import { homeFaqs as faqs } from "@/lib/faq-data";
 
 const ease = [0.23, 1, 0.32, 1] as const;
 
@@ -123,7 +91,7 @@ export function FAQ(): ReactNode {
             Questions, answered
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground sm:text-lg">
-            If something here doesn&apos;t cover what you need, the fastest answer is a thirty-minute call.
+            If something here doesn&apos;t cover what you need, the fastest answer is a 30-minute call.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
