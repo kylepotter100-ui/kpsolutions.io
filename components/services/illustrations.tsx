@@ -59,23 +59,23 @@ export function ModernizationIllustration({
       aria-label="Modernization: replacing the legacy tangle with one platform"
     >
       <g className="stroke-muted-foreground/40" strokeDasharray="3 3" fill="none">
-        <rect x="8" y="8" width="24" height="24" rx="4" strokeWidth="1.5" />
-        <rect x="40" y="8" width="24" height="24" rx="4" strokeWidth="1.5" />
-        <rect x="72" y="8" width="24" height="24" rx="4" strokeWidth="1.5" />
-        <rect x="8" y="40" width="24" height="24" rx="4" strokeWidth="1.5" />
-        <rect x="72" y="40" width="24" height="24" rx="4" strokeWidth="1.5" />
+        <rect x="10" y="10" width="22" height="22" rx="4" strokeWidth="1.5" />
+        <rect x="49" y="10" width="22" height="22" rx="4" strokeWidth="1.5" />
+        <rect x="88" y="10" width="22" height="22" rx="4" strokeWidth="1.5" />
+        <rect x="29" y="36" width="22" height="22" rx="4" strokeWidth="1.5" />
+        <rect x="69" y="36" width="22" height="22" rx="4" strokeWidth="1.5" />
       </g>
       <rect
-        x="20"
-        y="56"
-        width="80"
-        height="48"
+        x="10"
+        y="70"
+        width="100"
+        height="40"
         rx="12"
         className="fill-foreground"
       />
-      <circle cx="60" cy="80" r="14" className="fill-accent" />
+      <circle cx="60" cy="90" r="12" className="fill-accent" />
       <path
-        d="M52 80 L58 86 L70 74"
+        d="M52 90 L58 96 L70 84"
         className="stroke-foreground"
         strokeWidth="2.5"
         fill="none"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 
 const defaultHeadline =
@@ -19,7 +19,7 @@ export function BlurInHeadline({
   const [scrollProgress, setScrollProgress] = useState(ssrVisible ? 1 : 0);
   const words = text.split(" ");
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
