@@ -13,6 +13,8 @@ export type CaseStudy = {
   body: string[];
   liveUrl: string;
   liveLabel: string;
+  image: string;
+  imageMobile: string;
 };
 
 export const caseStudies: CaseStudy[] = [
@@ -37,5 +39,7 @@ export const caseStudies: CaseStudy[] = [
     ],
     liveUrl: PS_URL,
     liveLabel: PS_DOMAIN,
+    image: PS_SHOT,
+    imageMobile: PS_SHOT_MOBILE,
   },
 ];

@@ -60,7 +60,22 @@ export function WorkIndex(): ReactNode {
             variants={fadeInUp}
             transition={{ duration: 0.6, ease }}
           >
-            <h2 className="text-4xl max-[850px]:text-3xl font-medium tracking-tight leading-[1.15] text-foreground">
+            <a
+              href={`/work/${cs.id}`}
+              className="block overflow-hidden rounded-xl"
+              aria-label={`${cs.title} ${cs.accent} case study`}
+            >
+              <picture>
+                <source media="(max-width: 850px)" srcSet={cs.imageMobile} />
+                <img
+                  src={cs.image}
+                  alt={`The ${cs.title} ${cs.accent} homepage`}
+                  className="h-80 w-full object-cover object-top transition-transform duration-500 hover:scale-[1.02] max-[850px]:h-64"
+                  loading="lazy"
+                />
+              </picture>
+            </a>
+            <h2 className="mt-8 text-4xl max-[850px]:text-3xl font-medium tracking-tight leading-[1.15] text-foreground">
               {cs.title}{" "}
               <span className="italic font-serif text-accent">
                 {cs.accent}

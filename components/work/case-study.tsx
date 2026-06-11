@@ -98,6 +98,27 @@ export function CaseStudyDetail({ study }: { study: CaseStudy }): ReactNode {
         </motion.dl>
       </motion.section>
 
+      <motion.section
+        className="px-6 pb-16"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={fadeInUp}
+        transition={{ duration: 0.8, ease }}
+      >
+        <div className="mx-auto max-w-5xl overflow-hidden rounded-2xl shadow-sm">
+          <picture>
+            <source media="(max-width: 850px)" srcSet={study.imageMobile} />
+            <img
+              src={study.image}
+              alt={`The ${study.title} ${study.accent} homepage`}
+              className="max-h-[36rem] w-full object-cover object-top"
+              loading="lazy"
+            />
+          </picture>
+        </div>
+      </motion.section>
+
       <BlurInHeadline text={study.body[0] ?? ""} ssrVisible />
 
       <section className="px-6 pb-24">
