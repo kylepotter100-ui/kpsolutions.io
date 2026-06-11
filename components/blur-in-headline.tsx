@@ -1,7 +1,7 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
-import type { ReactNode } from "react";
+import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
+import { useRef, type ReactNode } from "react";
 
 const defaultHeadline =
   "KP Solutions builds bespoke software for businesses that want their tools to fit how they actually work — whether you're just starting out, growing fast, or finally moving on from off-the-shelf SaaS. Custom platforms, internal tools, integrations, and AI-visible web presence.";
@@ -11,56 +11,54 @@ type BlurInHeadlineProps = {
   ssrVisible?: boolean;
 };
 
+// useScroll polls scroll position via rAF (not the scroll event), so the
+// reveal stays in sync during iOS Safari momentum scrolls and under Lenis.
+// Element-relative offsets also avoid the stale-mountTop / viewport-height /
+// address-bar math the previous implementation got wrong on the homepage.
+function Word({
+  progress,
+  start,
+  end,
+  ssrVisible,
+  children,
+}: {
+  progress: MotionValue<number>;
+  start: number;
+  end: number;
+  ssrVisible: boolean;
+  children: string;
+}): ReactNode {
+  const opacity = useTransform(progress, [start, end], [0.15, 1]);
+  const filter = useTransform(
+    progress,
+    [start, end],
+    ["blur(8px)", "blur(0px)"]
+  );
+
+  return (
+    <motion.span
+      className="mr-2 inline-block lg:mr-3"
+      style={{
+        opacity: ssrVisible ? 1 : opacity,
+        filter: ssrVisible ? "blur(0px)" : filter,
+      }}
+    >
+      {children}
+    </motion.span>
+  );
+}
+
 export function BlurInHeadline({
   text = defaultHeadline,
   ssrVisible = false,
 }: BlurInHeadlineProps = {}): ReactNode {
   const containerRef = useRef<HTMLDivElement>(null);
-  const mountTopRef = useRef<number | null>(null);
-  const [scrollProgress, setScrollProgress] = useState(ssrVisible ? 1 : 0);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "start start"],
+  });
+
   const words = text.split(" ");
-
-  useLayoutEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    // Where the section sits at load decides where the reveal begins: progress
-    // is exactly 0 on first paint even when the section is already partially in
-    // view (inner pages mount it just below a compact hero). Sections mounting
-    // below the fold keep the original 0.9·vh threshold via min().
-    mountTopRef.current = container.getBoundingClientRect().top;
-
-    let ticking = false;
-
-    const handleScroll = () => {
-      if (ticking) return;
-      ticking = true;
-
-      requestAnimationFrame(() => {
-        const rect = container.getBoundingClientRect();
-        const windowHeight = window.innerHeight;
-
-        const endOffset = windowHeight * 0.25;
-        const startOffset = Math.max(
-          Math.min(windowHeight * 0.9, mountTopRef.current ?? Infinity),
-          endOffset + windowHeight * 0.3
-        );
-
-        const progress = Math.min(
-          1,
-          Math.max(0, (startOffset - rect.top) / (startOffset - endOffset))
-        );
-
-        setScrollProgress(progress);
-        ticking = false;
-      });
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   return (
     <section
@@ -69,31 +67,17 @@ export function BlurInHeadline({
     >
       <div className="mx-auto max-w-5xl">
         <p className="text-3xl font-medium text-left leading-snug tracking-tight text-foreground sm:text-4xl lg:text-5xl lg:leading-snug">
-          {words.map((word, index) => {
-            const wordStart = index / words.length;
-            const wordEnd = wordStart + 1 / words.length;
-            
-            const wordProgress = Math.min(
-              1,
-              Math.max(0, (scrollProgress - wordStart) / (wordEnd - wordStart))
-            );
-            const opacity = 0.15 + wordProgress * 0.85;
-            const blur = (1 - wordProgress) * 8;
-
-            return (
-              <span
-                key={index}
-                className="mr-2 inline-block lg:mr-3"
-                style={{ 
-                  opacity,
-                  filter: `blur(${blur}px)`,
-                  transition: "opacity 75ms, filter 75ms",
-                }}
-              >
-                {word}
-              </span>
-            );
-          })}
+          {words.map((word, index) => (
+            <Word
+              key={index}
+              progress={scrollYProgress}
+              start={index / words.length}
+              end={(index + 1) / words.length}
+              ssrVisible={ssrVisible}
+            >
+              {word}
+            </Word>
+          ))}
         </p>
       </div>
     </section>
