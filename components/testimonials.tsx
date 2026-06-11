@@ -38,11 +38,11 @@ export function Testimonials(): ReactNode {
       >
         <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
           <div className="flex flex-col justify-between gap-8">
-            <h2 className="text-2xl sm:text-3xl font-medium leading-tight text-neutral-900 dark:text-neutral-50">
+            <h2 className="text-4xl sm:text-5xl font-medium leading-tight text-neutral-900 dark:text-neutral-50">
               Client story
             </h2>
 
-            <div>
+            <div className="translate-y-3">
               <div className="relative inline-block">
                 <div
                   className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full"

@@ -22,14 +22,15 @@ export default function ContactPage(): ReactNode {
         ])}
       />
       <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-center bg-no-repeat brightness-110 blur-3xl scale-125 opacity-40"
-        style={{ backgroundImage: "url(/BG.jpg)", backgroundSize: "cover" }}
+        className="pointer-events-none absolute inset-x-0 top-0 h-[420px] overflow-hidden"
         aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-gradient-to-b from-background/30 via-background/80 to-background"
-        aria-hidden="true"
-      />
+      >
+        <div
+          className="absolute inset-0 bg-center bg-no-repeat brightness-110 blur-3xl scale-125 opacity-40"
+          style={{ backgroundImage: "url(/BG.jpg)", backgroundSize: "cover" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/80 to-background" />
+      </div>
       <div className="relative mx-auto w-full max-w-xl text-center">
         <h1 className="text-5xl font-medium tracking-tight text-foreground sm:text-6xl">
           Start a{" "}

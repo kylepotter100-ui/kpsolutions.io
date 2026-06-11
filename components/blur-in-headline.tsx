@@ -16,12 +16,19 @@ export function BlurInHeadline({
   ssrVisible = false,
 }: BlurInHeadlineProps = {}): ReactNode {
   const containerRef = useRef<HTMLDivElement>(null);
+  const mountTopRef = useRef<number | null>(null);
   const [scrollProgress, setScrollProgress] = useState(ssrVisible ? 1 : 0);
   const words = text.split(" ");
 
   useLayoutEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+
+    // Where the section sits at load decides where the reveal begins: progress
+    // is exactly 0 on first paint even when the section is already partially in
+    // view (inner pages mount it just below a compact hero). Sections mounting
+    // below the fold keep the original 0.9·vh threshold via min().
+    mountTopRef.current = container.getBoundingClientRect().top;
 
     let ticking = false;
 
@@ -33,8 +40,11 @@ export function BlurInHeadline({
         const rect = container.getBoundingClientRect();
         const windowHeight = window.innerHeight;
 
-        const startOffset = windowHeight * 0.9;
         const endOffset = windowHeight * 0.25;
+        const startOffset = Math.max(
+          Math.min(windowHeight * 0.9, mountTopRef.current ?? Infinity),
+          endOffset + windowHeight * 0.3
+        );
 
         const progress = Math.min(
           1,
