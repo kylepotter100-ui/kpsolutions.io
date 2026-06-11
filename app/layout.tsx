@@ -1,3 +1,4 @@
+import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { Providers } from "@/components/providers";
 import { SkipToContent } from "@/components/skip-to-content";
@@ -68,6 +69,7 @@ export default function RootLayout({
           
           <SkipToContent />
           {children}
+          <Footer />
         </Providers>
       </body>
     </html>

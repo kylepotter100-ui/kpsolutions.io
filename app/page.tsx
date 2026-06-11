@@ -1,7 +1,6 @@
 import { BlurInHeadline } from "@/components/blur-in-headline";
 import { FAQ } from "@/components/faq";
 import { FeaturesBento } from "@/components/features-bento";
-import { Footer } from "@/components/footer";
 import { Hero } from "@/components/hero";
 import { HowItWorks } from "@/components/how-it-works";
 import { Pricing } from "@/components/pricing";
@@ -26,7 +25,6 @@ export default function HomePage(): ReactNode {
       <HowItWorks />
       <Pricing />
       <FAQ />
-      <Footer />
     </main>
   );
 }

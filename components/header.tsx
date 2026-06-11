@@ -6,15 +6,15 @@ import { useState, type ReactNode } from "react";
 
 const menus = {
   services: [
-    { label: "Bespoke software", description: "Custom platforms built around how you work", href: "/#capabilities" },
-    { label: "Modernization & replacement", description: "One platform replacing the legacy tangle", href: "/#capabilities" },
-    { label: "Integrations & automation", description: "Connect what's broken, automate what's manual", href: "/#capabilities" },
-    { label: "AI-visible web presence", description: "Found and recommended by AI search", href: "/#capabilities" },
+    { label: "Bespoke software", description: "Custom platforms built around how you work", href: "/services#bespoke" },
+    { label: "Modernization & replacement", description: "One platform replacing the legacy tangle", href: "/services#modernization" },
+    { label: "Integrations & automation", description: "Connect what's broken, automate what's manual", href: "/services#integrations" },
+    { label: "AI-visible web presence", description: "Found and recommended by AI search", href: "/services#aeo" },
   ],
   resources: [
-    { label: "Case Studies", description: "See how others succeed", href: "/#testimonials" },
-    { label: "Our process", description: "Discovery to handover, fixed fee", href: "/#how-it-works" },
-    { label: "How we price", description: "One fixed fee, agreed up front", href: "/#pricing" },
+    { label: "Case Studies", description: "See how others succeed", href: "/work" },
+    { label: "Our process", description: "Discovery to handover, fixed fee", href: "/process" },
+    { label: "How we price", description: "One fixed fee, agreed up front", href: "/pricing" },
   ],
 };
 
