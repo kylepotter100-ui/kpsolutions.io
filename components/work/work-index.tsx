@@ -4,6 +4,7 @@ import { ArrowDownRight } from "lucide-react";
 import { motion } from "motion/react";
 import type { ReactNode } from "react";
 import { PageHero } from "@/components/page-hero";
+import { ScrollingThumbnail } from "@/components/scrolling-thumbnail";
 import { caseStudies } from "@/lib/work";
 
 const ease = [0.23, 1, 0.32, 1] as const;
@@ -43,18 +44,14 @@ export function WorkIndex(): ReactNode {
           >
             <a
               href={`/work/${cs.id}`}
-              className="block overflow-hidden rounded-xl"
+              className="block rounded-xl"
               aria-label={`${cs.title} ${cs.accent} case study`}
             >
-              <picture>
-                <source media="(max-width: 850px)" srcSet={cs.imageMobile} />
-                <img
-                  src={cs.image}
-                  alt={`The ${cs.title} ${cs.accent} homepage`}
-                  className="h-80 w-full object-cover object-top transition-transform duration-500 hover:scale-[1.02] max-[850px]:h-64"
-                  loading="lazy"
-                />
-              </picture>
+              <ScrollingThumbnail
+                src={cs.scrollingThumbnail}
+                alt={`The ${cs.title} ${cs.accent} homepage, scrolling`}
+                className="h-80 w-full rounded-xl max-[850px]:h-64"
+              />
             </a>
             <h2 className="mt-8 text-4xl max-[850px]:text-3xl font-medium tracking-tight leading-[1.15] text-foreground">
               {cs.title}{" "}

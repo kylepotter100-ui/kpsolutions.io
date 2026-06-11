@@ -4,6 +4,7 @@ import { ArrowDownRight, ArrowLeft } from "lucide-react";
 import { motion } from "motion/react";
 import type { ReactNode } from "react";
 import { BlurInHeadline } from "@/components/blur-in-headline";
+import { ScrollingThumbnail } from "@/components/scrolling-thumbnail";
 import type { CaseStudy } from "@/lib/work";
 
 const ease = [0.23, 1, 0.32, 1] as const;
@@ -17,6 +18,22 @@ const staggerContainer = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
 };
+
+// Splits prose on **phrase** markers and renders the marked spans in the
+// accent colour. Data lives in lib/work.ts (a .ts file, so no JSX) — the
+// markers are the lightest way to keep accents in the copy itself.
+function renderRich(text: string): ReactNode[] {
+  return text.split(/(\*\*[^*]+\*\*)/g).map((segment, i) => {
+    if (segment.startsWith("**") && segment.endsWith("**")) {
+      return (
+        <span key={i} className="text-accent font-medium">
+          {segment.slice(2, -2)}
+        </span>
+      );
+    }
+    return <span key={i}>{segment}</span>;
+  });
+}
 
 export function CaseStudyDetail({ study }: { study: CaseStudy }): ReactNode {
   return (
@@ -116,24 +133,18 @@ export function CaseStudyDetail({ study }: { study: CaseStudy }): ReactNode {
         variants={fadeInUp}
         transition={{ duration: 0.8, ease }}
       >
-        <div className="mx-auto max-w-5xl overflow-hidden rounded-2xl shadow-sm">
-          <picture>
-            <source media="(max-width: 850px)" srcSet={study.imageMobile} />
-            <img
-              src={study.image}
-              alt={`The ${study.title} ${study.accent} homepage`}
-              className="max-h-[36rem] w-full object-cover object-top"
-              loading="lazy"
-            />
-          </picture>
-        </div>
+        <ScrollingThumbnail
+          src={study.scrollingThumbnail}
+          alt={`The ${study.title} ${study.accent} homepage, scrolling`}
+          className="mx-auto h-[36rem] w-full max-w-5xl rounded-2xl shadow-sm max-[850px]:h-[28rem]"
+        />
       </motion.section>
 
       <BlurInHeadline text={study.body[0] ?? ""} ssrVisible />
 
       <section className="px-6 pb-24">
         <motion.div
-          className="mx-auto max-w-3xl"
+          className="mx-auto max-w-5xl"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
@@ -145,7 +156,7 @@ export function CaseStudyDetail({ study }: { study: CaseStudy }): ReactNode {
               key={i}
               className="mt-6 text-lg leading-relaxed text-foreground first:mt-0"
             >
-              {para}
+              {renderRich(para)}
             </p>
           ))}
         </motion.div>

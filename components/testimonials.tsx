@@ -17,18 +17,8 @@ export function Testimonials(): ReactNode {
   return (
     <section
       id="testimonials"
-      className="relative w-full overflow-hidden px-6 py-20 sm:py-24 scroll-mt-24"
+      className="relative w-full px-6 py-20 sm:py-24 scroll-mt-24"
     >
-      <div
-        className="absolute inset-0 bg-center bg-no-repeat brightness-110 blur-3xl scale-125 opacity-40"
-        style={{ backgroundImage: "url(/BG.jpg)", backgroundSize: "cover" }}
-        aria-hidden="true"
-      />
-      <div
-        className="absolute inset-0 bg-gradient-to-b from-transparent via-background/60 to-background"
-        aria-hidden="true"
-      />
-
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
