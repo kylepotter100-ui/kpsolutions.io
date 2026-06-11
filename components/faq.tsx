@@ -8,7 +8,7 @@ const faqs = [
   {
     question: "What happens first?",
     answer:
-      "Discovery and architecture. A 30-minute call to see if we can help, then the brief written in your words and signed off, the data model drafted on paper, and a fixed-fee proposal within forty-eight hours.",
+      "Discovery and architecture. A 30-minute call to see if we can help, then the brief written in your words and signed off, the data model drafted on paper, and a fixed-fee proposal within 48 hours.",
   },
   {
     question: "When do I see something real?",
@@ -123,7 +123,7 @@ export function FAQ(): ReactNode {
             Questions, answered
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground sm:text-lg">
-            If something here doesn&apos;t cover what you need, the fastest answer is a thirty-minute call.
+            If something here doesn&apos;t cover what you need, the fastest answer is a 30-minute call.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">

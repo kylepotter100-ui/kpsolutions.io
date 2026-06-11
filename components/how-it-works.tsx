@@ -10,7 +10,7 @@ const steps = [
     icon: CalendarCheck,
     title: "Discovery and scoping",
     description:
-      "A thirty-minute call to see if we can help. Then the brief is written in your words, the data model drafted on paper, and a fixed-fee proposal lands inside forty-eight hours.",
+      "A 30-minute call to see if we can help. Then the brief is written in your words, the data model drafted on paper, and a fixed-fee proposal lands inside 48 hours.",
   },
   {
     icon: Users,

@@ -79,7 +79,7 @@ export const pricingConfig = {
 export const faqConfig = {
   title: "Questions, answered",
   description:
-    "If something here doesn't cover what you need, the fastest answer is a thirty-minute call.",
+    "If something here doesn't cover what you need, the fastest answer is a 30-minute call.",
   cta: {
     primary: {
       text: "Start a conversation",
