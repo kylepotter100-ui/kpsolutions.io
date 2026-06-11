@@ -3,13 +3,21 @@
 import { useRef, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 
-const headline =
+const defaultHeadline =
   "KP Solutions builds bespoke software for businesses that want their tools to fit how they actually work — whether you're just starting out, growing fast, or finally moving on from off-the-shelf SaaS. Custom platforms, internal tools, integrations, and AI-visible web presence.";
 
-export function BlurInHeadline(): ReactNode {
+type BlurInHeadlineProps = {
+  text?: string;
+  ssrVisible?: boolean;
+};
+
+export function BlurInHeadline({
+  text = defaultHeadline,
+  ssrVisible = false,
+}: BlurInHeadlineProps = {}): ReactNode {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const words = headline.split(" ");
+  const [scrollProgress, setScrollProgress] = useState(ssrVisible ? 1 : 0);
+  const words = text.split(" ");
 
   useEffect(() => {
     const container = containerRef.current;
@@ -24,15 +32,15 @@ export function BlurInHeadline(): ReactNode {
       requestAnimationFrame(() => {
         const rect = container.getBoundingClientRect();
         const windowHeight = window.innerHeight;
-        
+
         const startOffset = windowHeight * 0.9;
         const endOffset = windowHeight * 0.25;
-        
+
         const progress = Math.min(
           1,
           Math.max(0, (startOffset - rect.top) / (startOffset - endOffset))
         );
-        
+
         setScrollProgress(progress);
         ticking = false;
       });
