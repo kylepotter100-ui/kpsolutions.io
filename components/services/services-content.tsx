@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import type { ReactNode } from "react";
 import { BlurInHeadline } from "@/components/blur-in-headline";
 import { PageHero } from "@/components/page-hero";
+import { illustrationsById } from "@/components/services/illustrations";
 import { capabilities } from "@/lib/capabilities";
 
 const ease = [0.23, 1, 0.32, 1] as const;
@@ -35,7 +36,9 @@ export function ServicesContent(): ReactNode {
       />
 
       <div className="mx-auto max-w-5xl px-6 pb-24">
-        {capabilities.map((capability) => (
+        {capabilities.map((capability) => {
+          const Illustration = illustrationsById[capability.id];
+          return (
           <motion.section
             key={capability.id}
             id={capability.id}
@@ -45,17 +48,28 @@ export function ServicesContent(): ReactNode {
             viewport={{ once: true, margin: "-100px" }}
             variants={staggerContainer}
           >
-            <motion.h2
-              className="text-4xl max-[850px]:text-3xl font-medium tracking-tight leading-[1.15] text-foreground"
-              variants={fadeInUp}
-              transition={{ duration: 0.6, ease }}
-            >
-              {capability.lead}{" "}
-              <span className="italic font-serif text-accent">
-                {capability.accent}
-              </span>
-              .
-            </motion.h2>
+            <div className="flex items-center gap-6 max-[850px]:flex-col max-[850px]:items-start max-[850px]:gap-4">
+              {Illustration ? (
+                <motion.div
+                  className="shrink-0 rounded-2xl bg-frame p-3 shadow-sm"
+                  variants={fadeInUp}
+                  transition={{ duration: 0.6, ease }}
+                >
+                  <Illustration className="h-24 w-24 max-[850px]:h-20 max-[850px]:w-20" />
+                </motion.div>
+              ) : null}
+              <motion.h2
+                className="text-4xl max-[850px]:text-3xl font-medium tracking-tight leading-[1.15] text-foreground"
+                variants={fadeInUp}
+                transition={{ duration: 0.6, ease }}
+              >
+                {capability.lead}{" "}
+                <span className="italic font-serif text-accent">
+                  {capability.accent}
+                </span>
+                .
+              </motion.h2>
+            </div>
 
             <div className="mt-10 grid gap-4 lg:grid-cols-3">
               {capability.subs.map((sub) => (
@@ -75,7 +89,8 @@ export function ServicesContent(): ReactNode {
               ))}
             </div>
           </motion.section>
-        ))}
+          );
+        })}
       </div>
 
       <section className="px-6 pb-32">
