@@ -16,8 +16,17 @@ export function LegalPage({
   children,
 }: LegalPageProps): ReactNode {
   return (
-    <main id="main-content" className="flex-1 px-6 pt-40 pb-24 max-[850px]:pt-28">
-      <div className="mx-auto max-w-3xl">
+    <main id="main-content" className="relative flex-1 overflow-hidden px-6 pt-40 pb-24 max-[850px]:pt-28">
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-center bg-no-repeat brightness-110 blur-3xl scale-125 opacity-40"
+        style={{ backgroundImage: "url(/BG.jpg)", backgroundSize: "cover" }}
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-gradient-to-b from-background/30 via-background/80 to-background"
+        aria-hidden="true"
+      />
+      <div className="relative mx-auto max-w-3xl">
         <h1 className="text-6xl max-[850px]:text-4xl font-medium tracking-tight leading-[1.1] text-foreground">
           {title}
           {accent ? (

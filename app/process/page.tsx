@@ -8,7 +8,7 @@ import type { ReactNode } from "react";
 export const metadata: Metadata = createMetadata({
   title: "Process",
   description:
-    "The Four Week Build. Brief on Monday. Live four Fridays later. Fixed fee. Code owned by you.",
+    "How KP Solutions works: discovery first, scope set together, fixed fee agreed before any build, code owned by you from day one.",
   path: "/process",
 });
 

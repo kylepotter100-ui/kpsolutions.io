@@ -6,7 +6,7 @@
 
 - [Home](https://kpsolutions.io/): Overview of KP Solutions and how the studio works.
 - [Services](https://kpsolutions.io/services): The four shapes of bespoke software — bespoke platforms and internal tools, modernization & replacement, integrations & automation, and AI-visible web presence.
-- [Work](https://kpsolutions.io/work): Potter Sanctuary — a bookings and client-management platform with an operator admin portal, built and shipped in four weeks.
-- [Process](https://kpsolutions.io/process): The Four Week Build — brief on Monday, live four Fridays later, fixed fee, code owned by you.
+- [Work](https://kpsolutions.io/work): Potter Sanctuary — a bookings and client-management platform with an operator admin portal.
+- [Process](https://kpsolutions.io/process): Discovery first, scope set together, fixed fee agreed before any build, code owned by you from day one.
 - [Pricing](https://kpsolutions.io/pricing): One fixed fee, agreed before any build work begins. No per-seat fees, no lock-in. Optional retainers available for post-launch support, changes, and ongoing partnership.
 - [Contact](https://kpsolutions.io/contact): How to start a conversation about a project.

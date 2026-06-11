@@ -4,6 +4,7 @@ import { ArrowDownRight, Minus, Plus } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useState, type ReactNode } from "react";
 import { BlurInHeadline } from "@/components/blur-in-headline";
+import { PageHero } from "@/components/page-hero";
 import { processFaqs } from "@/lib/faq-data";
 
 const ease = [0.23, 1, 0.32, 1] as const;
@@ -18,7 +19,7 @@ const staggerContainer = {
   visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
 };
 
-type Week = {
+type Phase = {
   marker: string;
   name: string;
   italicWord: string;
@@ -26,22 +27,30 @@ type Week = {
   outcomes: string[];
 };
 
-const weeks: Week[] = [
+const phases: Phase[] = [
   {
     marker: "01",
     name: "Discovery & Architecture",
     italicWord: "Architecture",
     description:
-      "A 30-minute discovery call. The brief is written in your words, signed off, and the data model is drafted on paper before the contract is final. A fixed-fee proposal lands inside 48 hours.",
-    outcomes: ["Signed brief", "Data model on paper", "Fixed fee agreed"],
+      "A 30-minute call to understand the shape of the work. The brief is written in your words and signed off, the data model drafted on paper, and a fixed-fee proposal lands inside 48 hours. Scope is set together before any build starts.",
+    outcomes: [
+      "Signed brief in your words",
+      "Data model on paper",
+      "Fixed fee agreed",
+    ],
   },
   {
     marker: "02",
     name: "Design",
     italicWord: "Design",
     description:
-      "Real screens, not wireframes. Brand, identity, and the editorial register land in week two, alongside the schema, authentication, and the risky integrations. A live staging URL goes up on day three so you watch the build as it happens.",
-    outcomes: ["Real screens", "Walking skeleton", "Staging URL live"],
+      "Real screens, not wireframes. Brand, identity, and the editorial register come together alongside the schema, authentication, and any risky integrations. A live staging URL goes up early so you watch the build as it happens.",
+    outcomes: [
+      "Real screens, not wireframes",
+      "Walking skeleton",
+      "Staging URL live",
+    ],
   },
   {
     marker: "03",
@@ -69,44 +78,7 @@ const weeks: Week[] = [
   },
 ];
 
-const includedGroups = [
-  {
-    label: "Strategy",
-    items: [
-      "Written brief",
-      "Data model on paper",
-      "Architecture & schema",
-      "Fixed-fee proposal",
-    ],
-  },
-  {
-    label: "Build",
-    items: [
-      "Brand identity",
-      "Editorial design",
-      "Full-stack development",
-      "Operator UI",
-      "AEO content layer",
-      "Schema.org markup",
-      "llms.txt directive",
-    ],
-  },
-  {
-    label: "Launch",
-    items: [
-      "Production deployment",
-      "Source repo transfer",
-      "Runbook documentation",
-      "Loom walkthrough",
-      "90-day post-launch guarantee",
-    ],
-  },
-];
-
-// FAQ copy lives in lib/faq-data.ts so the server page can emit matching
-// FAQPage JSON-LD.
-
-function renderWeekName(name: string, italicWord: string): ReactNode {
+function renderPhaseName(name: string, italicWord: string): ReactNode {
   const idx = name.indexOf(italicWord);
   if (idx === -1) return name;
   return (
@@ -165,36 +137,23 @@ function FaqRow({
 export function ProcessContent(): ReactNode {
   return (
     <>
-      <section className="px-6 pt-40 pb-16 max-[850px]:pt-28">
-        <div className="mx-auto max-w-5xl">
-          <motion.h1
-            className="text-7xl max-[850px]:text-5xl font-medium tracking-tight leading-[1.1] text-foreground"
-            initial="hidden"
-            animate="visible"
-            variants={fadeInUp}
-            transition={{ duration: 0.8, ease }}
-          >
-            The Four Week{" "}
-            <span className="italic font-serif text-accent">Build</span>.
-          </motion.h1>
-          <motion.p
-            className="mt-6 max-w-3xl text-lg text-muted-foreground"
-            initial="hidden"
-            animate="visible"
-            variants={fadeInUp}
-            transition={{ duration: 0.8, delay: 0.15, ease }}
-          >
-            Brief on Monday. Live four Fridays later. Fixed fee. Code owned by
-            you.
-          </motion.p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Process"
+        leadingTitle="Our"
+        italicTitle="process"
+        subtitle="Consultative from the first call. Scope set together. Fixed fee agreed before any build work begins. Code owned by you from day one."
+      />
 
-      <div className="mx-auto max-w-5xl px-6 pb-16">
-        {weeks.map((week) => (
+      <BlurInHeadline
+        text="Every engagement starts with a conversation, not a contract. We talk through what you're working with, agree what the build needs to do, and write the brief in your words before anything is committed."
+        ssrVisible
+      />
+
+      <div className="mx-auto max-w-5xl px-6 pb-24">
+        {phases.map((phase) => (
           <motion.section
-            key={week.marker}
-            id={`week-${week.marker}`}
+            key={phase.marker}
+            id={`phase-${phase.marker}`}
             className="scroll-mt-24 py-16 border-t border-border first:border-t-0"
             initial="hidden"
             whileInView="visible"
@@ -206,28 +165,28 @@ export function ProcessContent(): ReactNode {
               variants={fadeInUp}
               transition={{ duration: 0.5, ease }}
             >
-              Week {week.marker}
+              Phase {phase.marker}
             </motion.div>
             <motion.h2
               className="mt-3 text-4xl max-[850px]:text-3xl font-medium tracking-tight leading-[1.15] text-foreground"
               variants={fadeInUp}
               transition={{ duration: 0.6, ease }}
             >
-              {renderWeekName(week.name, week.italicWord)}.
+              {renderPhaseName(phase.name, phase.italicWord)}.
             </motion.h2>
             <motion.p
               className="mt-5 max-w-3xl text-lg leading-relaxed text-foreground"
               variants={fadeInUp}
               transition={{ duration: 0.6, ease }}
             >
-              {week.description}
+              {phase.description}
             </motion.p>
             <motion.ul
               className="mt-8 space-y-2"
               variants={fadeInUp}
               transition={{ duration: 0.6, ease }}
             >
-              {week.outcomes.map((o) => (
+              {phase.outcomes.map((o) => (
                 <li
                   key={o}
                   className="flex items-start gap-3 text-base text-muted-foreground"
@@ -240,113 +199,6 @@ export function ProcessContent(): ReactNode {
           </motion.section>
         ))}
       </div>
-
-      <section className="px-6 py-16 bg-frame">
-        <motion.div
-          className="mx-auto max-w-5xl"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={staggerContainer}
-        >
-          <motion.h2
-            className="text-4xl max-[850px]:text-3xl font-medium tracking-tight text-foreground"
-            variants={fadeInUp}
-            transition={{ duration: 0.6, ease }}
-          >
-            What&apos;s{" "}
-            <span className="italic font-serif text-accent">included</span>.
-          </motion.h2>
-          <div className="mt-10 grid gap-10 lg:grid-cols-3">
-            {includedGroups.map((g) => (
-              <motion.div
-                key={g.label}
-                variants={fadeInUp}
-                transition={{ duration: 0.6, ease }}
-              >
-                <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  {g.label}
-                </div>
-                <ul className="mt-4 space-y-2">
-                  {g.items.map((it) => (
-                    <li key={it} className="text-base text-foreground">
-                      {it}
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      </section>
-
-      <section className="px-6 py-20">
-        <motion.div
-          className="mx-auto max-w-3xl"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={fadeInUp}
-          transition={{ duration: 0.8, ease }}
-        >
-          <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-            What it costs
-          </div>
-          <p className="mt-4 text-3xl max-[850px]:text-2xl font-medium tracking-tight leading-[1.2] text-foreground">
-            Costs are scoped in week one and agreed{" "}
-            <span className="italic font-serif text-accent">before</span> week
-            two begins.
-          </p>
-          <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-            Every engagement is fixed-fee. No scope-creep clauses on the
-            fixed-fee build; optional retainers afterwards if you want a
-            long-term partner for changes and updates.
-          </p>
-        </motion.div>
-      </section>
-
-      <BlurInHeadline
-        text="Four weeks is the constraint that makes the rest of it possible. It rules out the long discovery phase that produces nothing. It rules out the multi-stage replatform that ships eighteen months late. It rules out the agency dance — three account managers, two project managers, four developers nobody talked to."
-        ssrVisible
-      />
-
-      <section className="px-6 pb-20">
-        <motion.div
-          className="mx-auto max-w-3xl"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={staggerContainer}
-        >
-          <motion.h2
-            className="text-4xl max-[850px]:text-3xl font-medium tracking-tight text-foreground"
-            variants={fadeInUp}
-            transition={{ duration: 0.6, ease }}
-          >
-            Why it{" "}
-            <span className="italic font-serif text-accent">works</span>.
-          </motion.h2>
-          <motion.p
-            className="mt-6 text-lg leading-relaxed text-foreground"
-            variants={fadeInUp}
-            transition={{ duration: 0.6, ease }}
-          >
-            What&apos;s left is the build. Operator on operator. One person
-            doing the work, one person ringing them on Tuesday morning.
-            Decisions made in the call, not in a status report.
-          </motion.p>
-          <motion.p
-            className="mt-6 text-lg leading-relaxed text-foreground"
-            variants={fadeInUp}
-            transition={{ duration: 0.6, ease }}
-          >
-            The constraint is also a forcing function. When the cycle is four
-            weeks, scope is set in week one and respected throughout. When the
-            cycle is open-ended, scope drifts and the project is what pays for
-            it.
-          </motion.p>
-        </motion.div>
-      </section>
 
       <section id="faq" className="px-6 py-20 bg-frame scroll-mt-24">
         <motion.div
@@ -384,10 +236,11 @@ export function ProcessContent(): ReactNode {
         >
           <h2 className="text-4xl max-[850px]:text-3xl font-medium tracking-tight text-foreground">
             Start a{" "}
-            <span className="italic font-serif text-accent">build</span>.
+            <span className="italic font-serif text-accent">conversation</span>
+            .
           </h2>
           <p className="mt-6 text-lg text-muted-foreground">
-            A 30-minute conversation. A written proposal within 48 hours.
+            A 30-minute call. A written proposal within 48 hours.
           </p>
           <motion.a
             href="/contact"

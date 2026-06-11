@@ -3,6 +3,7 @@
 import { ArrowDownRight } from "lucide-react";
 import { motion } from "motion/react";
 import type { ReactNode } from "react";
+import { PageHero } from "@/components/page-hero";
 import { caseStudies } from "@/lib/work";
 
 const ease = [0.23, 1, 0.32, 1] as const;
@@ -20,31 +21,12 @@ const staggerContainer = {
 export function WorkIndex(): ReactNode {
   return (
     <>
-      <section className="px-6 pt-40 pb-16 max-[850px]:pt-28">
-        <div className="mx-auto max-w-5xl">
-          <motion.h1
-            className="text-7xl max-[850px]:text-5xl font-medium tracking-tight leading-[1.1] text-foreground"
-            initial="hidden"
-            animate="visible"
-            variants={fadeInUp}
-            transition={{ duration: 0.8, ease }}
-          >
-            Selected{" "}
-            <span className="italic font-serif text-accent">work</span>.
-          </motion.h1>
-
-          <motion.p
-            className="mt-6 max-w-3xl text-lg text-muted-foreground"
-            initial="hidden"
-            animate="visible"
-            variants={fadeInUp}
-            transition={{ duration: 0.8, delay: 0.15, ease }}
-          >
-            A small, growing catalogue. Each one shipped on a fixed fee, on
-            an agreed timeline, with the code owned entirely by the client.
-          </motion.p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Work"
+        leadingTitle="Selected"
+        italicTitle="work"
+        subtitle="A small, growing catalogue. Each one shipped on a fixed fee, on an agreed timeline, with the code owned entirely by the client."
+      />
 
       <motion.div
         className="mx-auto max-w-5xl px-6 pb-24"

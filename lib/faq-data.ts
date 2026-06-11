@@ -41,14 +41,14 @@ export const homeFaqs: FaqItem[] = [
 
 export const processFaqs: FaqItem[] = [
   {
-    question: "What happens in the first week?",
+    question: "What happens first?",
     answer:
-      "Discovery and architecture. A 30-minute call, the brief written in your words and signed off, the data model drafted on paper, and a fixed-fee proposal within 48 hours.",
+      "Discovery. A 30-minute call to understand the shape of the work, the brief written in your words and signed off, the data model drafted on paper, and a fixed-fee proposal within 48 hours.",
   },
   {
     question: "When do I see something real?",
     answer:
-      "By day three of week two a live staging URL goes up, and you watch the build as it happens. Real screens, not wireframes.",
+      "Early in the build. A live staging URL goes up so you watch the build as it happens — real screens, not wireframes.",
   },
   {
     question: "What do I get at handover?",
@@ -58,12 +58,12 @@ export const processFaqs: FaqItem[] = [
   {
     question: "How is it priced?",
     answer:
-      "Every engagement is a fixed fee, scoped in week one and agreed before week two begins. No scope-creep clauses on the fixed-fee build; optional retainers afterwards if you want a long-term partner for changes and updates.",
+      "Every engagement is a fixed fee, scoped in discovery and agreed before any build work begins. No scope-creep clauses on the fixed-fee build; optional retainers afterwards if you want a long-term partner for changes and updates.",
   },
   {
-    question: "Why four weeks?",
+    question: "How long does it take?",
     answer:
-      "The constraint is the point. It rules out the discovery phase that produces nothing and the replatform that ships eighteen months late, and it forces scope to be set in week one and respected throughout.",
+      "The timeline is set together in discovery — agreed up front and written into the proposal, so you know the launch date before the build starts.",
   },
   {
     question: "Who actually does the work?",

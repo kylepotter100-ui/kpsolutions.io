@@ -4,6 +4,7 @@ import { ArrowDownRight } from "lucide-react";
 import { motion } from "motion/react";
 import type { ReactNode } from "react";
 import { BlurInHeadline } from "@/components/blur-in-headline";
+import { PageHero } from "@/components/page-hero";
 import { capabilities } from "@/lib/capabilities";
 
 const ease = [0.23, 1, 0.32, 1] as const;
@@ -21,31 +22,12 @@ const staggerContainer = {
 export function ServicesContent(): ReactNode {
   return (
     <>
-      <section className="px-6 pt-40 pb-16 max-[850px]:pt-28">
-        <div className="mx-auto max-w-5xl">
-          <motion.h1
-            className="text-7xl max-[850px]:text-5xl font-medium tracking-tight leading-[1.1] text-foreground"
-            initial="hidden"
-            animate="visible"
-            variants={fadeInUp}
-            transition={{ duration: 0.8, ease }}
-          >
-            What we{" "}
-            <span className="italic font-serif text-accent">build</span>.
-          </motion.h1>
-
-          <motion.p
-            className="mt-6 max-w-3xl text-lg text-muted-foreground"
-            initial="hidden"
-            animate="visible"
-            variants={fadeInUp}
-            transition={{ duration: 0.8, delay: 0.15, ease }}
-          >
-            Four shapes of bespoke work — picked apart so you can see exactly
-            where each one fits. Most engagements blend more than one.
-          </motion.p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Services"
+        leadingTitle="What we"
+        italicTitle="build"
+        subtitle="Four shapes of bespoke work — picked apart so you can see exactly where each one fits. Most engagements blend more than one."
+      />
 
       <BlurInHeadline
         text="Software built around how your business actually works — not how a vendor assumed it should. Code owned entirely by you, scoped comprehensively, delivered on a timeline agreed up front."

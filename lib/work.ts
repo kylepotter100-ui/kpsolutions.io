@@ -23,7 +23,7 @@ export const caseStudies: CaseStudy[] = [
     title: "Potter",
     accent: "Sanctuary",
     tagline:
-      "Brand, editorial site, integrated bookings, accounts, admin. Built in four weeks. Live.",
+      "Brand, editorial site, integrated bookings, accounts, admin. Live.",
     meta: [
       { label: "Client", value: "Potter Sanctuary" },
       {
@@ -31,7 +31,7 @@ export const caseStudies: CaseStudy[] = [
         value:
           "Brand · editorial site · booking · accounts · admin · AEO layer",
       },
-      { label: "Timeline", value: "4 weeks · shipped Feb 2026" },
+      { label: "Shipped", value: "Feb 2026" },
     ],
     body: [
       "A new wellness practice with no real online presence and a booking process that lived entirely in text messages and social media DMs. Every enquiry, every reschedule, every availability question ran through the owner's personal inbox — workable for a handful of clients, unsustainable as the practice grew.",

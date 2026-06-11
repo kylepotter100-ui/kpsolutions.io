@@ -4,6 +4,7 @@ import { ArrowDownRight, Check } from "lucide-react";
 import { motion } from "motion/react";
 import type { ReactNode } from "react";
 import { BlurInHeadline } from "@/components/blur-in-headline";
+import { PageHero } from "@/components/page-hero";
 
 const ease = [0.23, 1, 0.32, 1] as const;
 
@@ -19,7 +20,7 @@ const principles = [
   },
   {
     title: "Timeline agreed up front",
-    body: "You know the date the build is live before the build starts. Four weeks from brief to launch is the standard cadence.",
+    body: "You know the date the build is live before the build starts. The schedule is set together in discovery, with milestones written into the proposal.",
   },
   {
     title: "Code owned by you, from day one",
@@ -42,31 +43,12 @@ const principles = [
 export function PricingContent(): ReactNode {
   return (
     <>
-      <section className="px-6 pt-40 pb-16 max-[850px]:pt-28">
-        <div className="mx-auto max-w-5xl">
-          <motion.h1
-            className="text-7xl max-[850px]:text-5xl font-medium tracking-tight leading-[1.1] text-foreground"
-            initial="hidden"
-            animate="visible"
-            variants={fadeInUp}
-            transition={{ duration: 0.8, ease }}
-          >
-            How we{" "}
-            <span className="italic font-serif text-accent">price</span>.
-          </motion.h1>
-          <motion.p
-            className="mt-6 max-w-3xl text-lg text-muted-foreground"
-            initial="hidden"
-            animate="visible"
-            variants={fadeInUp}
-            transition={{ duration: 0.8, delay: 0.15, ease }}
-          >
-            One fixed fee, agreed before any build work begins. Every engagement
-            is scoped comprehensively, so the number you sign is the number you
-            pay.
-          </motion.p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Pricing"
+        leadingTitle="How we"
+        italicTitle="price"
+        subtitle="One fixed fee, agreed before any build work begins. Every engagement is scoped comprehensively, so the number you sign is the number you pay."
+      />
 
       <BlurInHeadline
         text="No estimates that quietly become invoices. No per-seat fees. No retainers as a precondition. The build is one number, agreed up front, with the code owned entirely by you from day one."
