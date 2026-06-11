@@ -15,8 +15,8 @@ const fadeInUp = {
 
 const principles = [
   {
-    title: "Fixed fee, agreed before any build work begins",
-    body: "The number you sign is the number you pay. Scoped in discovery, proposed within 48 hours, agreed before a line of code is written.",
+    title: "One fee for the agreed scope",
+    body: "Scoped in discovery, proposed within 48 hours, signed before a line of code is written.",
   },
   {
     title: "Timeline agreed up front",
@@ -46,11 +46,11 @@ export function PricingContent(): ReactNode {
       <PageHero
         leadingTitle="How we"
         italicTitle="price"
-        subtitle="One fixed fee, agreed before any build work begins. Every engagement is scoped comprehensively, so the number you sign is the number you pay."
+        subtitle="A consultative model: we scope the work together, agree one fixed fee for it, and everything we ship is yours."
       />
 
       <BlurInHeadline
-        text="No estimates that quietly become invoices. No per-seat fees. No retainers as a precondition. The build is one number, agreed up front, with the code owned entirely by you from day one."
+        text="Pricing starts with a conversation. We talk through what you need, agree exactly what we'll build, and put one fee on it — you pay for the work we agree, and everything we ship belongs to you. If you'd like a partner beyond launch, a retainer is there when you want it."
         ssrVisible
       />
 

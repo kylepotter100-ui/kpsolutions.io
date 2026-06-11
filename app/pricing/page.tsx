@@ -7,7 +7,7 @@ import type { ReactNode } from "react";
 export const metadata: Metadata = createMetadata({
   title: "Pricing",
   description:
-    "How KP Solutions prices: one fixed fee, agreed before any build work begins. Code owned by you from day one, no per-seat fees, no lock-in.",
+    "How KP Solutions prices: a consultative model where we scope the work together, agree one fixed fee, and everything we ship is yours — with an optional retainer partnership beyond launch.",
   path: "/pricing",
 });
 
