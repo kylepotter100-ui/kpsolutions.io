@@ -21,16 +21,17 @@ const staggerContainer = {
 export function CaseStudyDetail({ study }: { study: CaseStudy }): ReactNode {
   return (
     <>
-      <section className="relative overflow-hidden px-6 pt-40 pb-20 max-[850px]:pt-28 max-[850px]:pb-14">
+      <section className="relative px-6 pt-40 pb-20 max-[850px]:pt-28 max-[850px]:pb-14">
         <div
-          className="absolute inset-0 bg-center bg-no-repeat brightness-110 blur-3xl scale-125 opacity-60"
-          style={{ backgroundImage: "url(/BG.jpg)", backgroundSize: "cover" }}
+          className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[56rem] overflow-hidden"
           aria-hidden="true"
-        />
-        <div
-          className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/80 to-background"
-          aria-hidden="true"
-        />
+        >
+          <div
+            className="absolute inset-0 bg-center bg-no-repeat brightness-110 blur-3xl scale-125 opacity-60"
+            style={{ backgroundImage: "url(/BG.jpg)", backgroundSize: "cover" }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/70 to-background" />
+        </div>
 
         <div className="relative mx-auto max-w-5xl">
           <motion.a
@@ -129,7 +130,7 @@ export function CaseStudyDetail({ study }: { study: CaseStudy }): ReactNode {
         </div>
       </motion.section>
 
-      <BlurInHeadline text={study.body[0] ?? ""} ssrVisible />
+      <BlurInHeadline text={study.body[0] ?? ""} ssrVisible pinned />
 
       <section className="px-6 pb-24">
         <motion.div

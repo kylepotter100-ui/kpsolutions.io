@@ -44,7 +44,6 @@ export function PricingContent(): ReactNode {
   return (
     <>
       <PageHero
-        eyebrow="Pricing"
         leadingTitle="How we"
         italicTitle="price"
         subtitle="One fixed fee, agreed before any build work begins. Every engagement is scoped comprehensively, so the number you sign is the number you pay."
@@ -53,6 +52,7 @@ export function PricingContent(): ReactNode {
       <BlurInHeadline
         text="No estimates that quietly become invoices. No per-seat fees. No retainers as a precondition. The build is one number, agreed up front, with the code owned entirely by you from day one."
         ssrVisible
+        pinned
       />
 
       <section className="px-6 py-16">

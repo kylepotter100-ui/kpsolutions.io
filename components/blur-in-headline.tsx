@@ -9,11 +9,17 @@ const defaultHeadline =
 type BlurInHeadlineProps = {
   text?: string;
   ssrVisible?: boolean;
+  // Pins the passage while the user scrolls through it: the section is given
+  // extra scroll height and the paragraph sticks in view until every word has
+  // revealed, then the page continues. Default off keeps the homepage
+  // behaviour unchanged.
+  pinned?: boolean;
 };
 
 export function BlurInHeadline({
   text = defaultHeadline,
   ssrVisible = false,
+  pinned = false,
 }: BlurInHeadlineProps = {}): ReactNode {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(ssrVisible ? 1 : 0);
@@ -33,13 +39,23 @@ export function BlurInHeadline({
         const rect = container.getBoundingClientRect();
         const windowHeight = window.innerHeight;
 
-        const startOffset = windowHeight * 0.9;
-        const endOffset = windowHeight * 0.25;
-
-        const progress = Math.min(
-          1,
-          Math.max(0, (startOffset - rect.top) / (startOffset - endOffset))
-        );
+        let progress: number;
+        if (pinned) {
+          // The container is taller than the viewport; the sticky inner block
+          // holds the text in place while -rect.top travels 0 → (height - vh).
+          const travel = rect.height - windowHeight;
+          progress =
+            travel > 0
+              ? Math.min(1, Math.max(0, -rect.top / travel))
+              : 1;
+        } else {
+          const startOffset = windowHeight * 0.9;
+          const endOffset = windowHeight * 0.25;
+          progress = Math.min(
+            1,
+            Math.max(0, (startOffset - rect.top) / (startOffset - endOffset))
+          );
+        }
 
         setScrollProgress(progress);
         ticking = false;
@@ -50,42 +66,53 @@ export function BlurInHeadline({
     handleScroll();
 
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [pinned]);
+
+  const paragraph = (
+    <div className="mx-auto max-w-5xl">
+      <p className="text-3xl font-medium text-left leading-snug tracking-tight text-foreground sm:text-4xl lg:text-5xl lg:leading-snug">
+        {words.map((word, index) => {
+          const wordStart = index / words.length;
+          const wordEnd = wordStart + 1 / words.length;
+
+          const wordProgress = Math.min(
+            1,
+            Math.max(0, (scrollProgress - wordStart) / (wordEnd - wordStart))
+          );
+          const opacity = 0.15 + wordProgress * 0.85;
+          const blur = (1 - wordProgress) * 8;
+
+          return (
+            <span
+              key={index}
+              className="mr-2 inline-block lg:mr-3"
+              style={{
+                opacity,
+                filter: `blur(${blur}px)`,
+                transition: "opacity 75ms, filter 75ms",
+              }}
+            >
+              {word}
+            </span>
+          );
+        })}
+      </p>
+    </div>
+  );
+
+  if (pinned) {
+    return (
+      <section ref={containerRef} className="relative w-full h-[200vh]">
+        <div className="sticky top-0 flex min-h-screen w-full items-center px-6 py-24">
+          {paragraph}
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <section
-      ref={containerRef}
-      className="w-full bg-background px-6 py-24"
-    >
-      <div className="mx-auto max-w-5xl">
-        <p className="text-3xl font-medium text-left leading-snug tracking-tight text-foreground sm:text-4xl lg:text-5xl lg:leading-snug">
-          {words.map((word, index) => {
-            const wordStart = index / words.length;
-            const wordEnd = wordStart + 1 / words.length;
-            
-            const wordProgress = Math.min(
-              1,
-              Math.max(0, (scrollProgress - wordStart) / (wordEnd - wordStart))
-            );
-            const opacity = 0.15 + wordProgress * 0.85;
-            const blur = (1 - wordProgress) * 8;
-
-            return (
-              <span
-                key={index}
-                className="mr-2 inline-block lg:mr-3"
-                style={{ 
-                  opacity,
-                  filter: `blur(${blur}px)`,
-                  transition: "opacity 75ms, filter 75ms",
-                }}
-              >
-                {word}
-              </span>
-            );
-          })}
-        </p>
-      </div>
+    <section ref={containerRef} className="w-full bg-background px-6 py-24">
+      {paragraph}
     </section>
   );
 }

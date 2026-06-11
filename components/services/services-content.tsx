@@ -24,7 +24,6 @@ export function ServicesContent(): ReactNode {
   return (
     <>
       <PageHero
-        eyebrow="Services"
         leadingTitle="What we"
         italicTitle="build"
         subtitle="Four shapes of bespoke work — picked apart so you can see exactly where each one fits. Most engagements blend more than one."
@@ -33,6 +32,7 @@ export function ServicesContent(): ReactNode {
       <BlurInHeadline
         text="Software built around how your business actually works — not how a vendor assumed it should. Code owned entirely by you, scoped comprehensively, delivered on a timeline agreed up front."
         ssrVisible
+        pinned
       />
 
       <div className="mx-auto max-w-5xl px-6 pb-24">

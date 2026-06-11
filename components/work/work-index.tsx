@@ -22,7 +22,6 @@ export function WorkIndex(): ReactNode {
   return (
     <>
       <PageHero
-        eyebrow="Work"
         leadingTitle="Selected"
         italicTitle="work"
         subtitle="A small, growing catalogue. Each one shipped on a fixed fee, on an agreed timeline, with the code owned entirely by the client."
