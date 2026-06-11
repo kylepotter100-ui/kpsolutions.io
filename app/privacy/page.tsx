@@ -1,5 +1,6 @@
 import { LegalPage } from "@/components/legal/legal-page";
 import { createMetadata } from "@/lib/metadata";
+import { JsonLd, breadcrumbSchema } from "@/lib/schema";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
@@ -14,7 +15,14 @@ export const metadata: Metadata = createMetadata({
 
 export default function PrivacyPage(): ReactNode {
   return (
-    <LegalPage
+    <>
+      <JsonLd
+        schema={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Privacy", path: "/privacy" },
+        ])}
+      />
+      <LegalPage
       title="Privacy"
       updated="June 2026"
       lead={
@@ -82,6 +90,7 @@ export default function PrivacyPage(): ReactNode {
           <a href={`mailto:${ORG_EMAIL}`}>{ORG_EMAIL}</a>.
         </p>
       </section>
-    </LegalPage>
+      </LegalPage>
+    </>
   );
 }

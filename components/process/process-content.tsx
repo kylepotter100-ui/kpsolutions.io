@@ -4,6 +4,7 @@ import { ArrowDownRight, Minus, Plus } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useState, type ReactNode } from "react";
 import { BlurInHeadline } from "@/components/blur-in-headline";
+import { processFaqs } from "@/lib/faq-data";
 
 const ease = [0.23, 1, 0.32, 1] as const;
 
@@ -102,32 +103,8 @@ const includedGroups = [
   },
 ];
 
-const faqItems = [
-  {
-    q: "What happens in the first week?",
-    a: "Discovery and architecture. A 30-minute call, the brief written in your words and signed off, the data model drafted on paper, and a fixed-fee proposal within 48 hours.",
-  },
-  {
-    q: "When do I see something real?",
-    a: "By day three of week two a live staging URL goes up, and you watch the build as it happens. Real screens, not wireframes.",
-  },
-  {
-    q: "What do I get at handover?",
-    a: "Production cutover with you on the call, the source repository transferred to your organisation, a runbook, a Loom walkthrough, and a ninety-day post-launch guarantee that starts the moment you are live.",
-  },
-  {
-    q: "How is it priced?",
-    a: "Every engagement is a fixed fee, scoped in week one and agreed before week two begins. No scope-creep clauses on the fixed-fee build; optional retainers afterwards if you want a long-term partner for changes and updates.",
-  },
-  {
-    q: "Why four weeks?",
-    a: "The constraint is the point. It rules out the discovery phase that produces nothing and the replatform that ships eighteen months late, and it forces scope to be set in week one and respected throughout.",
-  },
-  {
-    q: "Who actually does the work?",
-    a: "One person, operator to operator. Decisions are made on the call, not in a status report, with no account managers or hand-offs in between.",
-  },
-];
+// FAQ copy lives in lib/faq-data.ts so the server page can emit matching
+// FAQPage JSON-LD.
 
 function renderWeekName(name: string, italicWord: string): ReactNode {
   const idx = name.indexOf(italicWord);
@@ -385,8 +362,12 @@ export function ProcessContent(): ReactNode {
             <span className="italic font-serif text-accent">questions</span>.
           </h2>
           <div className="mt-10">
-            {faqItems.map((item) => (
-              <FaqRow key={item.q} question={item.q} answer={item.a} />
+            {processFaqs.map((item) => (
+              <FaqRow
+                key={item.question}
+                question={item.question}
+                answer={item.answer}
+              />
             ))}
           </div>
         </motion.div>

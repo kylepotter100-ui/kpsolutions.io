@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const siteConfig = {
-  name: "KP Solutions — Bespoke software for established operators",
+  name: "KP Solutions — Software that fits how you work",
   description:
-    "KP Solutions builds bespoke software for established businesses that have outgrown off-the-shelf SaaS. Custom platforms, internal tools, integrations, and AI-visible web presence, scoped comprehensively with code owned by the client from day one.",
+    "KP Solutions builds bespoke software for businesses that want their tools to fit how they actually work. Custom platforms, internal tools, integrations, and AI-visible web presence, scoped comprehensively with code owned by the client from day one.",
   url: "https://kpsolutions.io",
   ogImage: "/og-default.png",
   creator: "@kpsolutions",

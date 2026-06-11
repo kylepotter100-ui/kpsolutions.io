@@ -1,5 +1,6 @@
 import { WorkIndex } from "@/components/work/work-index";
 import { createMetadata } from "@/lib/metadata";
+import { JsonLd, breadcrumbSchema } from "@/lib/schema";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
@@ -13,6 +14,12 @@ export const metadata: Metadata = createMetadata({
 export default function WorkPage(): ReactNode {
   return (
     <main id="main-content" className="flex-1">
+      <JsonLd
+        schema={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Work", path: "/work" },
+        ])}
+      />
       <WorkIndex />
     </main>
   );

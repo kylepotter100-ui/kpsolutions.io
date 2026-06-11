@@ -1,5 +1,6 @@
 import { ContactForm } from "@/components/contact-form";
 import { createMetadata } from "@/lib/metadata";
+import { JsonLd, breadcrumbSchema } from "@/lib/schema";
 import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
@@ -14,6 +15,12 @@ export const metadata: Metadata = createMetadata({
 export default function ContactPage(): ReactNode {
   return (
     <main id="main-content" className="flex min-h-screen flex-1 flex-col items-center bg-background px-6 pb-24 pt-40">
+      <JsonLd
+        schema={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Contact", path: "/contact" },
+        ])}
+      />
       <div className="mx-auto w-full max-w-xl text-center">
         <h1 className="text-5xl font-medium tracking-tight text-foreground sm:text-6xl">
           Start a{" "}
